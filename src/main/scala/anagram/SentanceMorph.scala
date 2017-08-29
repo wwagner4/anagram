@@ -4,6 +4,8 @@ object SentanceMorph {
 
   import scala.util.Random._
 
+  val minWordLen = 2
+
   def split(sentance: String): List[String] = sentance.split(" ").toList
 
   def morph(words: List[String]): List[String] =
@@ -16,20 +18,37 @@ object SentanceMorph {
   def flipSpaces(words: List[String]): List[String] =
     words match {
       case Nil => Nil
-      case w :: Nil => w :: Nil
+      case w :: Nil => w :: flipSpaces(Nil)
       case w1 :: w2 :: rest =>
         nextInt(2) match {
-          case 0 if w1.length >= 3 =>
-            val w1_last: Char = w1.reverse.head
-            val w1_butLast: String = w1.reverse.tail.reverse
-            w1_butLast :: (w1_last + w2) :: flipSpaces(rest)
-          case 1 if w2.length >= 3 =>
-            val w2_first: Char = w2.head
-            val w2_butFirst: String = w1.tail
-            w1 + w2_butFirst :: w2_butFirst :: flipSpaces(rest)
-          case _ => w1 :: w2 :: flipSpaces(rest)
+          case 0 =>
+            val (a, b) = flipSpaceLeft(w1, w2)
+            a :: flipSpaces(b :: rest)
+          case 1 =>
+            val (a, b) = flipSpaceRight(w1, w2)
+            a :: flipSpaces(b :: rest)
+          case _ =>
+            w1 :: flipSpaces(w2 :: rest)
         }
     }
+
+  def flipSpaceRight(w1: String, w2: String): (String, String) = {
+    if (w1.length > minWordLen) {
+      val x = w1.reverse.head
+      (w1.reverse.tail.reverse, x + w2)
+    } else {
+      (w1, w2)
+    }
+  }
+
+  def flipSpaceLeft(w1: String, w2: String): (String, String) = {
+    if (w2.length > minWordLen) {
+      val x = w2.head
+      (w1 + x, w2.tail)
+    } else {
+      (w1, w2)
+    }
+  }
 
   def interWords(words: List[String]): List[String] = words
   def extraWords(words: List[String]): List[String] = words
