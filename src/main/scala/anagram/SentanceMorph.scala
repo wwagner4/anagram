@@ -1,12 +1,19 @@
 package anagram
 
+case class Anagram(
+                    from: String,
+                    to: String,
+                    lines: Int
+                  )
+
+
 object SentanceMorph {
 
   import scala.util.Random._
 
   val minWordLen = 2
-  val probFlipWords = 10 // in %
-  val probFlipSpaces = 50 // in %
+  val probFlipWords = 50 // in %
+  val probFlipSpaces = 60 // in %
 
   def split(sentance: String): List[String] = sentance.split(" ").toList
 
@@ -65,13 +72,26 @@ object SentanceMorph {
     }
   }
 
-  def nFromP(p: Int):Int =
+  def nFromP(p: Int): Int =
     if (p <= 0) 100000
     else (200.0 / p.toDouble).toInt
 
   def toRandom(sentance: String, cnt: Int): List[List[String]] = {
     val words: List[String] = split(sentance)
     split(sentance) :: morph(words, cnt)
+  }
+
+  def splitNum(num: Int): (Int, Int) = {
+    val n1 = num / 2
+    val n2 = num - n1
+    (n1, n2)
+  }
+
+  def morph(anagram: Anagram): List[List[String]] = {
+    val (n1, n2) = splitNum(anagram.lines)
+    val a = toRandom(anagram.from, n1)
+    val b = toRandom(anagram.to, n2).reverse
+    a ::: b
   }
 
 }
