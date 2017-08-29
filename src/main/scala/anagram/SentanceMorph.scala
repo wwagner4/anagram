@@ -5,6 +5,8 @@ object SentanceMorph {
   import scala.util.Random._
 
   val minWordLen = 2
+  val probFlipWords = 10 // in %
+  val probFlipSpaces = 50 // in %
 
   def split(sentance: String): List[String] = sentance.split(" ").toList
 
@@ -32,26 +34,26 @@ object SentanceMorph {
       }
     }
 
-    handlePairs(words)(flipSpaceLeft, flipSpaceRight)
+    handlePairs(words, probFlipSpaces)(flipSpaceLeft, flipSpaceRight)
   }
 
   def flipWords(words: List[String]): List[String] =
-    handlePairs(words, prob = 20)((a, b) => (b, a), (a, b) => (b, a))
+    handlePairs(words, prob = probFlipWords)((a, b) => (b, a), (a, b) => (b, a))
 
-  def handlePairs[A](words: List[A], prob: Int = 2)(f1: (A, A) => (A, A), f2: (A, A) => (A, A)): List[A] =
+  def handlePairs[A](words: List[A], prob: Int)(f1: (A, A) => (A, A), f2: (A, A) => (A, A)): List[A] =
     words match {
       case Nil => Nil
-      case w :: Nil => w :: handlePairs(Nil)(f1, f2)
+      case w :: Nil => w :: handlePairs(Nil, prob)(f1, f2)
       case w1 :: w2 :: rest =>
-        nextInt(prob) match {
+        nextInt(nFromP(prob)) match {
           case 0 =>
             val (a, b) = f1(w1, w2)
-            a :: handlePairs(b :: rest)(f1, f2)
+            a :: handlePairs(b :: rest, prob)(f1, f2)
           case 1 =>
             val (a, b) = f2(w1, w2)
-            a :: handlePairs(b :: rest)(f1, f2)
+            a :: handlePairs(b :: rest, prob)(f1, f2)
           case _ =>
-            w1 :: handlePairs(w2 :: rest)(f1, f2)
+            w1 :: handlePairs(w2 :: rest, prob)(f1, f2)
         }
     }
 
@@ -62,6 +64,10 @@ object SentanceMorph {
       m1 :: morph(m1, cnt - 1)
     }
   }
+
+  def nFromP(p: Int):Int =
+    if (p <= 0) 100000
+    else (200.0 / p.toDouble).toInt
 
   def toRandom(sentance: String, cnt: Int): List[List[String]] = {
     val words: List[String] = split(sentance)
