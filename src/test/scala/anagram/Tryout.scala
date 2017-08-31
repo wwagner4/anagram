@@ -19,7 +19,7 @@ object Tryout extends App {
     println(
       SentanceMorph
         .morph(ana)
-        .map(_.mkString("   "))
+        .map(_.mkString(" "))
         .mkString("\n")
     )
     println()
