@@ -1,6 +1,14 @@
 package anagram
 
+import anagram.impl.AnagramMorphJumbled
+
 object Tryout extends App {
+
+  case class Anagram(
+                      from: String,
+                      to: String,
+                      lines: Int
+                    )
 
   val anas = List(
     Anagram("slot machines", "cash lost in em", 10),
@@ -18,8 +26,7 @@ object Tryout extends App {
   anas.foreach{ana =>
     println(
       AnagramMorphJumbled
-        .morph(ana)
-        .map(_.mkString(" "))
+        .morph(ana.from, ana.to, ana.lines)
         .mkString("\n")
     )
     println()

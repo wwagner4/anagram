@@ -1,11 +1,4 @@
-package anagram
-
-case class Anagram(
-                    from: String,
-                    to: String,
-                    lines: Int
-                  )
-
+package anagram.impl
 
 object AnagramMorphJumbled {
 
@@ -87,11 +80,11 @@ object AnagramMorphJumbled {
     (n1, n2)
   }
 
-  def morph(anagram: Anagram): List[List[String]] = {
-    val (n1, n2) = splitNum(anagram.lines)
-    val a = toRandom(anagram.from, n1)
-    val b = toRandom(anagram.to, n2).reverse
-    a ::: b
+  def morph(from: String, to: String, lines: Int): List[String] = {
+    val (n1, n2) = splitNum(lines)
+    val a = toRandom(from, n1)
+    val b = toRandom(to, n2).reverse
+    (a ::: b).map(_.mkString(" "))
   }
 
 }
