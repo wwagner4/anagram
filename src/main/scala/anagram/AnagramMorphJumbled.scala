@@ -7,7 +7,7 @@ case class Anagram(
                   )
 
 
-object SentanceMorph {
+object AnagramMorphJumbled {
 
   import scala.util.Random._
 

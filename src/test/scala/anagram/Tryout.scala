@@ -17,7 +17,7 @@ object Tryout extends App {
 
   anas.foreach{ana =>
     println(
-      SentanceMorph
+      AnagramMorphJumbled
         .morph(ana)
         .map(_.mkString(" "))
         .mkString("\n")
