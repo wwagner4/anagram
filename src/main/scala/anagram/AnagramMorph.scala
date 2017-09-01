@@ -1,10 +1,11 @@
 package anagram
 
-import anagram.impl.AnagramMorphJumbled
+import anagram.impl.{AnagramMorphJumbled, AnagramMorphLinear}
 
 object AnagramMorph {
 
   def anagramMorphJumbled: AnagramMorph = new AnagramMorphJumbled
+  def anagramMorphLinear: AnagramMorph = new AnagramMorphLinear
 
 }
 

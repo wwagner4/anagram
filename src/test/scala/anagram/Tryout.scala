@@ -23,7 +23,7 @@ object Tryout extends App {
     Anagram("schaffen", "wir schaffen das", "warne das schiff", 8),
   )
 
-  val morpher = AnagramMorph.anagramMorphJumbled
+  val morpher = AnagramMorph.anagramMorphLinear
   val justifier = Justify.justifyDefault
 
   val dirHome = new File(System.getProperty("user.home"))
