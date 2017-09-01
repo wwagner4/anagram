@@ -1,6 +1,8 @@
 package anagram.impl
 
-object AnagramMorphJumbled {
+import anagram.AnagramMorph
+
+class AnagramMorphJumbled extends AnagramMorph {
 
   import scala.util.Random._
 
