@@ -75,11 +75,30 @@ class LinearSuite extends FunSuite with MustMatchers {
     ("### # ####", 1, ("### #####", Seq(5))),
     ("### # ####", 2, ("########", Seq(3, 5))),
     ("# ## # ### #", 2, ("# ###### #", Seq(4, 6))),
+    ("# # # #", 1, ("# ## #", Seq(3))),
+    ("# # # #", 2, ("### #", Seq(1, 3))),
+    ("# # # #", 3, ("####", Seq(1, 3, 5))),
   )
 
   for ((txt, anz, expected) <- dataRemoveBlanksOK) {
     test(s"removeBlanks OK '$txt' $anz") {
       removeBlanks(txt, anz) must be(expected)
+    }
+  }
+
+  val dataAddBlanksOK = List(
+    ("## ##", 1),
+    ("# # # #", 1),
+    ("# # # #", 2),
+    ("# # # #", 3),
+    ("##### ##", 1),
+    ("## ######", 1),
+  )
+
+  for ((txt, anz) <- dataAddBlanksOK) {
+    test(s"addBlanks OK '$txt' $anz") {
+      val (removed, indices) = removeBlanks(txt, anz)
+      addBlanks(removed, indices) must be(txt)
     }
   }
 
@@ -89,7 +108,8 @@ class LinearSuite extends FunSuite with MustMatchers {
       .filter(_._1 == ' ')
       .map(_._2)
     val middle: Int = txt.length / 2
-    val idxToBeRemoved: Seq[Int] = is.map(i => (i, math.abs(i - middle)))
+    val idxToBeRemoved = is
+      .map(i => (i, math.abs(i - middle)))
       .sortBy(_._2)
       .take(numToBeRemoved)
       .map(_._1)
@@ -97,7 +117,21 @@ class LinearSuite extends FunSuite with MustMatchers {
       .filter(t => !idxToBeRemoved.contains(t._2))
       .map(_._1)
       .mkString("")
-    (txtOut, idxToBeRemoved.reverse)
+    (txtOut, idxToBeRemoved.sorted)
   }
+
+  def addBlanks(txt: String, indexes: Seq[Int]): String = {
+    def addBlanks(txt: List[Char], index: Int, indexes: Seq[Int]): List[Char] = {
+      txt match {
+        case Nil => Nil
+        case head :: tail =>
+          if (indexes.contains(index)) ' ' :: addBlanks(head :: tail, index + 1, indexes)
+          else head :: addBlanks(tail, index + 1, indexes)
+      }
+    }
+
+    addBlanks(txt.toList, 0, indexes).mkString
+  }
+
 
 }
