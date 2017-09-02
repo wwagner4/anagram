@@ -67,4 +67,37 @@ class LinearSuite extends FunSuite with MustMatchers {
     }
   }
 
+  val dataRemoveBlanksOK = List(
+    ("", 0, ("", Seq.empty[Int])),
+    ("# #", 1, ("##", Seq(1))),
+    ("# ##", 1, ("###", Seq(1))),
+    ("### # #", 1, ("#### #", Seq(3))),
+    ("### # ####", 1, ("### #####", Seq(5))),
+    ("### # ####", 2, ("########", Seq(3, 5))),
+    ("# ## # ### #", 2, ("# ###### #", Seq(4, 6))),
+  )
+
+  for ((txt, anz, expected) <- dataRemoveBlanksOK) {
+    test(s"removeBlanks OK '$txt' $anz") {
+      removeBlanks(txt, anz) must be(expected)
+    }
+  }
+
+  def removeBlanks(txt: String, numToBeRemoved: Int): (String, Seq[Int]) = {
+    val is: Seq[Int] = txt.toList
+      .zipWithIndex
+      .filter(_._1 == ' ')
+      .map(_._2)
+    val middle: Int = txt.length / 2
+    val idxToBeRemoved: Seq[Int] = is.map(i => (i, math.abs(i - middle)))
+      .sortBy(_._2)
+      .take(numToBeRemoved)
+      .map(_._1)
+    val txtOut = txt.zipWithIndex
+      .filter(t => !idxToBeRemoved.contains(t._2))
+      .map(_._1)
+      .mkString("")
+    (txtOut, idxToBeRemoved.reverse)
+  }
+
 }

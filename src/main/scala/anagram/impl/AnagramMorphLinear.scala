@@ -40,11 +40,12 @@ class AnagramMorphLinear extends AnagramMorph {
       val k = (target.indexOf(i) - i).toDouble / (numLines - 1)
       flin(a, k)(_)
     }
-    val offsets: Seq[Seq[Double]] = for (x <- 0 until numLines) yield {
-      fList.map(f => f(x))
-    }
-    for (line: Seq[Double] <- offsets) yield {
-      line.zipWithIndex.sortBy(_._1).map(_._2)
+    for (x <- 0 until numLines) yield {
+      fList
+        .map(_(x))
+        .zipWithIndex
+        .sortBy(_._1)
+        .map(_._2)
     }
   }
 
