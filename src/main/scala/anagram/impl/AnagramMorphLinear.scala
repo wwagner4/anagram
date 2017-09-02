@@ -27,8 +27,7 @@ class AnagramMorphLinear extends AnagramMorph {
           assign(tail, bl, firstUnusedIndex(head, bl, 0, indexes) :: indexes)
       }
     }
-
-
+    if (a.length != b.length) throw new IllegalStateException("a and b must have same length")
     assign(a.toList, b.toList, List.empty[Int])
   }
 

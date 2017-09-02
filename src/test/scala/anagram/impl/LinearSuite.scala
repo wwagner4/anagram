@@ -20,9 +20,26 @@ class LinearSuite extends FunSuite with MustMatchers {
   )
 
   for ((a, b, expected) <- dataOk) {
-    test(s"assign $a $b") {
+    test(s"assign OK $a $b") {
       classUnderTest.assign(a, b) must be(expected)
     }
   }
+
+  val dataNotOk = List(
+    ("abc", "aac"),
+    ("abc", "abcd"),
+    ("abc", "abd"),
+    ("abc", "ab"),
+  )
+
+  for ((a, b) <- dataNotOk) {
+    test(s"assign NOT OK $a $b") {
+      an[IllegalStateException] must be thrownBy classUnderTest.assign(a, b)
+    }
+  }
+
+
+
+  def morph(target: Seq[Int], numLines: Int): Seq[Seq[Int]] = ???
 
 }
