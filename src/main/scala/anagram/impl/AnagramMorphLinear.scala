@@ -31,5 +31,22 @@ class AnagramMorphLinear extends AnagramMorph {
     assign(a.toList, b.toList, List.empty[Int])
   }
 
+  def morphIndex(target: Seq[Int], numLines: Int): Seq[Seq[Int]] = {
+
+    def flin(a: Double, k: Double)(x: Double): Double = a + k * x
+
+    val fList: Seq[(Double) => Double] = for(i <- target.indices) yield {
+      val a = i.toDouble
+      val k = (target.indexOf(i) - i).toDouble / (numLines - 1)
+      flin(a, k)(_)
+    }
+    val offsets: Seq[Seq[Double]] = for (x <- 0 until numLines) yield {
+      fList.map(f => f(x))
+    }
+    for (line: Seq[Double] <- offsets) yield {
+      line.zipWithIndex.sortBy(_._1).map(_._2)
+    }
+  }
+
 
 }
