@@ -102,6 +102,21 @@ class LinearSuite extends FunSuite with MustMatchers {
     }
   }
 
+  val dataCanAddBlank = List(
+    ("## ##", 0, true), // " ## ##"
+    ("## ##", 1, true), // "# # ##"
+    ("## ##", 2, false), // "##  ##"
+    ("## ##", 3, false), // "##  ##"
+    ("## ##", 4, true), // "## # #"
+    ("## ##", 5, true), // "## ## "
+  )
+
+  for ((txt, i, expected) <- dataCanAddBlank) {
+    test(s"canAddBlank '$txt' $i") {
+      canAddBlank(txt, i) must be(expected)
+    }
+  }
+
   def removeBlanks(txt: String, numToBeRemoved: Int): (String, Seq[Int]) = {
     val is: Seq[Int] = txt.toList
       .zipWithIndex
@@ -119,6 +134,14 @@ class LinearSuite extends FunSuite with MustMatchers {
       .mkString("")
     (txtOut, idxToBeRemoved.sorted)
   }
+
+  def canAddBlank(txt: String, index: Int): Boolean = {
+    require(index >= 0 && index <= txt.length)
+    if (index == 0) txt(index) != ' '
+    else if (index == txt.length) txt(index - 1) != ' '
+    else txt(index - 1) != ' ' && txt(index) != ' '
+  }
+
 
   def addBlanks(txt: String, indexes: Seq[Int]): String = {
     def addBlanks(txt: List[Char], index: Int, indexes: Seq[Int]): List[Char] = {
