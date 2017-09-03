@@ -86,7 +86,7 @@ class LinearSuite extends FunSuite with MustMatchers {
     }
   }
 
-  val dataAddBlanksOK = List(
+  val dataAddBlankOK = List(
     ("## ##", 1),
     ("# # # #", 1),
     ("# # # #", 2),
@@ -95,7 +95,7 @@ class LinearSuite extends FunSuite with MustMatchers {
     ("## ######", 1),
   )
 
-  for ((txt, anz) <- dataAddBlanksOK) {
+  for ((txt, anz) <- dataAddBlankOK) {
     test(s"addBlanks OK '$txt' $anz") {
       val (removed, indices) = classUnderTest.removeBlanks(txt, anz)
       classUnderTest.addBlanks(removed, indices) must be(txt)
@@ -167,5 +167,17 @@ class LinearSuite extends FunSuite with MustMatchers {
     }
   }
 
+  val dataToIndexes = List(
+    ("aaa", "aaa", Seq(0, 1, 2)),
+    ("aba", "aab", Seq(0, 2, 1)),
+    ("abc", "cba", Seq(2, 1, 0)),
+    ("abb", "bab", Seq(1, 0, 2)),
+  )
+
+  for ((f, t, is) <- dataToIndexes) {
+    test(s"toIndexes '$f' -> '$t'") {
+      classUnderTest.findToIndexes(f, t) must be(is)
+    }
+  }
 
 }

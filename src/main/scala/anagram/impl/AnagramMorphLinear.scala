@@ -4,12 +4,80 @@ import anagram.AnagramMorph
 
 class AnagramMorphLinear extends AnagramMorph {
 
-  def morph(from: String, to: String, lines: Int): List[String] = {
+  sealed trait NumBlanksSuperior
+
+  case object NumBlanksSuperior_NONE extends NumBlanksSuperior
+
+  case class NumBlanksSuperior_FROM(fromAdjusted: String, idxToBeRemoved: Seq[Int]) extends NumBlanksSuperior
+
+  case class NumBlanksSuperior_TO(toAdjusted: String, idxToBeRemoved: Seq[Int]) extends NumBlanksSuperior
+
+  def morph(from: String, to: String, lines: Int): Seq[String] = {
     require(!hasDoubleBlanks(from), "No double blanks allowed")
     require(!hasDoubleBlanks(to), "No double blanks allowed")
-    val balnksFrom: Int = countBlanks(from)
-    val balnksTo: Int = countBlanks(to)
-    ???
+    val blanksFrom: Int = countBlanks(from)
+    val blanksTo: Int = countBlanks(to)
+    val num: NumBlanksSuperior =
+      if (blanksFrom > blanksTo) {
+        val (adj, idx) = removeBlanks(from, blanksFrom - blanksTo)
+        NumBlanksSuperior_FROM(adj, idx)
+      } else if (blanksTo > blanksFrom) {
+        val (adj, idx) = removeBlanks(from, blanksFrom - blanksTo)
+        NumBlanksSuperior_TO(adj, idx)
+      }
+      else {
+        NumBlanksSuperior_NONE
+      }
+    num match {
+      case NumBlanksSuperior_NONE => morph1(from, to, lines)
+      case NumBlanksSuperior_FROM(adj, idx) =>
+        for ((morphed, line) <- morph1(adj, to, lines).zipWithIndex) yield {
+          if (line >= lines / 2) morphed
+          else addBlanksIfPossible(morphed, idx)
+        }
+      case NumBlanksSuperior_TO(adj, idx) => morph(from, adj, lines)
+        for ((morphed, line) <- morph1(adj, to, lines).reverse.zipWithIndex) yield {
+          if (line >= lines / 2) morphed
+          else addBlanksIfPossible(morphed, idx)
+        }.reverse
+    }
+  }
+
+  val placeholder: Char = '\u0C7F'
+
+  def replaceWithPlaceholder(txt: List[Char], idx: Int, ph: Char): List[Char] =
+    for ((c, i) <- txt.zipWithIndex) yield if (i == idx) ph else c
+
+  def findToIndexes(from: String, to: String): List[Int] = {
+
+    def find(f: List[Char], t: List[Char]): List[Int] = {
+      f match {
+        case Nil => Nil
+        case x :: rest =>
+          val i = t.indexOf(x)
+          val t1 = replaceWithPlaceholder(t, i, placeholder)
+          i :: find(rest, t1)
+      }
+    }
+
+    find(from.toList, to.toList)
+  }
+
+  def createCharMap(txt: String): Map[Int, Char] = {
+    val tu = txt.zipWithIndex.map(tu => (tu._2, tu._1))
+    tu.toMap
+  }
+
+  def morph1(from: String, to: String, lines: Int): Seq[String] = {
+    val m = createCharMap(from)
+    val toIndexes: List[Int] = findToIndexes(from, to)
+    val morphIndexes: Seq[Seq[Int]] = morphIndex(toIndexes, lines)
+    morphIndexes.map(idx => idx.map(i => m(i)).mkString).reverse
+  }
+
+  def addBlanksIfPossible(txt: String, idx: Seq[Int]): String = {
+    if (idx.forall(canAddBlank(txt, _))) addBlanks(txt, idx)
+    else txt
   }
 
   def hasDoubleBlanks(txt: String): Boolean = {
@@ -27,7 +95,7 @@ class AnagramMorphLinear extends AnagramMorph {
 
   }
 
-  def countBlanks(txt: String): Int = txt.toList.filter(c => c == ' ').size
+  def countBlanks(txt: String): Int = txt.toList.count(c => c == ' ')
 
   def assign(a: String, b: String): Seq[Int] = {
 
@@ -48,6 +116,7 @@ class AnagramMorphLinear extends AnagramMorph {
           assign(tail, bl, firstUnusedIndex(head, bl, 0, indexes) :: indexes)
       }
     }
+
     if (a.length != b.length) throw new IllegalStateException("a and b must have same length")
     assign(a.toList, b.toList, List.empty[Int])
   }
@@ -56,14 +125,14 @@ class AnagramMorphLinear extends AnagramMorph {
 
     def flin(a: Double, k: Double)(x: Double): Double = a + k * x
 
-    val fList: Seq[(Double) => Double] = for(i <- target.indices) yield {
+    val fList: Seq[(Double) => Double] = for (i <- target.indices) yield {
       val a = i.toDouble
       val k = (target.indexOf(i) - i).toDouble / (numLines - 1)
       flin(a, k)(_)
     }
     for (x <- 0 until numLines) yield {
       fList
-        .map(_(x))
+        .map(_ (x))
         .zipWithIndex
         .sortBy(_._1)
         .map(_._2)
@@ -108,8 +177,6 @@ class AnagramMorphLinear extends AnagramMorph {
 
     addBlanks(txt.toList, 0, indexes).mkString
   }
-
-
 
 
 }

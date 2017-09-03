@@ -12,6 +12,6 @@ object AnagramMorph {
 
 trait AnagramMorph {
 
-  def morph(from: String, to: String, lines: Int): List[String]
+  def morph(from: String, to: String, lines: Int): Seq[String]
 
 }
