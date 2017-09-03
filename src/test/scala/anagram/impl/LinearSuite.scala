@@ -82,7 +82,7 @@ class LinearSuite extends FunSuite with MustMatchers {
 
   for ((txt, anz, expected) <- dataRemoveBlanksOK) {
     test(s"removeBlanks OK '$txt' $anz") {
-      removeBlanks(txt, anz) must be(expected)
+      classUnderTest.removeBlanks(txt, anz) must be(expected)
     }
   }
 
@@ -97,8 +97,8 @@ class LinearSuite extends FunSuite with MustMatchers {
 
   for ((txt, anz) <- dataAddBlanksOK) {
     test(s"addBlanks OK '$txt' $anz") {
-      val (removed, indices) = removeBlanks(txt, anz)
-      addBlanks(removed, indices) must be(txt)
+      val (removed, indices) = classUnderTest.removeBlanks(txt, anz)
+      classUnderTest.addBlanks(removed, indices) must be(txt)
     }
   }
 
@@ -113,47 +113,58 @@ class LinearSuite extends FunSuite with MustMatchers {
 
   for ((txt, i, expected) <- dataCanAddBlank) {
     test(s"canAddBlank '$txt' $i") {
-      canAddBlank(txt, i) must be(expected)
+      classUnderTest.canAddBlank(txt, i) must be(expected)
     }
   }
 
-  def removeBlanks(txt: String, numToBeRemoved: Int): (String, Seq[Int]) = {
-    val is: Seq[Int] = txt.toList
-      .zipWithIndex
-      .filter(_._1 == ' ')
-      .map(_._2)
-    val middle: Int = txt.length / 2
-    val idxToBeRemoved = is
-      .map(i => (i, math.abs(i - middle)))
-      .sortBy(_._2)
-      .take(numToBeRemoved)
-      .map(_._1)
-    val txtOut = txt.zipWithIndex
-      .filter(t => !idxToBeRemoved.contains(t._2))
-      .map(_._1)
-      .mkString("")
-    (txtOut, idxToBeRemoved.sorted)
-  }
+  val dataHasDoubleBlanksTrue = List(
+    "  ",
+    "aa  aa",
+    "  aa",
+    "aa  ",
+    "    ",
+    "  aa aa a",
+  )
 
-  def canAddBlank(txt: String, index: Int): Boolean = {
-    require(index >= 0 && index <= txt.length)
-    if (index == 0) txt(index) != ' '
-    else if (index == txt.length) txt(index - 1) != ' '
-    else txt(index - 1) != ' ' && txt(index) != ' '
-  }
-
-
-  def addBlanks(txt: String, indexes: Seq[Int]): String = {
-    def addBlanks(txt: List[Char], index: Int, indexes: Seq[Int]): List[Char] = {
-      txt match {
-        case Nil => Nil
-        case head :: tail =>
-          if (indexes.contains(index)) ' ' :: addBlanks(head :: tail, index + 1, indexes)
-          else head :: addBlanks(tail, index + 1, indexes)
-      }
+  for (txt <- dataHasDoubleBlanksTrue) {
+    test(s"hasDoubleBlanks true - '$txt'") {
+      classUnderTest.hasDoubleBlanks(txt) must be(true)
     }
+  }
 
-    addBlanks(txt.toList, 0, indexes).mkString
+  val dataHasDoubleBlanksFalse = List(
+    " ",
+    "aa aa",
+    " aa",
+    "aa ",
+    " a a a a a",
+    " aa aa a",
+  )
+
+  for (txt <- dataHasDoubleBlanksFalse) {
+    test(s"hasDoubleBlanks false - '$txt'") {
+      classUnderTest.hasDoubleBlanks(txt) must be(false)
+    }
+  }
+
+  val dataCountBlanks = List(
+    ("", 0),
+    ("aa", 0),
+    ("wolfi", 0),
+    (" ", 1),
+    ("a ", 1),
+    (" a", 1),
+    ("wolf i", 1),
+    ("  ", 2),
+    ("a a ", 2),
+    (" a a", 2),
+    ("a a a a aa ", 5),
+  )
+
+  for ((txt, n) <- dataCountBlanks) {
+    test(s"countBlanks '$txt'") {
+      classUnderTest.countBlanks(txt) must be(n)
+    }
   }
 
 

@@ -5,8 +5,29 @@ import anagram.AnagramMorph
 class AnagramMorphLinear extends AnagramMorph {
 
   def morph(from: String, to: String, lines: Int): List[String] = {
+    require(!hasDoubleBlanks(from), "No double blanks allowed")
+    require(!hasDoubleBlanks(to), "No double blanks allowed")
+    val balnksFrom: Int = countBlanks(from)
+    val balnksTo: Int = countBlanks(to)
     ???
   }
+
+  def hasDoubleBlanks(txt: String): Boolean = {
+
+    def hasDoubleBlanks1(chars: List[Char]): Boolean = {
+      chars match {
+        case Nil => false
+        case _ :: Nil => false
+        case c1 :: c2 :: _ if c1 == ' ' && c2 == ' ' => true
+        case _ :: c2 :: rest => hasDoubleBlanks1(c2 :: rest)
+      }
+    }
+
+    hasDoubleBlanks1(txt.toList)
+
+  }
+
+  def countBlanks(txt: String): Int = txt.toList.filter(c => c == ' ').size
 
   def assign(a: String, b: String): Seq[Int] = {
 
@@ -48,6 +69,47 @@ class AnagramMorphLinear extends AnagramMorph {
         .map(_._2)
     }
   }
+
+  def removeBlanks(txt: String, numToBeRemoved: Int): (String, Seq[Int]) = {
+    val is: Seq[Int] = txt.toList
+      .zipWithIndex
+      .filter(_._1 == ' ')
+      .map(_._2)
+    val middle: Int = txt.length / 2
+    val idxToBeRemoved = is
+      .map(i => (i, math.abs(i - middle)))
+      .sortBy(_._2)
+      .take(numToBeRemoved)
+      .map(_._1)
+    val txtOut = txt.zipWithIndex
+      .filter(t => !idxToBeRemoved.contains(t._2))
+      .map(_._1)
+      .mkString("")
+    (txtOut, idxToBeRemoved.sorted)
+  }
+
+  def canAddBlank(txt: String, index: Int): Boolean = {
+    require(index >= 0 && index <= txt.length)
+    if (index == 0) txt(index) != ' '
+    else if (index == txt.length) txt(index - 1) != ' '
+    else txt(index - 1) != ' ' && txt(index) != ' '
+  }
+
+
+  def addBlanks(txt: String, indexes: Seq[Int]): String = {
+    def addBlanks(txt: List[Char], index: Int, indexes: Seq[Int]): List[Char] = {
+      txt match {
+        case Nil => Nil
+        case head :: tail =>
+          if (indexes.contains(index)) ' ' :: addBlanks(head :: tail, index + 1, indexes)
+          else head :: addBlanks(tail, index + 1, indexes)
+      }
+    }
+
+    addBlanks(txt.toList, 0, indexes).mkString
+  }
+
+
 
 
 }
