@@ -71,14 +71,18 @@ class JustifyImpl extends Justify {
 
   def wordOffsets(sentances: Seq[Seq[Word]], maxLen: Int, minSpace: Int): Seq[Seq[WordOffset]] = {
     sentances.map { sent =>
-      val min = sentanceMinLength(sent, minSpace)
-      val diff = maxLen - min
-      val fillLen = diff / (sent.size - 1)
-      var off = 0
-      for (word <- sent) yield {
-        val re = WordOffset(word.word, off)
-        off += word.wordWidth + minSpace + fillLen
-        re
+      if (sent.size == 1) {
+        Seq(WordOffset(sent(0).word, 0))
+      } else {
+        val min = sentanceMinLength(sent, minSpace)
+        val diff = maxLen - min
+        val fillLen = diff / (sent.size - 1)
+        var off = 0
+        for (word <- sent) yield {
+          val re = WordOffset(word.word, off)
+          off += word.wordWidth + minSpace + fillLen
+          re
+        }
       }
     }
   }

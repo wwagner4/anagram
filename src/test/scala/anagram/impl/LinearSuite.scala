@@ -168,10 +168,13 @@ class LinearSuite extends FunSuite with MustMatchers {
   }
 
   val dataToIndexes = List(
-    ("aaa", "aaa", Seq(0, 1, 2)),
-    ("aba", "aab", Seq(0, 2, 1)),
+    ("abc", "abc", Seq(0, 1, 2)),
+    ("abc", "acb", Seq(0, 2, 1)),
+    ("abc", "cab", Seq(2, 0, 1)),
     ("abc", "cba", Seq(2, 1, 0)),
-    ("abb", "bab", Seq(1, 0, 2)),
+    ("abc", "bca", Seq(1, 2, 0)),
+    ("aabcc", "bccaa", Seq(2, 3, 4, 0, 1)),
+    ("wolfi", "iowlf", Seq(4, 1, 0, 2, 3)),
   )
 
   for ((f, t, is) <- dataToIndexes) {
@@ -179,5 +182,18 @@ class LinearSuite extends FunSuite with MustMatchers {
       classUnderTest.findToIndexes(f, t) must be(is)
     }
   }
+
+  val replaceWithPlaceholderData = List(
+    ("abcd", 0, '.', ".bcd"),
+    ("abcd", 3, '.', "abc."),
+    ("abcd", 1, '.', "a.cd"),
+  )
+  for ((txt, i, p, req) <- replaceWithPlaceholderData) {
+    test(s"replaceWithPlaceholder '$txt' $i") {
+      classUnderTest.replaceWithPlaceholder(txt.toList, i, p) must be(req.toList)
+    }
+  }
+
+
 
 }

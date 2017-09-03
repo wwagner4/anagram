@@ -22,28 +22,29 @@ class AnagramMorphLinear extends AnagramMorph {
         val (adj, idx) = removeBlanks(from, blanksFrom - blanksTo)
         NumBlanksSuperior_FROM(adj, idx)
       } else if (blanksTo > blanksFrom) {
-        val (adj, idx) = removeBlanks(from, blanksFrom - blanksTo)
+        val (adj, idx) = removeBlanks(to, blanksTo - blanksFrom)
         NumBlanksSuperior_TO(adj, idx)
       }
       else {
         NumBlanksSuperior_NONE
       }
     num match {
-      case NumBlanksSuperior_NONE => morph1(from, to, lines)
+      case NumBlanksSuperior_NONE => morph1(from, to, lines).reverse
       case NumBlanksSuperior_FROM(adj, idx) =>
         for ((morphed, line) <- morph1(adj, to, lines).zipWithIndex) yield {
           if (line >= lines / 2) morphed
           else addBlanksIfPossible(morphed, idx)
         }
-      case NumBlanksSuperior_TO(adj, idx) => morph(from, adj, lines)
-        for ((morphed, line) <- morph1(adj, to, lines).reverse.zipWithIndex) yield {
+      case NumBlanksSuperior_TO(adj, idx) =>
+        for ((morphed, line) <- morph1(from, adj, lines)zipWithIndex) yield {
           if (line >= lines / 2) morphed
           else addBlanksIfPossible(morphed, idx)
-        }.reverse
+        }
     }
   }
 
-  val placeholder: Char = '\u0C7F'
+   val placeholder: Char = '\u0C7F'
+  //val placeholder: Char = '.'
 
   def replaceWithPlaceholder(txt: List[Char], idx: Int, ph: Char): List[Char] =
     for ((c, i) <- txt.zipWithIndex) yield if (i == idx) ph else c
@@ -51,12 +52,12 @@ class AnagramMorphLinear extends AnagramMorph {
   def findToIndexes(from: String, to: String): List[Int] = {
 
     def find(f: List[Char], t: List[Char]): List[Int] = {
-      f match {
+      t match {
         case Nil => Nil
         case x :: rest =>
-          val i = t.indexOf(x)
-          val t1 = replaceWithPlaceholder(t, i, placeholder)
-          i :: find(rest, t1)
+          val i = f.indexOf(x)
+          val r = replaceWithPlaceholder(f, i, placeholder)
+          i :: find(r, rest)
       }
     }
 
@@ -69,9 +70,14 @@ class AnagramMorphLinear extends AnagramMorph {
   }
 
   def morph1(from: String, to: String, lines: Int): Seq[String] = {
+    println("-- from " + from)
+    println("-- to   " + to)
     val m = createCharMap(from)
     val toIndexes: List[Int] = findToIndexes(from, to)
+    println("-- toIndexes " + toIndexes)
     val morphIndexes: Seq[Seq[Int]] = morphIndex(toIndexes, lines)
+    println("-- m " + m)
+    println("-- morphindexes " + morphIndexes.mkString("\n"))
     morphIndexes.map(idx => idx.map(i => m(i)).mkString).reverse
   }
 
