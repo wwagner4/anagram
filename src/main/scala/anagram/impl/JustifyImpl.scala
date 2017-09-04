@@ -9,6 +9,9 @@ import anagram.Justify
 
 class JustifyImpl extends Justify {
 
+  //val fontName = "Bradley Hand"
+  val fontName: String = Font.DIALOG
+
   case class Word(
                    word: String,
                    wordWidth: Int
@@ -22,7 +25,7 @@ class JustifyImpl extends Justify {
 
   def writePng(lines: Seq[String], outFile: File, fontSize: Int): Unit = {
 
-    val font = new Font(Font.SANS_SERIF, Font.BOLD, fontSize)
+    val font = new Font(fontName, Font.BOLD, fontSize)
 
     val bi1 = new BufferedImage(100, 100, BufferedImage.TYPE_BYTE_GRAY)
     val g1 = bi1.getGraphics.asInstanceOf[Graphics2D]
@@ -87,7 +90,7 @@ class JustifyImpl extends Justify {
     }
   }
 
-  def drawLine(line: Seq[WordOffset], g: Graphics2D, lineIndex: Int, fontSize: Int, xBorder: Int) = {
+  def drawLine(line: Seq[WordOffset], g: Graphics2D, lineIndex: Int, fontSize: Int, xBorder: Int): Unit = {
     for (word <- line) {
       g.drawString(word.word, word.xOffset + xBorder, fontSize * (lineIndex + 1))
     }
