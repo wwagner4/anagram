@@ -1,6 +1,6 @@
 package anagram.impl
 
-import java.awt.{Font, FontMetrics, Graphics2D, RenderingHints}
+import java.awt.{Color, Font, FontMetrics, Graphics2D, RenderingHints}
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -9,7 +9,15 @@ import anagram.Justify
 
 class JustifyImpl extends Justify {
 
-  //val fontName = "Bradley Hand"
+  // Win
+  // val fontName = "Bradley Hand ITC"
+  // val fontName = "Forte"
+  // val fontName = "MV Boli"
+
+  // Mac
+  // val fontName = "Bradley Hand"
+
+  // Java
   val fontName: String = Font.DIALOG
 
   case class Word(
@@ -47,8 +55,9 @@ class JustifyImpl extends Justify {
 
     val sentancesOffset: Seq[Seq[WordOffset]] = wordOffsets(sentances, maxLen, minSpace)
 
-    val bi2 = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)
+    val bi2 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
     val g2 = bi2.getGraphics.asInstanceOf[Graphics2D]
+    g2.setColor(Color.BLACK)
     g2.setFont(font)
     g2.setRenderingHint(
       RenderingHints.KEY_TEXT_ANTIALIASING,

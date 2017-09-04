@@ -188,12 +188,29 @@ class LinearSuite extends FunSuite with MustMatchers {
     ("abcd", 3, '.', "abc."),
     ("abcd", 1, '.', "a.cd"),
   )
+
   for ((txt, i, p, req) <- replaceWithPlaceholderData) {
     test(s"replaceWithPlaceholder '$txt' $i") {
       classUnderTest.replaceWithPlaceholder(txt.toList, i, p) must be(req.toList)
     }
   }
 
+  val dataMoveBlanksInwards = List(
+    ("", ""),
+    ("a", "a"),
+    (" ", " "),
+    (" a", " a"),
+    ("a ", " a"),
+    (" a fish lives in the pool", "a  fish lives in the pool"),
+    ("a fish lives in the pool ", "a fish lives in the poo l"),
+    (" aaa ", "a a a"),
+    (" ahalloa ", "a hallo a"),
+  )
 
+  for ((from, to) <- dataMoveBlanksInwards) {
+    test(s"dataMoveBlanksInwards '$from'") {
+      classUnderTest.moveBlanksInwards(from) must be(to)
+    }
+  }
 
 }

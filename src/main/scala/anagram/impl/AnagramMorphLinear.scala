@@ -28,7 +28,7 @@ class AnagramMorphLinear extends AnagramMorph {
       else {
         NumBlanksSuperior_NONE
       }
-    num match {
+    val re = num match {
       case NumBlanksSuperior_NONE => morph1(from, to, lines).reverse
       case NumBlanksSuperior_FROM(adj, idx) =>
         for ((morphed, line) <- morph1(adj, to, lines).reverse.zipWithIndex) yield {
@@ -41,6 +41,7 @@ class AnagramMorphLinear extends AnagramMorph {
           else addBlanksIfPossible(morphed, idx)
         }
     }
+    re.map(moveBlanksInwards)
   }
 
   val placeholder: Char = '\u0C7F'
@@ -176,6 +177,28 @@ class AnagramMorphLinear extends AnagramMorph {
     }
 
     addBlanks(txt.toList, 0, indexes).mkString
+  }
+
+  def moveBlanksInwards(txt: String): String = {
+    def moveBlanksInwardsFirst(txt: String): String = {
+      if (txt.isEmpty) txt
+      else if (txt.length == 1) txt
+      else if (txt.head == ' ') txt.toList match {
+        case a :: b :: rest => (b :: a :: rest).mkString
+      }
+      else txt
+    }
+
+    def moveBlanksInwardsLast(txt: String): String = {
+      if (txt.isEmpty) txt
+      else if (txt.length == 1) txt
+      else if (txt.last == ' ') txt.toList.reverse match {
+        case a :: b :: rest => (b :: a :: rest).reverse.mkString
+      }
+      else txt
+    }
+
+    moveBlanksInwardsLast(moveBlanksInwardsFirst(txt))
   }
 
 
