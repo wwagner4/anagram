@@ -16,9 +16,11 @@ class JustifyImpl extends Justify {
 
   // Mac
   // val fontName = "Bradley Hand"
+  // val fontName = "Gill Sans"
+  val fontName = "Skia"
 
   // Java
-  val fontName: String = Font.DIALOG
+  // val fontName: String = Font.DIALOG
 
   case class Word(
                    word: String,

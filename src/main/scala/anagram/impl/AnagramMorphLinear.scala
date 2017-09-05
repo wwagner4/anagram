@@ -32,12 +32,12 @@ class AnagramMorphLinear extends AnagramMorph {
       case NumBlanksSuperior_NONE => morph1(from, to, lines).reverse
       case NumBlanksSuperior_FROM(adj, idx) =>
         for ((morphed, line) <- morph1(adj, to, lines).reverse.zipWithIndex) yield {
-          if (line >= lines / 2) morphed
+          if (line >= lines - 2) morphed
           else addBlanksIfPossible(morphed, idx)
         }
       case NumBlanksSuperior_TO(adj, idx) =>
         for ((morphed, line) <- morph1(from, adj, lines).reverse.zipWithIndex) yield {
-          if (line < lines / 2) morphed
+          if (line < 2) morphed
           else addBlanksIfPossible(morphed, idx)
         }
     }
@@ -77,8 +77,7 @@ class AnagramMorphLinear extends AnagramMorph {
   }
 
   def addBlanksIfPossible(txt: String, idx: Seq[Int]): String = {
-    if (idx.forall(canAddBlank(txt, _))) addBlanks(txt, idx)
-    else txt
+    idx.foldLeft(txt)((txt, i) => if (canAddBlank(txt, i)) addBlanks(txt, Seq(i)) else txt)
   }
 
   def hasDoubleBlanks(txt: String): Boolean = {
