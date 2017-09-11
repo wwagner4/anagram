@@ -184,6 +184,7 @@ class AnagramMorphLinear extends AnagramMorph {
       else if (txt.length == 1) txt
       else if (txt.head == ' ') txt.toList match {
         case a :: b :: rest => (b :: a :: rest).mkString
+        case _ => throw new IllegalArgumentException("should never come here")
       }
       else txt
     }
@@ -193,6 +194,7 @@ class AnagramMorphLinear extends AnagramMorph {
       else if (txt.length == 1) txt
       else if (txt.last == ' ') txt.toList.reverse match {
         case a :: b :: rest => (b :: a :: rest).reverse.mkString
+        case _ => throw new IllegalArgumentException("should never come here")
       }
       else txt
     }
