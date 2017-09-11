@@ -22,8 +22,8 @@ object Tryout extends App {
     Anagram("meaning_reverse", "the fine game of nil", "the meaning of life", 10),
     Anagram("schaffen", "wir schaffen das", "warne das schiff", 8),
     Anagram("zitrus", "zitronensaft", "fronteinsatz", 7),
-    Anagram("b_and_i1", "get nerd or begin third", "ingrid bernd together", 12),
-    Anagram("b_and_i2", "the bird get end or ring", "ingrid bernd together", 12),
+    Anagram("b_and_i_1", "get nerd or begin third", "ingrid bernd together", 12),
+    Anagram("b_and_i_2", "the bird get end or ring", "ingrid bernd together", 12),
   )
 
   val morpher = AnagramMorph.anagramMorphLinear
