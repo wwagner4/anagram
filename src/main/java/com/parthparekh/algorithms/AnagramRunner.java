@@ -2,7 +2,7 @@ package com.parthparekh.algorithms;
 
 import java.io.IOException;
 
-public class AnagramRunner {
+class AnagramRunner {
 
     public static void main(String... arg) throws IOException {
         String[] args = {

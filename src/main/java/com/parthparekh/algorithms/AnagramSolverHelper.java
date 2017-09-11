@@ -9,9 +9,10 @@ import java.util.Set;
 /**
  * this is a helper class holding all the static methods useful for solving anagrams
  *
- * @author: Parth Parekh
+ * @author : Parth Parekh
  */
-public class AnagramSolverHelper {
+@SuppressWarnings("unchecked")
+class AnagramSolverHelper {
 
     /*
       * sort the characters in word string
@@ -20,7 +21,7 @@ public class AnagramSolverHelper {
       *
       * @return string with sorted characters
       */
-    public static String sortWord(String wordString) {
+    static String sortWord(String wordString) {
         if (wordString.isEmpty()) {
             return null;
         }
@@ -61,7 +62,7 @@ public class AnagramSolverHelper {
       */
     private static List<Character> toList(char[] charArr) {
         assert charArr != null;
-        List<Character> charList = new ArrayList<Character>();
+        List<Character> charList = new ArrayList<>();
         for (char ch : charArr) {
             charList.add(ch);
         }
@@ -112,9 +113,7 @@ public class AnagramSolverHelper {
         }
         List<Character> charList1 = toList(charArr1);
         List<Character> charList2 = toList(charArr2);
-        for (Character charValue : charList1) {
-            charList2.remove(charValue);
-        }
+        charList2.removeAll(charList1);
         return charList2.isEmpty();
     }
 
@@ -131,16 +130,14 @@ public class AnagramSolverHelper {
     public static char[] setDifference(char[] charArr1, char[] charArr2) {
         List<Character> list1 = toList(charArr1);
         List<Character> list2 = toList(charArr2);
-        for (Character charObj : list2) {
-            list1.remove(charObj);
-        }
+        list1.removeAll(list2);
         return toCharArray(list1);
     }
 
     /*
       * function to perform set multiplication of all the sets of strings passed
       *
-      * @param setsArray - muliple sets to multiply (can be a set of strings array)
+      * @param setsArray - multiple sets to multiply (can be a set of strings array)
       *
       * @return returns set consisting of set of strings after cartesian product is applied
       */
@@ -153,9 +150,9 @@ public class AnagramSolverHelper {
 
     // recursive function to calculate the cartesian product of all the sets of strings passed
     private static Set<Set<String>> setMultiplication(int index, Set<String>... setsArray) {
-        Set<Set<String>> setsMultiplied = new HashSet<Set<String>>();
+        Set<Set<String>> setsMultiplied = new HashSet<>();
         if (index == setsArray.length) {
-            setsMultiplied.add(new HashSet<String>());
+            setsMultiplied.add(new HashSet<>());
         } else {
             for (String obj : setsArray[index]) {
                 for (Set<String> set : setMultiplication(index + 1, setsArray)) {

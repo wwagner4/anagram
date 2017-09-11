@@ -1,6 +1,6 @@
 package com.parthparekh.algorithms;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Unit test for SortedWordDictionary class
  *
- * @author: Parth Parekh
+ * @author : Parth Parekh
  */
 public class SortedWordDictionaryTest {
 

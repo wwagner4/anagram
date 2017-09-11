@@ -1,6 +1,6 @@
 package com.parthparekh.algorithms;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Unit test for AnagramSolver class
  *
- * @author: Parth Parekh
+ * @author : Parth Parekh
  */
 public class AnagramSolverTest {
 

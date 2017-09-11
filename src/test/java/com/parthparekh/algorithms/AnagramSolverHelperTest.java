@@ -1,6 +1,6 @@
 package com.parthparekh.algorithms;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -11,8 +11,9 @@ import java.util.Set;
 /**
  * Unit test for AnagramSolverHelper functions
  *
- * @author: Parth Parekh
+ * @author : Parth Parekh
  */
+@SuppressWarnings("unchecked")
 public class AnagramSolverHelperTest {
 
     @Test
@@ -43,15 +44,15 @@ public class AnagramSolverHelperTest {
 
     @Test
     public void setMultiplicationTest() {
-        Set<String> set1 = new HashSet<String>();
+        Set<String> set1 = new HashSet<>();
         set1.add("parth");
         set1.add("parekh");
 
-        Set<String> set2 = new HashSet<String>();
+        Set<String> set2 = new HashSet<>();
         set2.add("1");
         set2.add("2");
 
-        Set<String> set3 = new HashSet<String>();
+        Set<String> set3 = new HashSet<>();
         set3.add("a");
 
         Assert.assertEquals(4, AnagramSolverHelper.setMultiplication(set1, set2, set3).size());

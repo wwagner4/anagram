@@ -8,15 +8,15 @@ import java.util.Set;
 /**
  * This class will implement the logic to solve multi-word anagrams
  *
- * @author: Parth Parekh
+ * @author : Parth Parekh
  */
-public class AnagramSolver {
+class AnagramSolver {
 
     private int minWordSize = 3;
     private SortedWordDictionary sortedDictionary;
     private String dictionaryFilePath;
 
-    public AnagramSolver(String dictionaryFilePath) {
+    private AnagramSolver(String dictionaryFilePath) {
         assert !dictionaryFilePath.isEmpty();
         sortedDictionary = new SortedWordDictionary();
         this.dictionaryFilePath = dictionaryFilePath;
@@ -34,7 +34,7 @@ public class AnagramSolver {
 
         // remove all white space chars from string
         wordString = wordString.replaceAll("\\s", "");
-        Set<Set<String>> anagramsSet = new HashSet<Set<String>>();
+        Set<Set<String>> anagramsSet = new HashSet<>();
         // load dictionary for subset words
         sortedDictionary.loadDictionaryWithSubsets(dictionaryFilePath, wordString, minWordSize);
         List<String> keyList = sortedDictionary.getDictionaryKeyList();
@@ -44,9 +44,9 @@ public class AnagramSolver {
         for (int index = 0; index < keyList.size(); index++) {
             char[] charInventory = wordString.toCharArray();
             Set<Set<String>> dictWordAnagramsSet = findAnagrams(index, charInventory, keyList);
-            Set<Set<String>> tempAnagramSet = new HashSet<Set<String>>();
+            Set<Set<String>> tempAnagramSet = new HashSet<>();
             if (dictWordAnagramsSet != null && !dictWordAnagramsSet.isEmpty()) {
-                Set<Set<String>> mergeResult = null;
+                Set<Set<String>> mergeResult;
                 for (Set<String> anagramSet : dictWordAnagramsSet) {
                     mergeResult = mergeAnagramKeyWords(anagramSet);
                     tempAnagramSet.addAll(mergeResult);
@@ -77,8 +77,8 @@ public class AnagramSolver {
         char[] searchWordChars = searchWord.toCharArray();
         // this is where you find the anagrams for whole word
         if (AnagramSolverHelper.isEquivalent(searchWordChars, charInventory)) {
-            Set<Set<String>> anagramsSet = new HashSet<Set<String>>();
-            Set<String> anagramSet = new HashSet<String>();
+            Set<Set<String>> anagramsSet = new HashSet<>();
+            Set<String> anagramSet = new HashSet<>();
             anagramSet.add(searchWord);
             anagramsSet.add(anagramSet);
 
@@ -91,12 +91,14 @@ public class AnagramSolver {
             // word as it is subset of characters for the anagram search word
             char[] newCharInventory = AnagramSolverHelper.setDifference(charInventory, searchWordChars);
             if (newCharInventory.length >= minWordSize) {
-                Set<Set<String>> anagramsSet = new HashSet<Set<String>>();
+                Set<Set<String>> anagramsSet = new HashSet<>();
                 for (int index = dictionaryIndex + 1; index < keyList.size(); index++) {
                     Set<Set<String>> searchWordAnagramsKeysSet = findAnagrams(index, newCharInventory, keyList);
                     if (searchWordAnagramsKeysSet != null) {
                         Set<Set<String>> mergedSets = mergeWordToSets(searchWord, searchWordAnagramsKeysSet);
-                        anagramsSet.addAll(mergedSets);
+                        if (mergedSets != null) {
+                            anagramsSet.addAll(mergedSets);
+                        }
                     }
                 }
                 return anagramsSet.isEmpty() ? null : anagramsSet;
@@ -117,7 +119,7 @@ public class AnagramSolver {
         if (anagramKeySet == null) {
             throw new IllegalStateException("anagram keys set cannot be null");
         }
-        Set<Set<String>> anagramsSet = new HashSet<Set<String>>();
+        Set<Set<String>> anagramsSet = new HashSet<>();
         for (String word : anagramKeySet) {
             Set<String> anagramWordSet = sortedDictionary.findSingleWordAnagrams(word);
             anagramsSet.add(anagramWordSet);
@@ -134,7 +136,7 @@ public class AnagramSolver {
         if (sets == null) {
             return null;
         }
-        Set<Set<String>> mergedSets = new HashSet<Set<String>>();
+        Set<Set<String>> mergedSets = new HashSet<>();
         for (Set<String> set : sets) {
             if (set == null) {
                 throw new IllegalStateException("anagram keys set cannot be null");
@@ -157,6 +159,7 @@ public class AnagramSolver {
         System.out.println("");
     }
 
+    @SuppressWarnings("StringConcatenationInLoop")
     public static void main(String[] args) throws IOException {
         if (args.length < 3) {
             usage();

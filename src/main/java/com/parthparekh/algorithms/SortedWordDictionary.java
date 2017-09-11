@@ -15,12 +15,12 @@ import java.util.TreeSet;
 /*
  * data structure to store the dictionary of words with sorted keys
  *
- * @author: Parth Parekh
+ * @author : Parth Parekh
  */
-public class SortedWordDictionary {
+class SortedWordDictionary {
 
     // below map will store string with sorted characters as key and all the anagrams of that string as value
-    private final Map<String, Set<String>> sortedStringMap = new TreeMap<String, Set<String>>();
+    private final Map<String, Set<String>> sortedStringMap = new TreeMap<>();
     private boolean isDictionaryLoaded = false;
 
     /*
@@ -51,43 +51,38 @@ public class SortedWordDictionary {
             throw new IllegalArgumentException("file path invalid");
         }
 
-        try {
-            File file = new File(filePath);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file)));
-            String word;
-            while ((word = reader.readLine()) != null) {
-                assert word != null;
-                word = word.trim().toLowerCase();
-                String sortedWord = AnagramSolverHelper.sortWord(word);
-                if (sortedWord == null
-                        || sortedWord.isEmpty()
-                        || (wordString != null && !wordString.isEmpty() && (sortedWord
-                        .length() < minWordSize || !AnagramSolverHelper
-                        .isSubset(sortedWord.toCharArray(), wordString
-                                .replaceAll("\\s", "").toLowerCase()
-                                .toCharArray())))) {
-                    // don't add the word to dictionary if word is empty or if
-                    // word from word-list is not a subset of wordString or word
-                    // is less than minWordSize
-                    continue;
-                }
-                Set<String> wordSet = sortedStringMap.get(sortedWord);
-                if (wordSet != null) {
-                    // add word to the existing wordset
-                    wordSet.add(word);
-                } else {
-                    wordSet = new TreeSet<String>();
-                    wordSet.add(word);
-                    sortedStringMap.put(sortedWord, wordSet);
-                }
+        File file = new File(filePath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(file)));
+        String word;
+        while ((word = reader.readLine()) != null) {
+            word = word.trim().toLowerCase();
+            String sortedWord = AnagramSolverHelper.sortWord(word);
+            if (sortedWord == null
+                    || sortedWord.isEmpty()
+                    || (wordString != null && !wordString.isEmpty() && (sortedWord
+                    .length() < minWordSize || !AnagramSolverHelper
+                    .isSubset(sortedWord.toCharArray(), wordString
+                            .replaceAll("\\s", "").toLowerCase()
+                            .toCharArray())))) {
+                // don't add the word to dictionary if word is empty or if
+                // word from word-list is not a subset of wordString or word
+                // is less than minWordSize
+                continue;
             }
-
-            reader.close();
-            isDictionaryLoaded = true;
-        } catch (IOException ioException) {
-            throw ioException;
+            Set<String> wordSet = sortedStringMap.get(sortedWord);
+            if (wordSet != null) {
+                // add word to the existing wordset
+                wordSet.add(word);
+            } else {
+                wordSet = new TreeSet<>();
+                wordSet.add(word);
+                sortedStringMap.put(sortedWord, wordSet);
+            }
         }
+
+        reader.close();
+        isDictionaryLoaded = true;
     }
 
     /*
@@ -110,7 +105,7 @@ public class SortedWordDictionary {
             wordSet.add(wordString);
         } else {
             // add create new words set
-            wordSet = new TreeSet<String>();
+            wordSet = new TreeSet<>();
             wordSet.add(wordString);
             sortedStringMap.put(sortedWord, wordSet);
         }
@@ -145,8 +140,7 @@ public class SortedWordDictionary {
       * @return returns the list of all the keys
       */
     public List<String> getDictionaryKeyList() {
-        assert sortedStringMap != null;
-        return new ArrayList<String>(sortedStringMap.keySet());
+        return new ArrayList<>(sortedStringMap.keySet());
     }
 
     public boolean isDictionaryLoaded() {
