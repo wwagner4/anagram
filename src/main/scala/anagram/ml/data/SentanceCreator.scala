@@ -10,7 +10,7 @@ object SentanceCreator extends App {
 
 class SentanceCreator {
 
-  val splitter = BookSplitter()
+  private val splitter = BookSplitter
 
   def create(books: Seq[Book], len: Int): Stream[Seq[String]] = {
     splitter.sentances(books)

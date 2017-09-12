@@ -7,12 +7,20 @@ import scala.io.Source
 case class Book(
                  filename: String,
                  title: String,
-                 author: String
+                 author: String,
                )
 
 object BookSplitter {
 
   private val validChars: Seq[Char] = (32 :: 46 :: (65 to 90).toList ::: (97 to 122).toList).map(i => i.toChar)
+
+  val booksCommonSense = Seq(
+    Book("CommonSense.txt", "Common Sense", "Thomas Paine"),
+  )
+
+  val booksTwoLines = Seq(
+    Book("TwoLines.txt", "TwoLines", "Test"),
+  )
 
   val books = Seq(
     Book("ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
@@ -22,19 +30,12 @@ object BookSplitter {
     Book("ThePictureofDorianGray.txt", "The Picture of Dorian Gray", "Oscar Wilde"),
   )
 
-  def apply(): BookSplitter = new BookSplitter
-
-}
-
-
-class BookSplitter {
-
   def sentances(books: Seq[Book]): Stream[Seq[String]] = {
     books.toStream
       .map(bookToFile)
       .flatMap(file =>
         Source.fromFile(file, "UTF-8").iter.toStream
-          .map { case '\u000D' => ' ' case '-' => ' ' case any => any }
+          .map { case '\u000D' => ' ' case '\u000A' => ' ' case '-' => ' ' case any => any }
           .filter(BookSplitter.validChars.contains(_))
           .map(_.toLower)
           .foldLeft(Stream.empty[List[Char]])(splitSentances)
@@ -53,8 +54,8 @@ class BookSplitter {
 
   private def splitSentances(stream: Stream[List[Char]], char: Char): Stream[List[Char]] = stream match {
     case Stream.Empty => Stream(List(char))
-    case head #:: rest if char == '.' => List.empty[Char] #:: head.reverse #:: rest
-    case head #:: rest => (char :: head) #:: rest
+    case head #:: rest if char == '.' => List.empty[Char] #:: head #:: rest
+    case head #:: rest => (head :+ char) #:: rest
   }
 
 }
