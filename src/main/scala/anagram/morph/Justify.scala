@@ -1,8 +1,8 @@
-package anagram
+package anagram.morph
 
 import java.io.File
 
-import anagram.impl.JustifyImpl
+import anagram.morph.impl.JustifyImpl
 
 object Justify {
 

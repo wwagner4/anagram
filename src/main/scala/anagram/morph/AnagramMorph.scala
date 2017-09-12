@@ -1,6 +1,6 @@
-package anagram
+package anagram.morph
 
-import anagram.impl.{AnagramMorphJumbled, AnagramMorphLinear}
+import anagram.morph.impl.{AnagramMorphJumbled, AnagramMorphLinear}
 
 object AnagramMorph {
 

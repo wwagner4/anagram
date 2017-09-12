@@ -1,4 +1,4 @@
-package anagram
+package anagram.morph
 
 import java.io.File
 

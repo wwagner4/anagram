@@ -1,4 +1,4 @@
-package anagram.impl
+package anagram.morph.impl
 
 import org.scalatest.{FunSuite, MustMatchers}
 

@@ -1,11 +1,11 @@
-package anagram.impl
+package anagram.morph.impl
 
 import java.awt.{Color, Font, FontMetrics, Graphics2D, RenderingHints}
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
-import anagram.Justify
+import anagram.morph.Justify
 
 class JustifyImpl extends Justify {
 

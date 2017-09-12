@@ -1,6 +1,6 @@
-package anagram.impl
+package anagram.morph.impl
 
-import anagram.AnagramMorph
+import anagram.morph.AnagramMorph
 
 class AnagramMorphLinear extends AnagramMorph {
 
