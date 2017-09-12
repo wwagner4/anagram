@@ -19,9 +19,7 @@ public class AnagramSolverTest {
 
     @Before
     public void setUp() throws IOException {
-        String executionPath = System.getProperty("user.dir");
-        String fileSeparator = System.getProperty("file.separator");
-        String wordListPath = executionPath + fileSeparator + "wordlist" + fileSeparator + "wordlist.txt";
+        String wordListPath = WordListUtil.path();
         anagramSolver = new AnagramSolver(3, wordListPath);
     }
 

@@ -23,9 +23,7 @@ public class SortedWordDictionaryTest {
     }
 
     private void loadDictionary() throws IOException {
-        String executionPath = System.getProperty("user.dir");
-        String fileSeparator = System.getProperty("file.separator");
-        sortedWordDictionary.loadDictionary(executionPath + fileSeparator + "wordlist" + fileSeparator + "wordlist.txt");
+        sortedWordDictionary.loadDictionary(WordListUtil.path());
     }
 
     @Test
