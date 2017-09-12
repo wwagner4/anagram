@@ -22,7 +22,7 @@ class AnagramSolver {
         this.dictionaryFilePath = dictionaryFilePath;
     }
 
-    public AnagramSolver(int minWordSize, String dictionaryFilePath) {
+    AnagramSolver(int minWordSize, String dictionaryFilePath) {
         this(dictionaryFilePath);
         this.minWordSize = minWordSize;
     }
@@ -30,7 +30,7 @@ class AnagramSolver {
     /*
      * returns set of strings with all anagrams also prints the results on std out
      */
-    public Set<Set<String>> findAllAnagrams(String wordString) throws IOException {
+    Set<Set<String>> findAllAnagrams(String wordString) throws IOException {
 
         // remove all white space chars from string
         wordString = wordString.replaceAll("\\s", "");

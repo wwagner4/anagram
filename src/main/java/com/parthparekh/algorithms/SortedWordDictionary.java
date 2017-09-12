@@ -29,7 +29,7 @@ class SortedWordDictionary {
       *
       * @param filePath absolute file path of the wordlist (assuming it's in the classpath)
       */
-    public void loadDictionary(String filePath) throws IOException {
+    void loadDictionary(String filePath) throws IOException {
 
         loadDictionaryWithSubsets(filePath, null, 0);
     }
@@ -44,7 +44,7 @@ class SortedWordDictionary {
       *
       * @param minWordSize minimum word size to load from dictionary
       */
-    public void loadDictionaryWithSubsets(String filePath, String wordString,
+    void loadDictionaryWithSubsets(String filePath, String wordString,
                                           int minWordSize) throws IOException {
 
         if (filePath == null || filePath.isEmpty()) {
@@ -92,7 +92,7 @@ class SortedWordDictionary {
       *
       * @return true if the word is successfully added, false otherwise
       */
-    public boolean addWord(String wordString) {
+    boolean addWord(String wordString) {
 
         if (wordString.isEmpty()) {
             return false;
@@ -120,7 +120,7 @@ class SortedWordDictionary {
       *
       * @return set of single word anagrams for given string
       */
-    public Set<String> findSingleWordAnagrams(String wordString) {
+    Set<String> findSingleWordAnagrams(String wordString) {
 
         if (!isDictionaryLoaded) {
             throw new IllegalStateException("dictionary not loaded");
@@ -139,11 +139,11 @@ class SortedWordDictionary {
       *
       * @return returns the list of all the keys
       */
-    public List<String> getDictionaryKeyList() {
+    List<String> getDictionaryKeyList() {
         return new ArrayList<>(sortedStringMap.keySet());
     }
 
-    public boolean isDictionaryLoaded() {
+    boolean isDictionaryLoaded() {
         return isDictionaryLoaded;
     }
 
