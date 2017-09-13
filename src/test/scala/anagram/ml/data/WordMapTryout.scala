@@ -7,5 +7,6 @@ object WordMapTryout extends App {
   println(is.mkString("\n"))
   println(s"-- size:${is.size}")
 
+  WordMap.save("a", si)
 
 }
