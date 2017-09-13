@@ -15,21 +15,6 @@ object WordMap {
     (is.toMap, si.toMap)
   }
 
-  def getCreateWorkDir: Path = {
-    val dirWork: Path = Paths.get(System.getProperty("user.home"), "anagram", "work")
-    if (!Files.exists(dirWork)) {
-      Files.createDirectories(dirWork)
-    }
-    dirWork
-  }
-
-  def save(fileName: String, f: BufferedWriter => Unit): Unit = {
-    val dirWork: Path = getCreateWorkDir
-    val file = dirWork.resolve(fileName)
-    val wr: BufferedWriter = Files.newBufferedWriter(file)
-    try f(wr) finally wr.close()
-  }
-
   def writeMap(intValueMap: Map[String, Int])(wr: BufferedWriter): Unit = {
     for ((s, i) <- intValueMap.iterator) {
       wr.write(s"$s $i\n")
