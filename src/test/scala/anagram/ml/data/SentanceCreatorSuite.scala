@@ -12,7 +12,7 @@ class SentanceCreatorSuite extends FunSuite with MustMatchers {
 
   for ((sent, len) <- equalLenData) {
     test(s"create sentances from equal length $sent") {
-      val re = new SentanceCreator().slideSentances(sent, len)
+      val re = SentanceCreator.slideSentances(sent, len)
       re.size mustBe 1
       re(0).size mustBe len
       re(0) mustBe sent
@@ -27,7 +27,7 @@ class SentanceCreatorSuite extends FunSuite with MustMatchers {
 
   for ((sent, len) <- plusOneLenData) {
     test(s"create sentances from plus one length $sent") {
-      val re = new SentanceCreator().slideSentances(sent, len)
+      val re = SentanceCreator.slideSentances(sent, len)
       re.size  mustBe 2
       for (i <- 0 to 1) {
         re(i).size mustBe len
@@ -36,7 +36,7 @@ class SentanceCreatorSuite extends FunSuite with MustMatchers {
   }
 
   test(s"create sentances a b c d 2") {
-    val re = new SentanceCreator().slideSentances(Seq("a", "b", "c", "d"), 2)
+    val re = SentanceCreator.slideSentances(Seq("a", "b", "c", "d"), 2)
     re.size mustBe 3
     re(0) mustBe Seq("a", "b")
     re(1) mustBe Seq("b", "c")

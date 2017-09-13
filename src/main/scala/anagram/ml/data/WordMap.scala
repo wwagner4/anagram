@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import java.nio.file.{Files, Path, Paths}
+
 object WordMap {
 
   def createWordMap(books: Seq[Book]): (Map[Int, String], Map[String, Int]) = {
@@ -12,5 +14,19 @@ object WordMap {
     (is.toMap, si.toMap)
   }
 
+  def getCreateWorkDir(): Path = {
+    val dirWork: Path = Paths.get(System.getProperty("user.home"), "anagram", "work")
+    if (!Files.exists(dirWork)) {
+      Files.createDirectories(dirWork)
+    }
+    dirWork
+  }
+
+  def save(id: String, intValueMap: Map[String, Int]): Unit = {
+    val dirWork: Path = getCreateWorkDir()
+//    dirWork.
+//    Files.newBufferedWriter()
+    ???
+  }
 
 }

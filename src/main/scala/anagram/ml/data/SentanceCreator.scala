@@ -1,14 +1,6 @@
 package anagram.ml.data
 
-
-object SentanceCreator extends App {
-  val x = SentanceCreator().create(BookSplitter.books, 4)
-  println(x.map(_.mkString(" ")).mkString("\n"))
-
-  def apply() = new SentanceCreator
-}
-
-class SentanceCreator {
+object SentanceCreator {
 
   private val splitter = BookSplitter
 
