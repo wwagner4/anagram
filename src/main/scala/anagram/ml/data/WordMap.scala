@@ -1,5 +1,6 @@
 package anagram.ml.data
 
+import java.io.BufferedWriter
 import java.nio.file.{Files, Path, Paths}
 
 object WordMap {
@@ -10,7 +11,7 @@ object WordMap {
       .toSet
       .toSeq
     val si: Seq[(String, Int)] = words.zipWithIndex
-    val is = si.map{case (a, b) => (b, a)}
+    val is = si.map { case (a, b) => (b, a) }
     (is.toMap, si.toMap)
   }
 
@@ -22,17 +23,16 @@ object WordMap {
     dirWork
   }
 
-  def save(id: String, intValueMap: Map[String, Int]): Unit = {
+  def save(fileName: String, f: BufferedWriter => Unit): Unit = {
     val dirWork: Path = getCreateWorkDir
-    val file = dirWork.resolve(s"wordmap_$id.txt")
-    println(s"writing to ${file.getFileName}")
-    val wr = Files.newBufferedWriter(file)
-    try {
-      for ((s, i) <- intValueMap.iterator) {
-        wr.write(s"$s $i\n")
-      }
-    } finally {
-      wr.close()
+    val file = dirWork.resolve(fileName)
+    val wr: BufferedWriter = Files.newBufferedWriter(file)
+    try f(wr) finally wr.close()
+  }
+
+  def writeMap(intValueMap: Map[String, Int])(wr: BufferedWriter): Unit = {
+    for ((s, i) <- intValueMap.iterator) {
+      wr.write(s"$s $i\n")
     }
   }
 
