@@ -1,10 +1,12 @@
 package anagram.ml.data
 
+import java.net.URI
+
 object SentanceCreator {
 
   private val splitter = BookSplitter
 
-  def create(books: Seq[Book], len: Int): Stream[Seq[String]] = {
+  def create(books: Seq[URI], len: Int): Stream[Seq[String]] = {
     splitter.sentances(books)
       .filter(_.size >= len)
       .flatMap(slideSentances(_, len))

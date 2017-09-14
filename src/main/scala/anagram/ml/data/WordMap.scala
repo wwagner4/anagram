@@ -1,10 +1,11 @@
 package anagram.ml.data
 
 import java.io.BufferedWriter
+import java.net.URI
 
 object WordMap {
 
-  def createWordMap(books: Seq[Book]): (Map[Int, String], Map[String, Int]) = {
+  def createWordMap(books: Seq[URI]): (Map[Int, String], Map[String, Int]) = {
     val words: Seq[String] = BookSplitter.sentances(books)
       .flatten
       .toSet

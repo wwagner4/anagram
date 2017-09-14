@@ -1,32 +1,28 @@
 package anagram.ml.data
 
 import java.io.File
+import java.net.URI
 
 import scala.io.Source
 
 object BookSplitter {
 
+  val booksBig = Seq(
+    "books/ATaleofTwoCities.txt",
+    "books/CommonSense.txt",
+    "books/StoriesbyEnglishAuthors.txt",
+    "books/TheAdventuresofTomSawyer.txt",
+    "books/ThePictureofDorianGray.txt",
+  )
+
+  val booksSmall = Seq(
+    "books/TwoLines.txt",
+  )
+
   private val validChars: Seq[Char] = (32 :: 46 :: (65 to 90).toList ::: (97 to 122).toList).map(i => i.toChar)
 
-  val booksCommonSense = Seq(
-    Book("CommonSense.txt", "Common Sense", "Thomas Paine"),
-  )
-
-  val booksTwoLines = Seq(
-    Book("TwoLines.txt", "TwoLines", "Test"),
-  )
-
-  val booksEn01 = Seq(
-    Book("ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
-    Book("CommonSense.txt", "Common Sense", "Thomas Paine"),
-    Book("StoriesbyEnglishAuthors.txt", "Stories by English Authors", "Various"),
-    Book("TheAdventuresofTomSawyer.txt", "The Adventures of Tom Sawyer", "Mark Twain"),
-    Book("ThePictureofDorianGray.txt", "The Picture of Dorian Gray", "Oscar Wilde"),
-  )
-
-  def sentances(books: Seq[Book]): Stream[Seq[String]] = {
+  def sentances(books: Seq[URI]): Stream[Seq[String]] = {
     books.toStream
-      .map(bookToFile)
       .flatMap(file =>
         Source.fromFile(file, "UTF-8").iter.toStream
           // convert all word separating characters to BLANK. (CR, LF, -)
@@ -39,12 +35,6 @@ object BookSplitter {
             .filter(!_.isEmpty))
           .filter(_.size > 1)
       )
-  }
-
-  private def bookToFile(book: Book): File = {
-    val resName = s"books/${book.filename}"
-    val uri = getClass.getClassLoader.getResource(resName).toURI
-    new File(uri)
   }
 
   private def splitSentances(stream: Stream[List[Char]], char: Char): Stream[List[Char]] = stream match {
