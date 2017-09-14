@@ -24,4 +24,12 @@ object IoUtil {
     save(getCreateWorkDir, filename, f)
   }
 
+  def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
+    val dir = IoUtil.getCreateWorkDir
+    val fileName = s"anagram_$id.txt"
+    val p = dir.resolve(fileName)
+    val iter = scala.io.Source.fromFile(p.toFile).getLines()
+    f(iter)
+  }
+
 }

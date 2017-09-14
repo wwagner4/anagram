@@ -22,7 +22,7 @@ object BookSplitter {
     Book("TwoLines.txt", "TwoLines", "Test"),
   )
 
-  val books = Seq(
+  val booksEn01 = Seq(
     Book("ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
     Book("CommonSense.txt", "Common Sense", "Thomas Paine"),
     Book("StoriesbyEnglishAuthors.txt", "Stories by English Authors", "Various"),
@@ -35,8 +35,9 @@ object BookSplitter {
       .map(bookToFile)
       .flatMap(file =>
         Source.fromFile(file, "UTF-8").iter.toStream
+          // convert all word separating characters to BLANK. (CR, LF, -)
           .map { case '\u000D' => ' ' case '\u000A' => ' ' case '-' => ' ' case any => any }
-          .filter(BookSplitter.validChars.contains(_))
+          .filter(validChars.contains(_))
           .map(_.toLower)
           .foldLeft(Stream.empty[List[Char]])(splitSentances)
           .map(_.mkString.split("\\s")

@@ -1,7 +1,6 @@
 package anagram.ml.data
 
 import java.io.BufferedWriter
-import java.nio.file.{Files, Path, Paths}
 
 object WordMap {
 
@@ -19,6 +18,16 @@ object WordMap {
     for ((s, i) <- intValueMap.iterator) {
       wr.write(s"$s $i\n")
     }
+  }
+
+  def loadMap(lines: Iterator[String]): Map[String, Int] = {
+
+    def lineToTuple(line: String): (String, Int) = {
+      val sp = line.split("\\s")
+      (sp(0), sp(1).toInt)
+    }
+
+    lines.toStream.map(lineToTuple).toMap
   }
 
 }
