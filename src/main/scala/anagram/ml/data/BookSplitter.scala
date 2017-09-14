@@ -4,12 +4,6 @@ import java.io.File
 
 import scala.io.Source
 
-case class Book(
-                 filename: String,
-                 title: String,
-                 author: String,
-               )
-
 object BookSplitter {
 
   private val validChars: Seq[Char] = (32 :: 46 :: (65 to 90).toList ::: (97 to 122).toList).map(i => i.toChar)
