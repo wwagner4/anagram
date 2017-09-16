@@ -1,6 +1,10 @@
 package anagram.ml.data
 
 import java.io.BufferedWriter
+import java.nio.file.Files
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 case class Book(
                  filename: String,
@@ -17,6 +21,8 @@ case class BookCollection(
 
 
 object LearningData {
+
+  private val log = LoggerFactory.getLogger("LearningData")
 
   val booksEn01 = BookCollection(
     id = "en01",
@@ -44,6 +50,7 @@ object LearningData {
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
     val (_, si) = WordMap.createWordMap(uris)
     IoUtil.saveTxtToWorkDir(bookCollection.id, WordMap.writeMap(si)(_))
+    log.info("created word map at workdir " + IoUtil.getCreateWorkDir)
     for (len <- bookCollection.sentanceLength) {
       val sent = SentanceCreator.create(uris, len)
       IoUtil.saveTxtToWorkDir(s"${bookCollection.id}_$len", writeSentances(sent)(_))
