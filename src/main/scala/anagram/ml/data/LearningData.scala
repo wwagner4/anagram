@@ -16,7 +16,7 @@ case class BookCollection(
                          )
 
 
-object SentanceLearningData {
+object LearningData {
 
   val booksEn01 = BookCollection(
     id = "en01",
@@ -42,7 +42,7 @@ object SentanceLearningData {
 
   def createData(bookCollection: BookCollection): Unit = {
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
-    val (is, si) = WordMap.createWordMap(uris)
+    val (_, si) = WordMap.createWordMap(uris)
     IoUtil.saveTxtToWorkDir(bookCollection.id, WordMap.writeMap(si)(_))
     for (len <- bookCollection.sentanceLength) {
       val sent = SentanceCreator.create(uris, len)
