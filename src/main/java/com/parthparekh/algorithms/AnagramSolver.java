@@ -52,12 +52,6 @@ public class AnagramSolver {
                     mergeResult = mergeAnagramKeyWords(anagramSet);
                     tempAnagramSet.addAll(mergeResult);
                 }
-                System.out.println("");
-                System.out.println("\t(" + sortedDictionary.findSingleWordAnagrams(keyList.get(index)).toString()
-                        .replace(",", "") + ")");
-                for (Set<String> anagramSet : tempAnagramSet) {
-                    System.out.println("" + ++count + ".\t" + anagramSet.toString().replace(",", ""));
-                }
                 anagramsSet.addAll(tempAnagramSet);
             }
         }
@@ -147,17 +141,6 @@ public class AnagramSolver {
         }
 
         return mergedSets;
-    }
-
-    /*
-     * prints usage instructions
-     */
-    private static void usage() {
-
-        System.out.println("Usage:");
-        System.out.println("\tjava -cp AnagramSolver.jar com.parthparekh.algorithms.AnagramSolver " +
-                                    "<absolute_path_to_wordlist_file> <min_word_length> <words_for_anagram_search>");
-        System.out.println("");
     }
 
 }
