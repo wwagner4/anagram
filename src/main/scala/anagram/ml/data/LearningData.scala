@@ -3,6 +3,7 @@ package anagram.ml.data
 import java.io.BufferedWriter
 import java.util.Locale
 
+import anagram.common.IoUtil
 import org.slf4j.LoggerFactory
 
 import scala.util.Random
@@ -38,8 +39,10 @@ object LearningData {
   def createData(bookCollection: BookCollection): Unit = {
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
     val wm: WordMapper = WordMap.createWordMap(uris)
+    val dictPath = IoUtil.saveTxtToWorkDir(s"${bookCollection.id}_dict", wm.writeDict)
+    log.info("created dictionary in " + dictPath)
     val wmPath = IoUtil.saveTxtToWorkDir(s"${bookCollection.id}_map", wm.writeMap)
-    log.info("created word map at workdir " + wmPath)
+    log.info("created word map in " + wmPath)
     for (len <- bookCollection.sentanceLength) {
       val sent = SentanceCreator.create(uris, len)
       val ldPath = IoUtil.saveTxtToWorkDir(s"${bookCollection.id}_data_$len", writeSentances(sent, wm)(_))

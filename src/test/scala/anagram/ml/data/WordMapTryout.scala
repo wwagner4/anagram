@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import anagram.common.IoUtil
+
 object WordMapTryout extends App {
 
   val id = "tryout_twoLines"

@@ -1,5 +1,6 @@
 package anagram.ml.data
 
+import anagram.common.IoUtil
 import org.scalatest.{FunSuite, MustMatchers}
 
 class BookSplitterSuite extends FunSuite with MustMatchers {

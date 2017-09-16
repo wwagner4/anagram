@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import anagram.common.IoUtil
+
 object SentanceCreatorTryout extends App {
 
   val uris = IoUtil.uris(BookSplitter.booksBig)

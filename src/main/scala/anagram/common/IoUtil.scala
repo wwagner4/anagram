@@ -1,4 +1,4 @@
-package anagram.ml.data
+package anagram.common
 
 import java.io.BufferedWriter
 import java.net.URI
@@ -27,11 +27,15 @@ object IoUtil {
   }
 
   def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
-    val dir = IoUtil.getCreateWorkDir
-    val fileName = s"anagram_$id.txt"
-    val p = dir.resolve(fileName)
+    val p: Path = getTxtFilePathFromWorkDir(id)
     val iter = scala.io.Source.fromFile(p.toFile).getLines()
     f(iter)
+  }
+
+  def getTxtFilePathFromWorkDir(id: String): Path = {
+    val dir = IoUtil.getCreateWorkDir
+    val fileName = s"anagram_$id.txt"
+    dir.resolve(fileName)
   }
 
   def uris(res: Seq[String]): Seq[URI] = {

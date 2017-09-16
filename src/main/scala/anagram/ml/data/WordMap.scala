@@ -13,6 +13,8 @@ trait WordMapper {
 
   def writeMap(wr: BufferedWriter): Unit
 
+  def writeDict(wr: BufferedWriter): Unit
+
   def size: Int
 
   def randomWord: String
@@ -52,6 +54,13 @@ object WordMap {
           wr.write(s"$s $i\n")
         }
       }
+
+      def writeDict(wr: BufferedWriter): Unit = {
+        for (word <- isMap.values.toList.sorted.iterator) {
+          wr.write(s"$word\n")
+        }
+      }
+
     }
 
   }
