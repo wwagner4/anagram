@@ -28,7 +28,7 @@ object LearningData {
 
   val booksEn01 = BookCollection(
     id = "en01",
-    desc = "English Books Nr. 01",
+    desc = "Collection of English Books #1",
     sentanceLength = 2 to 7,
     books = Seq(
       Book("books/ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
@@ -97,7 +97,8 @@ object LearningData {
     ratings.flatMap(r => Seq.fill(5) {
       val numEx =  numExchange(sent.size, r)
       val sentEx: Seq[String] = exchange(sent, numEx, wm)
-      val sentRated: Seq[String] = sentEx :+ "%5d".formatLocal(Locale.ENGLISH, r)
+      val sentNum = sentEx.map(w => f(wm.toNum(w)))
+      val sentRated: Seq[String] = sentNum :+ f(r)
       sentRated
     })
   }
@@ -112,5 +113,7 @@ object LearningData {
     sb.append("%30s: %s%n".format("Sentance Lengths", bookCollection.sentanceLength.mkString(", ")))
     sb.toString()
   }
+
+  def f(value: Int): String = "%5d".formatLocal(Locale.ENGLISH, value)
 
 }
