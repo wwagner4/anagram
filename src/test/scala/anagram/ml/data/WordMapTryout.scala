@@ -5,12 +5,12 @@ object WordMapTryout extends App {
   val id = "tryout_twoLines"
   val uris = IoUtil.uris(BookSplitter.booksSmall)
 
-  val (is, si) = WordMap.createWordMap(uris)
+  val wm = WordMap.createWordMap(uris)
 
   //println(is.mkString("\n"))
-  println(s"-- size:${is.size}")
+  println(s"-- size:${wm.size}")
 
-  IoUtil.saveTxtToWorkDir(id, WordMap.writeMap(si)(_))
+  IoUtil.saveTxtToWorkDir(id, wm.writeMap)
 
 
   println("-- a")
