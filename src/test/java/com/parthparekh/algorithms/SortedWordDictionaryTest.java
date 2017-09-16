@@ -23,7 +23,7 @@ public class SortedWordDictionaryTest {
     }
 
     private void loadDictionary() throws IOException {
-        sortedWordDictionary.loadDictionary(WordListUtil.path());
+        sortedWordDictionary.loadDictionary(WordListUtil.file());
     }
 
     @Test

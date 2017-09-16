@@ -6,14 +6,13 @@ import java.net.URL;
 
 class WordListUtil {
 
-    static String path() {
+    static File file() {
         try {
             URL res = WordListUtil.class.getClassLoader().getResource("wordlist/wordlist.txt");
             if (res == null) {
                 throw new IllegalStateException("Resource not found");
             }
-            File file = new File(res.toURI());
-            return file.getAbsolutePath();
+            return new File(res.toURI());
         } catch (URISyntaxException e) {
             throw new IllegalStateException(e);
         }

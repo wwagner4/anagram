@@ -1,5 +1,6 @@
 package com.parthparekh.algorithms;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -10,33 +11,33 @@ import java.util.Set;
  *
  * @author : Parth Parekh
  */
-class AnagramSolver {
+public class AnagramSolver {
 
     private int minWordSize = 3;
     private SortedWordDictionary sortedDictionary;
-    private String dictionaryFilePath;
+    private File dictionaryFile;
 
-    private AnagramSolver(String dictionaryFilePath) {
-        assert !dictionaryFilePath.isEmpty();
+    private AnagramSolver(File dictionaryFile) {
+        assert !dictionaryFile.exists();
         sortedDictionary = new SortedWordDictionary();
-        this.dictionaryFilePath = dictionaryFilePath;
+        this.dictionaryFile = dictionaryFile;
     }
 
-    AnagramSolver(int minWordSize, String dictionaryFilePath) {
-        this(dictionaryFilePath);
+    public AnagramSolver(int minWordSize, File dictionaryFile) {
+        this(dictionaryFile);
         this.minWordSize = minWordSize;
     }
 
     /*
      * returns set of strings with all anagrams also prints the results on std out
      */
-    Set<Set<String>> findAllAnagrams(String wordString) throws IOException {
+    public Set<Set<String>> findAllAnagrams(String wordString) throws IOException {
 
         // remove all white space chars from string
         wordString = wordString.replaceAll("\\s", "");
         Set<Set<String>> anagramsSet = new HashSet<>();
         // load dictionary for subset words
-        sortedDictionary.loadDictionaryWithSubsets(dictionaryFilePath, wordString, minWordSize);
+        sortedDictionary.loadDictionaryWithSubsets(dictionaryFile, wordString, minWordSize);
         List<String> keyList = sortedDictionary.getDictionaryKeyList();
 
         int count = 0;
@@ -159,34 +160,4 @@ class AnagramSolver {
         System.out.println("");
     }
 
-    @SuppressWarnings("StringConcatenationInLoop")
-    public static void run(String[] args) throws IOException {
-        if (args.length < 3) {
-            usage();
-            System.exit(1);
-        }
-        String wordlistPath = args[0];
-        assert !wordlistPath.isEmpty();
-        Integer minWordLength = Integer.parseInt(args[1]);
-        if (minWordLength <= 0) {
-            // defaulting it to 3
-            minWordLength = 3;
-        }
-        AnagramSolver anagramSolver = new AnagramSolver(minWordLength, wordlistPath);
-        String anagramWords = "";
-        for (int index = 2; index < args.length; index++) {
-            anagramWords += args[index];
-            anagramWords += " ";
-        }
-        System.out.println("All the anagrams for \"" + anagramWords + "\" are: ");
-        System.out.println("");
-
-        Set<Set<String>> anagrams = anagramSolver.findAllAnagrams(anagramWords);
-        System.out.println("");
-        if (anagrams == null || anagrams.isEmpty()) {
-            System.out.println("no anagrams found..");
-        } else {
-            System.out.println("Total " + anagrams.size() + " anagrams found");
-        }
-    }
 }

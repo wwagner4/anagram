@@ -29,9 +29,9 @@ class SortedWordDictionary {
       *
       * @param filePath absolute file path of the wordlist (assuming it's in the classpath)
       */
-    void loadDictionary(String filePath) throws IOException {
+    void loadDictionary(File file) throws IOException {
 
-        loadDictionaryWithSubsets(filePath, null, 0);
+        loadDictionaryWithSubsets(file, null, 0);
     }
 
     /*
@@ -44,14 +44,13 @@ class SortedWordDictionary {
       *
       * @param minWordSize minimum word size to load from dictionary
       */
-    void loadDictionaryWithSubsets(String filePath, String wordString,
+    void loadDictionaryWithSubsets(File file, String wordString,
                                           int minWordSize) throws IOException {
 
-        if (filePath == null || filePath.isEmpty()) {
-            throw new IllegalArgumentException("file path invalid");
+        if (!file.exists()) {
+            throw new IllegalArgumentException("file path invalid " + file);
         }
 
-        File file = new File(filePath);
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(file)));
         String word;

@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -19,8 +20,8 @@ public class AnagramSolverTest {
 
     @Before
     public void setUp() throws IOException {
-        String wordListPath = WordListUtil.path();
-        anagramSolver = new AnagramSolver(3, wordListPath);
+        File f = WordListUtil.file();
+        anagramSolver = new AnagramSolver(3, f);
     }
 
     @Test
