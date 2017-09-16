@@ -14,13 +14,14 @@ object IoUtil {
     dirWork
   }
 
-  def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Unit = {
+  def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
     val file = dir.resolve(fileName)
     val wr: BufferedWriter = Files.newBufferedWriter(file)
     try f(wr) finally wr.close()
+    file
   }
 
-  def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Unit = {
+  def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
     val filename = s"anagram_$id.txt"
     save(getCreateWorkDir, filename, f)
   }
