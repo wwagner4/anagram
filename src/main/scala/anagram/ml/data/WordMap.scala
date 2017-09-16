@@ -3,6 +3,8 @@ package anagram.ml.data
 import java.io.BufferedWriter
 import java.net.URI
 
+import scala.util.Random
+
 trait WordMapper {
 
   def toNum(word: String): Int
@@ -13,9 +15,13 @@ trait WordMapper {
 
   def size: Int
 
+  def randomWord: String
+
 }
 
 object WordMap {
+
+  private val ran = Random
 
   def createWordMap(books: Seq[URI]): WordMapper = {
     val words: Seq[String] = BookSplitter.sentances(books)
@@ -34,7 +40,12 @@ object WordMap {
 
       def toWord(num: Int): String = isMap(num)
 
-      def size: Int = siMap.size
+      lazy val size: Int = siMap.size
+
+      def randomWord: String = {
+        val i = ran.nextInt(size)
+        isMap(i)
+      }
 
       def writeMap(wr: BufferedWriter): Unit = {
         for ((s, i) <- isMap.iterator) {

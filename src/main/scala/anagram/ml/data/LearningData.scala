@@ -50,20 +50,20 @@ object LearningData {
 
   def createData(bookCollection: BookCollection): Unit = {
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
-    val wm = WordMap.createWordMap(uris)
+    val wm: WordMapper = WordMap.createWordMap(uris)
     val wmPath = IoUtil.saveTxtToWorkDir(s"${bookCollection.id}_map", wm.writeMap)
     log.info("created word map at workdir " + wmPath)
     for (len <- bookCollection.sentanceLength) {
       val sent = SentanceCreator.create(uris, len)
-      val ldPath = IoUtil.saveTxtToWorkDir(s"${bookCollection.id}_data_$len", writeSentances(sent)(_))
+      val ldPath = IoUtil.saveTxtToWorkDir(s"${bookCollection.id}_data_$len", writeSentances(sent, wm)(_))
       log.info("created learning data in " + ldPath)
     }
     log.info("Created learning data for book collection:\n" + asString(bookCollection))
   }
 
-  def writeSentances(sentances: Stream[Seq[String]])(wr: BufferedWriter): Unit = {
+  def writeSentances(sentances: Stream[Seq[String]], wm: WordMapper)(wr: BufferedWriter): Unit = {
     for (sent <- sentances) {
-      for (rated <- polluteAndRateSentance(sent)) {
+      for (rated <- polluteAndRateSentance(sent, wm)) {
         writeSentance(rated)(wr)
       }
     }
@@ -84,19 +84,19 @@ object LearningData {
     else re
   }
 
-  def exchange(sent: Seq[String], numEx: Int): Seq[String] = {
+  def exchange(sent: Seq[String], numEx: Int,wm: WordMapper): Seq[String] = {
     val idx = ran.shuffle(sent.indices.toList).take(numEx)
     for ((w, i) <- sent.zipWithIndex) yield {
-      if (idx.contains(i)) "xxx"
+      if (idx.contains(i)) wm.randomWord
       else w
     }
   }
 
-  def polluteAndRateSentance(sent: Seq[String]): Seq[Seq[String]] = {
+  def polluteAndRateSentance(sent: Seq[String], wm: WordMapper): Seq[Seq[String]] = {
     val ratings = Seq(100, 75, 50, 25, 0)
     ratings.flatMap(r => Seq.fill(5) {
       val numEx =  numExchange(sent.size, r)
-      val sentEx: Seq[String] = exchange(sent, numEx)
+      val sentEx: Seq[String] = exchange(sent, numEx, wm)
       val sentRated: Seq[String] = sentEx :+ "%5d".formatLocal(Locale.ENGLISH, r)
       sentRated
     })
