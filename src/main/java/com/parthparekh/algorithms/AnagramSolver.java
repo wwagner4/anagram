@@ -40,7 +40,6 @@ public class AnagramSolver {
         sortedDictionary.loadDictionaryWithSubsets(dictionaryFile, wordString, minWordSize);
         List<String> keyList = sortedDictionary.getDictionaryKeyList();
 
-        int count = 0;
         // check for all the words in key list for anagrams
         for (int index = 0; index < keyList.size(); index++) {
             char[] charInventory = wordString.toCharArray();
