@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * This class will implement the logic to solve multi-word anagrams
@@ -31,7 +32,7 @@ public class AnagramSolver {
     /*
      * returns set of strings with all anagrams also prints the results on std out
      */
-    public Set<Set<String>> findAllAnagrams(String wordString) throws IOException {
+    public Stream<Set<String>> findAllAnagrams(String wordString) throws IOException {
 
         // remove all white space chars from string
         wordString = wordString.replaceAll("\\s", "");
@@ -55,7 +56,7 @@ public class AnagramSolver {
             }
         }
 
-        return anagramsSet;
+        return anagramsSet.stream();
     }
 
 

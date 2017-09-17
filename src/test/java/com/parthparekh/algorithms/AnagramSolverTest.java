@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
+import java.util.stream.Stream;
 
 
 /**
@@ -26,8 +27,8 @@ public class AnagramSolverTest {
 
     @Test
     public void findAnagramsTest() throws IOException {
-        Set<Set<String>> anagrams = anagramSolver.findAllAnagrams("silent");
+        Stream<Set<String>> anagrams = anagramSolver.findAllAnagrams("silent");
         Assert.assertNotNull(anagrams);
-        Assert.assertEquals(10, anagrams.size());
+        Assert.assertEquals(10, anagrams.toArray().length);
     }
 }
