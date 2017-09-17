@@ -18,7 +18,7 @@ public class AnagramSolver {
     private File dictionaryFile;
 
     private AnagramSolver(File dictionaryFile) {
-        assert !dictionaryFile.exists();
+        assert dictionaryFile.exists();
         sortedDictionary = new SortedWordDictionary();
         this.dictionaryFile = dictionaryFile;
     }
