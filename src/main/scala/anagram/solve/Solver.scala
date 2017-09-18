@@ -13,7 +13,6 @@ object Solver {
     val solver = new AnagramSolver(3, dict.toFile)
 
     solver.findAllAnagrams(src.toLowerCase)
-      .iterator()
       .asScala
       .toStream.map(_.asScala.toList)
       .flatMap(_.permutations)

@@ -3,6 +3,7 @@ package com.parthparekh.algorithms;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ public class AnagramSolver {
     /*
      * returns set of strings with all anagrams also prints the results on std out
      */
-    public Stream<Set<String>> findAllAnagrams(String wordString) throws IOException {
+    public Iterator<Set<String>> findAllAnagrams(String wordString) throws IOException {
 
         // remove all white space chars from string
         wordString = wordString.replaceAll("\\s", "");
@@ -56,7 +57,7 @@ public class AnagramSolver {
             }
         }
 
-        return anagramsSet.stream();
+        return anagramsSet.iterator();
     }
 
 

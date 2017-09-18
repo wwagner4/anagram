@@ -6,8 +6,12 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 
 /**
@@ -27,8 +31,12 @@ public class AnagramSolverTest {
 
     @Test
     public void findAnagramsTest() throws IOException {
-        Stream<Set<String>> anagrams = anagramSolver.findAllAnagrams("silent");
+        Iterator<Set<String>> anagrams = anagramSolver.findAllAnagrams("silent");
+        List<Set<String>> sentances = new ArrayList<>();
+        while(anagrams.hasNext()) {
+            sentances.add(anagrams.next());
+        }
         Assert.assertNotNull(anagrams);
-        Assert.assertEquals(10, anagrams.toArray().length);
+        Assert.assertEquals(11, sentances.size());
     }
 }
