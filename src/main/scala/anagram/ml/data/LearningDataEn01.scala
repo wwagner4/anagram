@@ -2,7 +2,7 @@ package anagram.ml.data
 
 object LearningDataEn01 extends App {
 
-  val booksEn01 = BookCollection(
+  val books = BookCollection(
     id = "en01",
     desc = "Collection of English Books #1",
     sentanceLength = 2 to 7,
@@ -15,6 +15,6 @@ object LearningDataEn01 extends App {
     )
   )
 
-  LearningData.createData(booksEn01)
+  LearningData.createData(books)
 
 }

@@ -27,15 +27,6 @@ object LearningData {
   private val log = LoggerFactory.getLogger("LearningData")
   val ran = new Random()
 
-  val booksTwoLines = BookCollection(
-    id = "twoLinesTest",
-    desc = "Testset with one book containing only two lines",
-    sentanceLength = 2 to 3,
-    books = Seq(
-      Book("books/TwoLines.txt", "TwoLines", "Test"),
-    )
-  )
-
   def createData(bookCollection: BookCollection): Unit = {
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
     val wm: WordMapper = WordMap.createWordMap(uris)
@@ -60,7 +51,7 @@ object LearningData {
   }
 
   def writeSentance(sent: Seq[String])(wr: BufferedWriter): Unit = {
-    wr.write(sent.mkString(" "))
+    wr.write(sent.mkString(";"))
     wr.write("\n")
   }
 
@@ -104,6 +95,6 @@ object LearningData {
     sb.toString()
   }
 
-  def f(value: Int): String = "%5d".formatLocal(Locale.ENGLISH, value)
+  def f(value: Int): String = "%d".formatLocal(Locale.ENGLISH, value)
 
 }

@@ -3,6 +3,18 @@ package anagram.common
 import java.io.BufferedWriter
 import java.net.URI
 import java.nio.file.{Files, Path, Paths}
+import java.util.stream
+import java.util.stream.Collectors
+
+import collection.JavaConverters._
+
+/**
+  * Description for a datafile
+  */
+case class DataFile(
+                     wordLen: Int,
+                     path: Path,
+                   )
 
 object IoUtil {
 
@@ -36,6 +48,21 @@ object IoUtil {
     val dir = IoUtil.getCreateWorkDir
     val fileName = s"anagram_$id.txt"
     dir.resolve(fileName)
+  }
+
+  def getTxtDataFilesFromWorkDir(id: String): Seq[DataFile] = {
+    Files.list(getCreateWorkDir)
+      .iterator().asScala.toStream
+      .filter(s => s.getFileName.toString.contains(s"${id}_data_"))
+      .map(createDataFile)
+  }
+
+  def createDataFile(path: Path): DataFile = {
+    val REG = ".*_data_(.*).txt".r
+    path.getFileName.toString match {
+      case REG(lenStr) => DataFile(lenStr.toInt, path)
+      case _ => throw new IllegalArgumentException(s"Could not extract sentance length from filename '$path'")
+    }
   }
 
   def uris(res: Seq[String]): Seq[URI] = {
