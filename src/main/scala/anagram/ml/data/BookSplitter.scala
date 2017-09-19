@@ -1,10 +1,13 @@
 package anagram.ml.data
 
-import java.io.File
 import java.net.URI
 
 import scala.io.Source
 
+
+/**
+  * Splits a list of books into sentences.
+  */
 object BookSplitter {
 
   val booksBig = Seq(
