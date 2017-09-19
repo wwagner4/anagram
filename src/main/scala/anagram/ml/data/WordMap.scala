@@ -35,12 +35,13 @@ object WordMap {
 
     val siMap = si.toMap
     val isMap = is.toMap
+    val off: Int = siMap.size / 2
 
     new WordMapper {
 
-      def toNum(word: String): Int = siMap(word)
+      def toNum(word: String): Int = siMap(word) - off
 
-      def toWord(num: Int): String = isMap(num)
+      def toWord(num: Int): String = isMap(num + off)
 
       lazy val size: Int = siMap.size
 

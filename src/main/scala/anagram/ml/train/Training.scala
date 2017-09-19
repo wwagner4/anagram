@@ -10,6 +10,7 @@ import org.deeplearning4j.nn.conf.layers.{DenseLayer, OutputLayer}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener
+import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
@@ -30,36 +31,42 @@ object Training {
   def train(run: Run): Unit = {
     log.info(s"Started training for run: '${run.id}'")
     IoUtil.getTxtDataFilesFromWorkDir(run.dataId).foreach{dataFile =>
-      trainDataFile(dataFile)
+      trainDataFile(dataFile, run.dataId)
     }
     log.info(s"Finished training for run: '${run.id}'")
   }
 
-  def trainDataFile(dataFile: DataFile): Unit = {
+  def trainDataFile(dataFile: DataFile, dataId: String): Unit = {
     log.info(s"Started training data file: '${dataFile.path.getFileName}'")
 
     val recordReader = new CSVRecordReader(0, ";")
     recordReader.initialize(new FileSplit(dataFile.path.toFile))
-    val dsIter = new RecordReaderDataSetIterator(recordReader, 1000, dataFile.wordLen, dataFile.wordLen, true)
-    log.info(s"read dataset iterator: '${dsIter}'")
+    val dsIter = new RecordReaderDataSetIterator(recordReader, 100000, dataFile.wordLen, dataFile.wordLen, true)
+    log.info(s"read dataset iterator")
     val nnConf = nnConfiguration(dataFile.wordLen)
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    nn.setListeners(new ScoreIterationListener(100))
-    log.info(s"started the training: '${nn}'")
+    nn.setListeners(new ScoreIterationListener(1))
+    log.info(s"started the training")
     nn.fit(dsIter)
+
+    val serfile = IoUtil.getCreateWorkDir.resolve(s"anagram_nn_${dataId}_${dataFile.wordLen}.ser")
+    ModelSerializer.writeModel(nn, serfile.toFile, true)
+    log.info(s"Wrote net to: '$serfile'")
+
     log.info(s"Finished training data file: '${dataFile.path.getFileName}'")
   }
 
   private def nnConfiguration(numInput: Int): MultiLayerConfiguration = {
 
-    val numHidden = 40
+    val numHidden = 400
+    val act = Activation.SIGMOID
 
     new NeuralNetConfiguration.Builder()
-      .seed(92384729384L)
+      .seed(9238498784L)
       .iterations(1)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-      .learningRate(0.00001)
+      .learningRate(0.00002)
       .weightInit(WeightInit.XAVIER)
       .updater(Updater.NESTEROVS)
       .regularization(false)
@@ -68,11 +75,11 @@ object Training {
       .layer(0, new DenseLayer.Builder()
         .nIn(numInput)
         .nOut(numHidden)
-        .activation(Activation.TANH).build)
+        .activation(act).build)
       .layer(1, new DenseLayer.Builder()
         .nIn(numHidden)
         .nOut(numHidden)
-        .activation(Activation.TANH).build)
+        .activation(act).build)
       .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
         .activation(Activation.IDENTITY).nIn(numHidden)
         .nOut(1)
