@@ -11,7 +11,7 @@ import scala.collection.JavaConverters._
 
 object Solver {
 
-  def solve(src: String, dict: Path): Seq[Iterable[String]] = {
+  def solve(src: String, dict: Path): Seq[Seq[String]] = {
     val solver = new AnagramSolver(3, dict.toFile)
 
     solver.findAllAnagrams(src.toLowerCase)
