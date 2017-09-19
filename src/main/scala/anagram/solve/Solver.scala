@@ -11,10 +11,11 @@ object Solver {
 
   def solve(src: String, dict: Path): Stream[Iterable[String]] = {
     val solver = new AnagramSolver(3, dict.toFile)
+
     solver.findAllAnagrams(src.toLowerCase)
-      .asScala.map(_.asScala.toList)
+      .asScala
+      .toStream.map(_.asScala.toList)
       .flatMap(_.permutations)
-      .toStream
   }
 
 }

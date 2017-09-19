@@ -3,8 +3,10 @@ package com.parthparekh.algorithms;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * This class will implement the logic to solve multi-word anagrams
@@ -18,7 +20,7 @@ public class AnagramSolver {
     private File dictionaryFile;
 
     private AnagramSolver(File dictionaryFile) {
-        assert !dictionaryFile.exists();
+        assert dictionaryFile.exists();
         sortedDictionary = new SortedWordDictionary();
         this.dictionaryFile = dictionaryFile;
     }
@@ -31,7 +33,7 @@ public class AnagramSolver {
     /*
      * returns set of strings with all anagrams also prints the results on std out
      */
-    public Set<Set<String>> findAllAnagrams(String wordString) throws IOException {
+    public Iterator<Set<String>> findAllAnagrams(String wordString) throws IOException {
 
         // remove all white space chars from string
         wordString = wordString.replaceAll("\\s", "");
@@ -40,7 +42,6 @@ public class AnagramSolver {
         sortedDictionary.loadDictionaryWithSubsets(dictionaryFile, wordString, minWordSize);
         List<String> keyList = sortedDictionary.getDictionaryKeyList();
 
-        int count = 0;
         // check for all the words in key list for anagrams
         for (int index = 0; index < keyList.size(); index++) {
             char[] charInventory = wordString.toCharArray();
@@ -56,7 +57,7 @@ public class AnagramSolver {
             }
         }
 
-        return anagramsSet;
+        return anagramsSet.iterator();
     }
 
 

@@ -40,7 +40,7 @@ class AnagramSolverHelper {
       *
       * @return true is charArray1 is subset of charArray2, false otherwise
       */
-    public static boolean isSubset(char[] charArr1, char[] charArr2) {
+    static boolean isSubset(char[] charArr1, char[] charArr2) {
         if (charArr1.length > charArr2.length) {
             return false;
         }
@@ -97,7 +97,7 @@ class AnagramSolverHelper {
       *
       * @return true is charArr1 is equivalent to charArr2, false otherwise
       */
-    public static boolean isEquivalent(char[] charArr1, char[] charArr2) {
+    static boolean isEquivalent(char[] charArr1, char[] charArr2) {
         if (charArr1.length != charArr2.length) {
             return false;
         }
@@ -127,7 +127,7 @@ class AnagramSolverHelper {
       *
       * @return resultant character array of set difference between charArr1 and charArr2
       */
-    public static char[] setDifference(char[] charArr1, char[] charArr2) {
+    static char[] setDifference(char[] charArr1, char[] charArr2) {
         List<Character> list1 = toList(charArr1);
         List<Character> list2 = toList(charArr2);
         list1.removeAll(list2);
@@ -141,7 +141,7 @@ class AnagramSolverHelper {
       *
       * @return returns set consisting of set of strings after cartesian product is applied
       */
-    public static Set<Set<String>> setMultiplication(Set<String>... setsArray) {
+    static Set<Set<String>> setMultiplication(Set<String>... setsArray) {
         if (setsArray == null || setsArray.length == 0) {
             return null;
         }
