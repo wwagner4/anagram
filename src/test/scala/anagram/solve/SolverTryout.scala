@@ -11,7 +11,12 @@ object SolverTryout extends App {
 
   val re = Solver.solve("bernd lives with ingrid in vienna", dict1)
 
-  for ((sent, i) <- re.iterator.zipWithIndex) {
+
+  val atStart = System.currentTimeMillis()
+  for ((sent, i) <- re.zipWithIndex) {
     println("%7d  -  %s".format(i, sent.mkString(" ")))
   }
+  val atEnd = System.currentTimeMillis()
+
+  println(s"-- duration: ${atEnd - atStart} ms")
 }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -33,33 +34,33 @@ public class AnagramSolver {
     /*
      * returns set of strings with all anagrams also prints the results on std out
      */
-    public Iterator<Set<String>> findAllAnagrams(String wordString) throws IOException {
+    public Stream<Set<String>> findAllAnagrams(String wordString) throws IOException {
 
         // remove all white space chars from string
-        wordString = wordString.replaceAll("\\s", "");
-        Set<Set<String>> anagramsSet = new HashSet<>();
+        final String finalWordString = wordString.replaceAll("\\s", "");
         // load dictionary for subset words
         sortedDictionary.loadDictionaryWithSubsets(dictionaryFile, wordString, minWordSize);
         List<String> keyList = sortedDictionary.getDictionaryKeyList();
-
-        // check for all the words in key list for anagrams
-        for (int index = 0; index < keyList.size(); index++) {
-            char[] charInventory = wordString.toCharArray();
-            Set<Set<String>> dictWordAnagramsSet = findAnagrams(index, charInventory, keyList);
-            Set<Set<String>> tempAnagramSet = new HashSet<>();
-            if (dictWordAnagramsSet != null && !dictWordAnagramsSet.isEmpty()) {
-                Set<Set<String>> mergeResult;
-                for (Set<String> anagramSet : dictWordAnagramsSet) {
-                    mergeResult = mergeAnagramKeyWords(anagramSet);
-                    tempAnagramSet.addAll(mergeResult);
-                }
-                anagramsSet.addAll(tempAnagramSet);
-            }
-        }
-
-        return anagramsSet.iterator();
+        return IntStream.range(0, keyList.size())
+                .parallel()
+                .boxed()
+                .map(s -> tmpAnaSet(s, finalWordString, keyList))
+                .flatMap(Set::stream);
     }
 
+    private Set<Set<String>> tmpAnaSet(int index, String wordString, List<String> keyList) {
+        char[] charInventory = wordString.toCharArray();
+        Set<Set<String>> dictWordAnagramsSet = findAnagrams(index, charInventory, keyList);
+        Set<Set<String>> tempAnagramSet = new HashSet<>();
+        if (dictWordAnagramsSet != null && !dictWordAnagramsSet.isEmpty()) {
+            Set<Set<String>> mergeResult;
+            for (Set<String> anagramSet : dictWordAnagramsSet) {
+                mergeResult = mergeAnagramKeyWords(anagramSet);
+                tempAnagramSet.addAll(mergeResult);
+            }
+        }
+        return tempAnagramSet;
+    }
 
     // recursive function to find all the anagrams for charInventory characters
     // starting with the word at dictionaryIndex in dictionary keyList
@@ -121,7 +122,7 @@ public class AnagramSolver {
             anagramsSet.add(anagramWordSet);
         }
         @SuppressWarnings("unchecked") // cannot use generics with Set array - Java bug???
-        Set<String>[] anagramsSetArray = anagramsSet.toArray(new Set[0]);
+                Set<String>[] anagramsSetArray = anagramsSet.toArray(new Set[0]);
 
         return AnagramSolverHelper.setMultiplication(anagramsSetArray);
     }

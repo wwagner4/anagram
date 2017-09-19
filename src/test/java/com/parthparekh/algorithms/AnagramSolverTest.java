@@ -31,12 +31,8 @@ public class AnagramSolverTest {
 
     @Test
     public void findAnagramsTest() throws IOException {
-        Iterator<Set<String>> anagrams = anagramSolver.findAllAnagrams("silent");
-        List<Set<String>> sentances = new ArrayList<>();
-        while(anagrams.hasNext()) {
-            sentances.add(anagrams.next());
-        }
+        Stream<Set<String>> anagrams = anagramSolver.findAllAnagrams("silent");
         Assert.assertNotNull(anagrams);
-        Assert.assertEquals(11, sentances.size());
+        Assert.assertEquals(10, anagrams.toArray().length);
     }
 }
