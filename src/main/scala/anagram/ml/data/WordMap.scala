@@ -57,7 +57,7 @@ object WordMap {
       }
 
       def writeMap(wr: BufferedWriter): Unit = {
-        for ((s, i) <- isMap.iterator) {
+        for ((s, i) <- siMap.iterator) {
           wr.write(s"$s $i\n")
         }
       }
