@@ -1,6 +1,11 @@
 package anagram.solve
 
+import java.nio.file.Path
+
 import anagram.common.IoUtil
+import anagram.ml.data.{WordMap, WordMapper}
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
+import org.deeplearning4j.util.ModelSerializer
 
 import scala.util.Random
 
@@ -16,12 +21,12 @@ object AiSolver extends App {
 
   val dict = IoUtil.getTxtFilePathFromWorkDir(s"${id}_dict")
 
-  val rater = new AiRater()
+  val rater = new AiRater(id)
 
   Solver.solve("ones upon a time", dict)
     .map(sent => Ana(rater.rate(sent), sent))
     .sortBy(- _.rate)
-    .foreach(ana => println("%.3f %s".format(ana.rate, ana.sentance.mkString(" "))))
+    .foreach(ana => println("%10.3f  - '%s'".format(ana.rate, ana.sentance.mkString(" "))))
 
 }
 
@@ -33,10 +38,20 @@ class RandomRater extends Rater {
 
 }
 
-class AiRater extends Rater {
+class AiRater(dataId: String) extends Rater {
+
+  private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(dataId)
+    .map(df => (df.wordLen, deserializeNn(df.path)))
+    .toMap
+
+  val map: WordMapper = IoUtil.loadTxtFromWorkDir(dataId, WordMap.loadMap)
 
   def rate(sent: Seq[String]): Double = {
     Random.nextDouble() * 10
+  }
+
+  private def deserializeNn(path: Path): MultiLayerNetwork = {
+    ModelSerializer.restoreMultiLayerNetwork(path.toFile)
   }
 
 }

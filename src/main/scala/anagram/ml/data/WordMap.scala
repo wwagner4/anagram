@@ -31,9 +31,15 @@ object WordMap {
       .toSet
       .toSeq
     val si: Seq[(String, Int)] = words.zipWithIndex
+
+    createMap(si)
+
+  }
+
+  def createMap(si: Seq[(String, Int)]): WordMapper = {
+    val siMap = si.toMap
     val is: Seq[(Int, String)] = si.map { case (a, b) => (b, a) }
 
-    val siMap = si.toMap
     val isMap = is.toMap
     val off: Int = siMap.size / 2
 
@@ -63,17 +69,17 @@ object WordMap {
       }
 
     }
-
   }
 
-  def loadMap(lines: Iterator[String]): Map[String, Int] = {
+  def loadMap(lines: Iterator[String]): WordMapper = {
 
     def lineToTuple(line: String): (String, Int) = {
       val sp = line.split("\\s")
       (sp(0), sp(1).toInt)
     }
 
-    lines.toStream.map(lineToTuple).toMap
+    val si = lines.toStream.map(lineToTuple)
+    createMap(si)
   }
 
 }

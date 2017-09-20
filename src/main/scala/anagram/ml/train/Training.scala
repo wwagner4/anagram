@@ -66,7 +66,7 @@ object Training {
       .seed(9238498784L)
       .iterations(1)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-      .learningRate(0.00002)
+      .learningRate(0.00005)
       .weightInit(WeightInit.XAVIER)
       .updater(Updater.NESTEROVS)
       .regularization(false)

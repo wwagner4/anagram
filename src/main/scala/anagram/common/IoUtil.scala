@@ -57,6 +57,13 @@ object IoUtil {
       .map(createDataFile)
   }
 
+  def getNnDataFilesFromWorkDir(id: String): Seq[DataFile] = {
+    Files.list(getCreateWorkDir)
+      .iterator().asScala.toStream
+      .filter(s => s.getFileName.toString.contains(s"${id}_nn_"))
+      .map(createDataFile)
+  }
+
   def createDataFile(path: Path): DataFile = {
     val REG = ".*_data_(.*).txt".r
     path.getFileName.toString match {

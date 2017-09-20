@@ -16,10 +16,10 @@ object WordMapTryout extends App {
 
 
   println("-- a")
-  val map: Map[String, Int] = IoUtil.loadTxtFromWorkDir(id, WordMap.loadMap)
+  val map: WordMapper = IoUtil.loadTxtFromWorkDir(id, WordMap.loadMap)
   println("-- b")
 
-  println("following -> " + map("following"))
-  println("a -> " + map("a"))
+  println("following -> " + map.toNum("following"))
+  println("a -> " + map.toNum("a"))
 
 }
