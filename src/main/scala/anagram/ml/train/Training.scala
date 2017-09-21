@@ -50,7 +50,7 @@ object Training {
     log.info(s"started the training")
     nn.fit(dsIter)
 
-    val serfile = IoUtil.getCreateWorkDir.resolve(s"anagram_${dataId}_${dataFile.wordLen}_nn.ser")
+    val serfile = IoUtil.getCreateWorkDir.resolve(s"anagram_${dataId}_nn_${dataFile.wordLen}.ser")
     ModelSerializer.writeModel(nn, serfile.toFile, true)
     log.info(s"Wrote net to: '$serfile'")
 

@@ -58,9 +58,11 @@ object IoUtil {
   }
 
   def getNnDataFilesFromWorkDir(id: String): Seq[DataFile] = {
-    Files.list(getCreateWorkDir)
-      .iterator().asScala.toStream
-      .filter(s => s.getFileName.toString.contains(s"${id}"))
+    Files.list(IoUtil.getCreateWorkDir)
+      .iterator()
+      .asScala
+      .toSeq
+      .filter(s => s.getFileName.toString.contains(s"${id}_nn"))
       .map(createDataFile(_, ".*_nn_(.*).ser"))
   }
 

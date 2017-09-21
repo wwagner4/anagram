@@ -2,31 +2,25 @@ package anagram.solve
 
 import java.nio.file.{Files, Path, Paths}
 
-import anagram.common.IoUtil
-import anagram.common.IoUtil.getCreateWorkDir
-import anagram.solve.AiSolver.id
+import anagram.common.{DataFile, IoUtil}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 
 
 object SolverTryout extends App {
 
   val id = "en01"
 
-  Files.list(IoUtil.getCreateWorkDir)
-    .iterator()
-    .asScala
-    .filter(s => s.getFileName.toString.contains(s"${id}"))
-    .foreach(p => println(p))
 
+  solve
 
   def loadNn: Unit = {
     val nnMap: Map[Int, MultiLayerNetwork] = {
 
       def deserializeNn(path: Path): MultiLayerNetwork = {
-        println(s"-- ds: ${path}")
+        println(s"-- ds: $path")
         ModelSerializer.restoreMultiLayerNetwork(path.toFile)
       }
 

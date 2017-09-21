@@ -6,7 +6,6 @@ import anagram.common.IoUtil
 import anagram.ml.data.{WordMap, WordMapper}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
-import org.nd4j.linalg.exception.ND4JIllegalStateException
 import org.nd4j.linalg.factory.Nd4j
 
 import scala.util.Random
@@ -22,9 +21,10 @@ object AiSolver extends App {
 
   val dict = IoUtil.getTxtFilePathFromWorkDir(s"${id}_dict")
 
-  val rater = new AiRater(id)
+  // val rater = new AiRater(id)
+  val rater = new RandomRater
 
-  Solver.solve("ones upon a time", dict)
+  Solver.solve("bernd and ingrid are married", dict)
     .map(sent => Ana(rater.rate(sent), sent))
     .sortBy(- _.rate)
     .foreach(ana => println("%10.3f  - '%s'".format(ana.rate, ana.sentance.mkString(" "))))
