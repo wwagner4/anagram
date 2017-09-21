@@ -54,18 +54,18 @@ object IoUtil {
     Files.list(getCreateWorkDir)
       .iterator().asScala.toStream
       .filter(s => s.getFileName.toString.contains(s"${id}_data_"))
-      .map(createDataFile)
+      .map(createDataFile(_, ".*_data_(.*).txt"))
   }
 
   def getNnDataFilesFromWorkDir(id: String): Seq[DataFile] = {
     Files.list(getCreateWorkDir)
       .iterator().asScala.toStream
-      .filter(s => s.getFileName.toString.contains(s"${id}_nn_"))
-      .map(createDataFile)
+      .filter(s => s.getFileName.toString.contains(s"${id}"))
+      .map(createDataFile(_, ".*_nn_(.*).ser"))
   }
 
-  def createDataFile(path: Path): DataFile = {
-    val REG = ".*_data_(.*).txt".r
+  def createDataFile(path: Path, regex: String): DataFile = {
+    val REG = regex.r
     path.getFileName.toString match {
       case REG(lenStr) => DataFile(lenStr.toInt, path)
       case _ => throw new IllegalArgumentException(s"Could not extract sentance length from filename '$path'")
