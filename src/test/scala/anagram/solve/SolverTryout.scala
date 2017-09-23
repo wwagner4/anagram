@@ -1,12 +1,7 @@
 package anagram.solve
 
-import java.nio.file.{Files, Path, Paths}
-
-import anagram.common.{DataFile, IoUtil}
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
-import org.deeplearning4j.util.ModelSerializer
-
-import scala.collection.JavaConverters._
+import anagram.common.IoUtil
+import anagram.ssolve.SSolver
 
 
 object SolverTryout extends App {
@@ -14,30 +9,21 @@ object SolverTryout extends App {
   val id = "en01"
 
 
-  solve
+  solve()
 
-  def loadNn: Unit = {
-    val nnMap: Map[Int, MultiLayerNetwork] = {
-
-      def deserializeNn(path: Path): MultiLayerNetwork = {
-        println(s"-- ds: $path")
-        ModelSerializer.restoreMultiLayerNetwork(path.toFile)
-      }
-
-      IoUtil.getNnDataFilesFromWorkDir(id)
-        .map(df => (df.wordLen, deserializeNn(df.path)))
-        .toMap
-    }
-
-    println(s"-- nnmap: ${nnMap.size}")
+  def loadDict(id: String): Iterable[String] = {
+    IoUtil.loadTxtFromWorkDir(s"${id}_dict", loadWords)
   }
 
+  def loadWords(lines: Iterator[String]): Iterable[String] = {
+    lines.toSeq
+  }
 
-  def solve: Unit = {
-    val dict1 = IoUtil.getTxtFilePathFromWorkDir(s"${id}_dict")
-    val dict2 = Paths.get(IoUtil.uri("wordlist/wordlist.txt"))
+  def solve(): Unit = {
 
-    val re = Solver.solve("bernd lives with ingrid in vienna", dict1)
+    val words = loadDict(id)
+
+    val re = SSolver.solve("bernd ingrid", words)
 
 
     val atStart = System.currentTimeMillis()

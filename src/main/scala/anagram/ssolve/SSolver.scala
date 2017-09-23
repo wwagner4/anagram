@@ -3,20 +3,25 @@ package anagram.ssolve
 object SSolver {
 
   def solve(sourceText: String, words: Iterable[String]): Iterable[Iterable[String]] = {
-    solve(sourceText, 0, words.toList)
+    solve(sourceText.toLowerCase().replaceAll("\\s", ""), 0, words.toList)
   }
 
   def solve(txt: String, depth: Int, words: List[String]): List[List[String]] = {
     if (txt.isEmpty) List.empty[List[String]]
     else {
-      val mws = findMatchingWords(txt, words)
-      mws.flatMap { mw =>
-        val restText = removeChars(txt, mw.toList)
-        val subAnas = solve(restText, depth + 1, words)
-        if (restText.isEmpty && subAnas.isEmpty) {
-          List(List(mw))
-        } else {
-          subAnas.map(sent => mw :: sent)
+      if (depth > 4) List.empty[List[String]]
+      else {
+        val mws = findMatchingWords(txt, words)
+        if (depth <= 2)
+          println(f"-- found matching words: $depth '$txt%10s' ${mws.take(30).mkString(" ")}")
+        mws.flatMap { mw =>
+          val restText = removeChars(txt, mw.toList)
+          val subAnas = solve(restText, depth + 1, words)
+          if (restText.isEmpty && subAnas.isEmpty) {
+            List(List(mw))
+          } else {
+            subAnas.map(sent => mw :: sent)
+          }
         }
       }
     }
