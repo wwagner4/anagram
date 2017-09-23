@@ -57,6 +57,10 @@ object IoUtil {
     loadTxtFromWorkDir(s"${id}_map", f)
   }
 
+  def loadWordlistFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
+    loadTxtFromWorkDir(s"${id}_wordlist", f)
+  }
+
   def loadTxtFromPath[T](path: Path, f: Iterator[String] => T): T = {
     val iter = scala.io.Source.fromFile(path.toFile).getLines()
     f(iter)

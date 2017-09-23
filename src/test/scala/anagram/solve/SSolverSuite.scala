@@ -21,7 +21,6 @@ class SSolverSuite extends FunSuite with MustMatchers {
     val strAnas: Seq[String] = anas.map(sent => sent.mkString(" "))
 
     strAnas must contain("as togo r")
-    strAnas must contain("as togo r")
     strAnas must contain("as r togo")
     strAnas must contain("togo as r")
     strAnas must contain("togo r as")

@@ -13,6 +13,10 @@ object WordList {
     IoUtil.loadTxtFromPath(path, impl.loading)
   }
 
+  def loadWordListFromWorkdir(id: String): Iterable[String] = {
+    IoUtil.loadWordlistFromWorkDir(id, impl.loading)
+  }
+
   def saveWordListToWorkdir(id: String, words: Iterable[String]): Path = {
     IoUtil.saveWordlistToWorkDir(id, impl.saving(words)(_))
   }

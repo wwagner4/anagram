@@ -13,7 +13,7 @@ object SSolver {
       else {
         val mws = findMatchingWords(txt, words)
         if (depth <= 2)
-          println(f"-- found matching words: $depth '$txt%10s' ${mws.take(30).mkString(" ")}")
+          println(f"-- found matching words: $depth $txt%12s ${mws.take(30).mkString(" ")}")
         mws.flatMap { mw =>
           val restText = removeChars(txt, mw.toList)
           val subAnas = solve(restText, depth + 1, words)
