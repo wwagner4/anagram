@@ -1,8 +1,8 @@
-package anagram.ssolve
+package anagram.solve
 
 object SSolver {
 
-  def solve(sourceText: String, words: Iterable[String]): Iterable[Iterable[String]] = {
+  def solve(sourceText: String, words: Iterable[String]): Seq[Iterable[String]] = {
     solve(sourceText.toLowerCase().replaceAll("\\s", ""), 0, words.toList)
   }
 

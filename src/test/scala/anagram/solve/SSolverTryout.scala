@@ -1,7 +1,4 @@
-package anagram.ssolve
-
-import anagram.common.IoUtil
-import anagram.ml.data.WordMap
+package anagram.solve
 
 object SSolverTryout extends App {
 

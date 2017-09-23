@@ -40,7 +40,11 @@ object IoUtil {
 
   def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
     val p: Path = getTxtFilePathFromWorkDir(id)
-    val iter = scala.io.Source.fromFile(p.toFile).getLines()
+    loadTxtFromPath(p, f)
+  }
+
+  def loadTxtFromPath[T](path: Path, f: Iterator[String] => T): T = {
+    val iter = scala.io.Source.fromFile(path.toFile).getLines()
     f(iter)
   }
 
