@@ -3,8 +3,6 @@ package anagram.common
 import java.io.BufferedWriter
 import java.net.URI
 import java.nio.file.{Files, Path, Paths}
-import java.util.stream
-import java.util.stream.Collectors
 
 import collection.JavaConverters._
 

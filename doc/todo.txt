@@ -1,16 +1,16 @@
-- Use simple wordlist
+-    Use simple wordlist
 -- OK Wordlist loadable
--- Wordlist saveable
--- Wordlist optimizer
---- Delete words from blacklist
-- Create data
--- Use only sentances that contain words from the simple wordlist
-- Solver
--- Optimize runtime
---- Ideas ???
-- Word mapping
--- Map similar words to similar numbers
---- E.g. sort by wordlength, alphabetically
---- Similarity could be learned with ml
----- Get a dataset describing the similarity of words ???
+-- OK Wordlist saveable
+--    Wordlist optimizer
+---    Delete words from blacklist
+-    Create data
+--    Use only sentances that contain words from the simple wordlist
+-    Solver
+--    Optimize runtime
+---    Ideas ???
+-     Word mapping
+--    Map similar words to similar numbers
+---    E.g. sort by wordlength, alphabetically
+---    Similarity could be learned with ml
+----    Get a dataset describing the similarity of words ???
 

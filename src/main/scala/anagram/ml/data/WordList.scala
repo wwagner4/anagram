@@ -1,5 +1,6 @@
 package anagram.ml.data
 
+import java.io.BufferedWriter
 import java.nio.file.{Path, Paths}
 
 import anagram.common.IoUtil
@@ -10,6 +11,10 @@ object WordList {
 
   def loadWordList(path: Path): Iterable[String] = {
     IoUtil.loadTxtFromPath(path, impl.loading)
+  }
+
+  def saveWordListToWorkdir(id: String, words: Iterable[String]): Path = {
+    IoUtil.saveWordlistToWorkDir(id, impl.saving(words)(_))
   }
 
   def defaultWordlist: Path = {
@@ -25,6 +30,10 @@ class WordListImpl {
 
   def loading(lines: Iterator[String]): Iterable[String] = {
     lines.toIterable
+  }
+
+  def saving(words: Iterable[String])(writer: BufferedWriter): Unit = {
+    words.foreach(w => writer.write(s"$w\n"))
   }
 
 }
