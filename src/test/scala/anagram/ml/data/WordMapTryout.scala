@@ -12,11 +12,10 @@ object WordMapTryout extends App {
   //println(is.mkString("\n"))
   println(s"-- size:${wm.size}")
 
-  IoUtil.saveTxtToWorkDir(id, wm.writeMap)
-
+  IoUtil.saveMapToWorkDir(id, wm.writeMap)
 
   println("-- a")
-  val map: WordMapper = IoUtil.loadTxtFromWorkDir(id, WordMap.loadMap)
+  val map: WordMapper = IoUtil.loadMapFromWorkDir(id, WordMap.loadMap)
   println("-- b")
 
   println("following -> " + map.toNum("following"))

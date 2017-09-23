@@ -1,5 +1,5 @@
 - Use simple wordlist
--- Wordlist loadable
+-- OK Wordlist loadable
 -- Wordlist saveable
 -- Wordlist optimizer
 --- Delete words from blacklist

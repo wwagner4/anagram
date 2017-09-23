@@ -47,7 +47,7 @@ class AiRater(dataId: String) extends Rater {
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
 
-  val map: WordMapper = IoUtil.loadTxtFromWorkDir(s"${dataId}_map", WordMap.loadMap)
+  val map: WordMapper = IoUtil.loadMapFromWorkDir(dataId, WordMap.loadMap)
 
   def rate(sent: Iterable[String]): Double = {
     if (sent.size == 1) 1000.0 else {

@@ -33,14 +33,30 @@ object IoUtil {
     file
   }
 
-  def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
+  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
     val filename = s"anagram_$id.txt"
     save(getCreateWorkDir, filename, f)
   }
 
-  def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
+  def saveWordlistToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
+    saveTxtToWorkDir(s"${id}_wordlist", f)
+  }
+
+  def saveDataToWorkDir(id: String, sentancelength: Int, f: BufferedWriter => Unit): Path = {
+    saveTxtToWorkDir(s"${id}_data_$sentancelength", f)
+  }
+
+  def saveMapToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
+    saveTxtToWorkDir(s"${id}_map", f)
+  }
+
+  private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
     val p: Path = getTxtFilePathFromWorkDir(id)
     loadTxtFromPath(p, f)
+  }
+
+  def loadMapFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
+    loadTxtFromWorkDir(s"${id}_map", f)
   }
 
   def loadTxtFromPath[T](path: Path, f: Iterator[String] => T): T = {
