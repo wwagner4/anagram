@@ -14,8 +14,8 @@ object SSolverTryout extends App {
     "r",
   )
 
-  val wl = WordList.loadWordList(Paths.get(IoUtil.uri("wordlist/wordlist_test01.txt")))
-  val anas = SSolver.solve("wolfgang wagner", wl)
+  val wl = WordList.loadWordList(Paths.get(IoUtil.uri("wordlist/wordlist.txt")))
+  val anas = SSolver.solve("ingrid bernd", wl)
 
   if (anas.isEmpty) println("-- empty --")
   else for ((sent, i) <- anas.zipWithIndex) {

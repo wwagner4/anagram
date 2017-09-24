@@ -17,10 +17,6 @@ object SSolver {
       else {
         val mws = findMatchingWords(txt, words)
           .filter(!_.isEmpty)
-        //if (depth <= 2) {
-        //  val t = ":" + txt + ":"
-        //  println(f"-- found matching words: $depth $t%12s ${mws.take(30).mkString(" ")}")
-        //}
         mws.flatMap { mw =>
           val restText = removeChars(txt, mw.toList)
           val subAnas = solve1(restText, depth + 1, words, anaCache)
@@ -32,8 +28,6 @@ object SSolver {
         }
       }
     }
-//    val t = ":" + txt + ":"
-//    println(f"-- found anagrams: $depth $t%12s ${re.take(30).mkString(" ")}")
     anaCache.addAna(txt, re)
     re
   }
@@ -46,14 +40,14 @@ object SSolver {
         val head = w.substring(0, 1)(0)
         val tail = w.substring(1, l)
         val i = txt.indexOf(head)
-        if (i >= 0) vw(tail, replaceFirst(head, txt, i))
+        if (i >= 0) vw(tail, removeFirst(head, txt, i))
         else None
       }
     }
     vw(word, txt)
   }
 
-  def replaceFirst(c: Char, s: String, i: Int): String = {
+  def removeFirst(c: Char, s: String, i: Int): String = {
     val l = s.length
     if (i == 0) {
       if (l == 1) ""
@@ -65,6 +59,12 @@ object SSolver {
     }
   }
 
+  def removeFirst(c: Char, s: String): String = {
+    val i = s.indexOf(c)
+    if (i >= 0) removeFirst(c, s, i)
+    else s
+  }
+
   def findMatchingWords(txt: String, words: List[String]): List[String] = {
     words.flatMap(w => validWord(w, txt))
   }
@@ -73,7 +73,7 @@ object SSolver {
     mw match {
       case Nil => txt
       case c :: rest =>
-        val txt1 = txt.replaceFirst(s"$c", "")
+        val txt1 = removeFirst(c, txt)
         removeChars(txt1, rest)
     }
   }

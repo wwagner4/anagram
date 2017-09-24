@@ -62,6 +62,7 @@ class SSolverSuite extends FunSuite with MustMatchers {
     ("ab", "cabc", Some("ab")),
     ("ab", "cacbc", Some("ab")),
     ("ab", "abca", Some("ab")),
+    ("ab", "abcxxxx", Some("ab")),
   )
 
   for ((w, txt, re) <- validWordData) {
@@ -70,15 +71,15 @@ class SSolverSuite extends FunSuite with MustMatchers {
     }
   }
 
-  val replaceFirstData = List(
+  val removeFirstData = List(
     ('a', "a", 0, ""),
     ('a', "ab", 0, "b"),
     ('a', "ba", 1, "b"),
   )
 
-  for ((c, s, i, re) <- replaceFirstData) {
-    test(s"replaceFirst $c $s") {
-      SSolver.replaceFirst(c, s, i) mustBe re
+  for ((c, s, i, re) <- removeFirstData) {
+    test(s"removeFirst $c $s") {
+      SSolver.removeFirst(c, s, i) mustBe re
     }
   }
 
