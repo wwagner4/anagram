@@ -4,7 +4,7 @@ import anagram.common.IoUtil
 
 object BookSplitterTryout extends App {
 
-  val uris = IoUtil.uris(BookSplitter.booksSmall)
+  val uris = BookSplitter.booksSmall.map(IoUtil.uri)
 
   val sentances = BookSplitter.sentances(uris)
   println(sentances.map(_.mkString(" ")).mkString("\n"))

@@ -96,10 +96,6 @@ object IoUtil {
     }
   }
 
-  def uris(res: Seq[String]): Seq[URI] = {
-    res.map(uri)
-  }
-
   def uri(res: String): URI = {
     val url = getClass.getClassLoader.getResource(res)
     if (url == null) throw new IllegalArgumentException(s"Illegal URL '$res'")

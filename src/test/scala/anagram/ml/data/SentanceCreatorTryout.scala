@@ -4,7 +4,7 @@ import anagram.common.IoUtil
 
 object SentanceCreatorTryout extends App {
 
-  val uris = IoUtil.uris(BookSplitter.booksBig)
+  val uris = BookSplitter.booksBig.map(IoUtil.uri)
 
   val sent = SentanceCreator.create(uris, 4)
 

@@ -5,7 +5,7 @@ import org.scalatest.{FunSuite, MustMatchers}
 
 class BookSplitterSuite extends FunSuite with MustMatchers {
 
-  private val uris = IoUtil.uris(BookSplitter.booksSmall)
+  private val uris = BookSplitter.booksSmall.map(IoUtil.uri)
 
   test("two lines sent 1") {
     val re = BookSplitter.sentances(uris).toList

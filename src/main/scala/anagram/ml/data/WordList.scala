@@ -21,13 +21,6 @@ object WordList {
     IoUtil.saveWordlistToWorkDir(id, impl.saving(words)(_))
   }
 
-  def defaultWordlist: Path = {
-    val resName = "wordlist/wordlist.txt"
-    val url = getClass.getClassLoader.getResource(resName)
-    require(url != null, s"Classpath resourse '$resName' does not exist")
-    Paths.get(url.toURI)
-  }
-
 }
 
 class WordListImpl {

@@ -13,6 +13,6 @@
 ---    E.g. sort by wordlength, alphabetically
 ---    Similarity could be learned with ml
 ----    Get a dataset describing the similarity of words ???
---    sould not return empty words. ???
---    sould not return duplicate sentances. ???
----    make testcase 'wolfi' with wordlist
+-- OK sould not return empty words. ???
+-- OK sould not return duplicate sentances. ???
+--- OK make testcase 'wolfi' with wordlist

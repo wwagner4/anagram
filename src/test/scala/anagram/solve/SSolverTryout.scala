@@ -1,5 +1,8 @@
 package anagram.solve
 
+import java.nio.file.Paths
+
+import anagram.common.IoUtil
 import anagram.ml.data.WordList
 
 object SSolverTryout extends App {
@@ -11,8 +14,8 @@ object SSolverTryout extends App {
     "r",
   )
 
-  val wl = WordList.loadWordListFromWorkdir("test")
-  val anas = SSolver.solve("wolfi", wl)
+  val wl = WordList.loadWordList(Paths.get(IoUtil.uri("wordlist/wordlist_test01.txt")))
+  val anas = SSolver.solve("wolfgang", wl)
 
   if (anas.isEmpty) println("-- empty --")
   else for ((sent, i) <- anas.zipWithIndex) {

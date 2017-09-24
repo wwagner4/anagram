@@ -1,6 +1,6 @@
 package anagram.solve
 
-import java.nio.file.Path
+import java.nio.file.{Path, Paths}
 
 import anagram.common.IoUtil
 import anagram.ml.data.{WordList, WordMap, WordMapper}
@@ -21,7 +21,7 @@ object AiSolver extends App {
 
   val dict = IoUtil.getTxtFilePathFromWorkDir(s"${id}_dict")
 
-  val wordlist = WordList.loadWordList(WordList.defaultWordlist)
+  val wordlist = WordList.loadWordList(Paths.get(IoUtil.uri("wordlist/wordlist.txt")))
 
   // val rater = new AiRater(id)
   val rater = new RandomRater
