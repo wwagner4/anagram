@@ -3,10 +3,14 @@ package anagram.solve
 object SSolver {
 
   def solve(sourceText: String, words: Iterable[String]): Seq[Iterable[String]] = {
-    solve(sourceText.toLowerCase().replaceAll("\\s", ""), 0, words.toList)
+    solve1(sourceText.toLowerCase().replaceAll("\\s", ""), 0, words.toList, new AnaCache())
   }
 
-  def solve(txt: String, depth: Int, words: List[String]): List[List[String]] = {
+  def solve1(txt: String, depth: Int, words: List[String], anaCache: AnaCache): List[List[String]] = {
+    anaCache.ana(txt).getOrElse(solve2(txt, depth, words, anaCache))
+  }
+
+  def solve2(txt: String, depth: Int, words: List[String], anaCache: AnaCache): List[List[String]] = {
     val re = if (txt.isEmpty) List.empty[List[String]]
     else {
       if (depth > 4) List.empty[List[String]]
@@ -19,7 +23,7 @@ object SSolver {
         //}
         mws.flatMap { mw =>
           val restText = removeChars(txt, mw.toList)
-          val subAnas = solve(restText, depth + 1, words)
+          val subAnas = solve1(restText, depth + 1, words, anaCache)
           if (restText.isEmpty && subAnas.isEmpty) {
             List(List(mw))
           } else {
@@ -28,8 +32,9 @@ object SSolver {
         }
       }
     }
-    val t = ":" + txt + ":"
-    println(f"-- found anagrams: $depth $t%12s ${re.take(30).mkString(" ")}")
+//    val t = ":" + txt + ":"
+//    println(f"-- found anagrams: $depth $t%12s ${re.take(30).mkString(" ")}")
+    anaCache.addAna(txt, re)
     re
   }
 
