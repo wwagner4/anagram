@@ -49,4 +49,37 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
   }
 
+  val validWordData = List(
+    ("aaa", "a", Option.empty[String]),
+    ("a", "aaa", Some("a")),
+    ("a", "a", Some("a")),
+    ("a", "abc", Some("a")),
+    ("a", "efabc", Some("a")),
+    ("ab", "ab", Some("ab")),
+    ("ab", "abc", Some("ab")),
+    ("ab", "acb", Some("ab")),
+    ("ab", "cab", Some("ab")),
+    ("ab", "cabc", Some("ab")),
+    ("ab", "cacbc", Some("ab")),
+    ("ab", "abca", Some("ab")),
+  )
+
+  for ((w, txt, re) <- validWordData) {
+    test(s"validWord $w $txt") {
+      SSolver.validWord(w, txt) mustBe re
+    }
+  }
+
+  val replaceFirstData = List(
+    ('a', "a", 0, ""),
+    ('a', "ab", 0, "b"),
+    ('a', "ba", 1, "b"),
+  )
+
+  for ((c, s, i, re) <- replaceFirstData) {
+    test(s"replaceFirst $c $s") {
+      SSolver.replaceFirst(c, s, i) mustBe re
+    }
+  }
+
 }
