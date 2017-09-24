@@ -1,8 +1,5 @@
 package anagram.solve
 
-import java.nio.file.Paths
-
-import anagram.common.IoUtil
 import anagram.ml.data.WordList
 import org.scalatest.{FunSuite, MustMatchers}
 
@@ -34,7 +31,7 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
   test("anagramm wolfi with wordlist test01") {
 
-    val wordList = WordList.loadWordList(Paths.get(IoUtil.uri("wordlist/wordlist_test01.txt")))
+    val wordList = WordList.loadWordList("wordlist/wordlist_test01.txt")
 
     val anas = SSolver.solve("wolfi", wordList)
 

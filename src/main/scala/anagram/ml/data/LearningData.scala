@@ -29,9 +29,7 @@ object LearningData {
 
   def createData(bookCollection: BookCollection): Unit = {
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
-    val wm: WordMapper = WordMap.createWordMap(uris)
-    val wmPath = IoUtil.saveMapToWorkDir(bookCollection.id, wm.writeMap)
-    log.info("created word map in " + wmPath)
+    val wm: WordMapper = WordMap.createWordMapFromBooks(uris)
     for (len <- bookCollection.sentanceLength) {
       val sent = SentanceCreator.create(uris, len)
       val ldPath = IoUtil.saveDataToWorkDir(bookCollection.id, len, writeSentances(sent, wm)(_))

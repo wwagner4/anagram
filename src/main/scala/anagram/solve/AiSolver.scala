@@ -1,6 +1,6 @@
 package anagram.solve
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.data.{WordList, WordMap, WordMapper}
@@ -17,11 +17,9 @@ trait Rater {
 }
 
 object AiSolver extends App {
+
   val id = "en01"
-
-  val dict = IoUtil.getTxtFilePathFromWorkDir(s"${id}_dict")
-
-  val wordlist = WordList.loadWordList(Paths.get(IoUtil.uri("wordlist/wordlist.txt")))
+  val wordlist = WordList.loadWordList("wordlist/wordlist.txt")
 
   // val rater = new AiRater(id)
   val rater = new RandomRater
@@ -47,7 +45,7 @@ class AiRater(dataId: String) extends Rater {
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
 
-  val map: WordMapper = IoUtil.loadMapFromWorkDir(dataId, WordMap.loadMap)
+  val map: WordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
 
   def rate(sent: Iterable[String]): Double = {
     if (sent.size == 1) 1000.0 else {

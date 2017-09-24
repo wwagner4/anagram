@@ -7,18 +7,10 @@ object WordMapTryout extends App {
   val id = "tryout_twoLines"
   val uris = BookSplitter.booksSmall.map(IoUtil.uri)
 
-  val wm = WordMap.createWordMap(uris)
+  val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
 
-  //println(is.mkString("\n"))
   println(s"-- size:${wm.size}")
-
-  IoUtil.saveMapToWorkDir(id, wm.writeMap)
-
-  println("-- a")
-  val map: WordMapper = IoUtil.loadMapFromWorkDir(id, WordMap.loadMap)
-  println("-- b")
-
-  println("following -> " + map.toNum("following"))
-  println("a -> " + map.toNum("a"))
+  println("-- following -> " + wm.toNum("following"))
+  println("-- a -> " + wm.toNum("a"))
 
 }

@@ -4,7 +4,7 @@ import java.io.BufferedWriter
 import java.net.URI
 import java.nio.file.{Files, Path, Paths}
 
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 
 /**
   * Description for a datafile
@@ -16,60 +16,21 @@ case class DataFile(
 
 object IoUtil {
 
-  def getCreateWorkDir: Path = {
-    val dirWork: Path = Paths.get(System.getProperty("user.home"), "anagram", "work")
-    if (!Files.exists(dirWork)) {
-      Files.createDirectories(dirWork)
-    }
-    dirWork
-  }
-
-  def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
-    val file = dir.resolve(fileName)
-    val wr: BufferedWriter = Files.newBufferedWriter(file)
-    try f(wr) finally wr.close()
-    file
-  }
-
-  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
-    val filename = s"anagram_$id.txt"
-    save(getCreateWorkDir, filename, f)
-  }
-
-  def saveWordlistToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
-    saveTxtToWorkDir(s"${id}_wordlist", f)
-  }
-
-  def saveDataToWorkDir(id: String, sentancelength: Int, f: BufferedWriter => Unit): Path = {
-    saveTxtToWorkDir(s"${id}_data_$sentancelength", f)
-  }
-
   def saveMapToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
     saveTxtToWorkDir(s"${id}_map", f)
-  }
-
-  private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
-    val p: Path = getTxtFilePathFromWorkDir(id)
-    loadTxtFromPath(p, f)
   }
 
   def loadMapFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
     loadTxtFromWorkDir(s"${id}_map", f)
   }
 
-  def loadWordlistFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
-    loadTxtFromWorkDir(s"${id}_wordlist", f)
+  def saveDataToWorkDir(id: String, sentancelength: Int, f: BufferedWriter => Unit): Path = {
+    saveTxtToWorkDir(s"${id}_data_$sentancelength", f)
   }
 
   def loadTxtFromPath[T](path: Path, f: Iterator[String] => T): T = {
     val iter = scala.io.Source.fromFile(path.toFile).getLines()
     f(iter)
-  }
-
-  def getTxtFilePathFromWorkDir(id: String): Path = {
-    val dir = IoUtil.getCreateWorkDir
-    val fileName = s"anagram_$id.txt"
-    dir.resolve(fileName)
   }
 
   def getTxtDataFilesFromWorkDir(id: String): Seq[DataFile] = {
@@ -88,18 +49,48 @@ object IoUtil {
       .map(createDataFile(_, ".*_nn_(.*).ser"))
   }
 
-  def createDataFile(path: Path, regex: String): DataFile = {
-    val REG = regex.r
-    path.getFileName.toString match {
-      case REG(lenStr) => DataFile(lenStr.toInt, path)
-      case _ => throw new IllegalArgumentException(s"Could not extract sentance length from filename '$path'")
-    }
+  def nnDataFilePath(id: String, sentanceLength: Int): Path = {
+    getCreateWorkDir.resolve(s"anagram_${id}_nn_$sentanceLength.ser")
   }
 
   def uri(res: String): URI = {
     val url = getClass.getClassLoader.getResource(res)
     if (url == null) throw new IllegalArgumentException(s"Illegal URL '$res'")
     url.toURI
+  }
+
+  private def getCreateWorkDir: Path = {
+    val dirWork: Path = Paths.get(System.getProperty("user.home"), "anagram", "work")
+    if (!Files.exists(dirWork)) {
+      Files.createDirectories(dirWork)
+    }
+    dirWork
+  }
+
+  private def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
+    val file = dir.resolve(fileName)
+    val wr: BufferedWriter = Files.newBufferedWriter(file)
+    try f(wr) finally wr.close()
+    file
+  }
+
+  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
+    val filename = s"anagram_$id.txt"
+    save(getCreateWorkDir, filename, f)
+  }
+
+  private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
+    val fileName = s"anagram_$id.txt"
+    val file = getCreateWorkDir.resolve(fileName)
+    loadTxtFromPath(file, f)
+  }
+
+  private def createDataFile(path: Path, regex: String): DataFile = {
+    val REG = regex.r
+    path.getFileName.toString match {
+      case REG(lenStr) => DataFile(lenStr.toInt, path)
+      case _ => throw new IllegalArgumentException(s"Could not extract sentance length from filename '$path'")
+    }
   }
 
 }

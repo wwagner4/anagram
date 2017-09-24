@@ -5,8 +5,8 @@ import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
 import org.deeplearning4j.nn.api.OptimizationAlgorithm
-import org.deeplearning4j.nn.conf.{MultiLayerConfiguration, NeuralNetConfiguration, Updater}
 import org.deeplearning4j.nn.conf.layers.{DenseLayer, OutputLayer}
+import org.deeplearning4j.nn.conf.{MultiLayerConfiguration, NeuralNetConfiguration, Updater}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener
@@ -50,7 +50,7 @@ object Training {
     log.info(s"started the training")
     nn.fit(dsIter)
 
-    val serfile = IoUtil.getCreateWorkDir.resolve(s"anagram_${dataId}_nn_${dataFile.wordLen}.ser")
+    val serfile = IoUtil.nnDataFilePath(dataId, dataFile.wordLen)
     ModelSerializer.writeModel(nn, serfile.toFile, true)
     log.info(s"Wrote net to: '$serfile'")
 

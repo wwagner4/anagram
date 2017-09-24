@@ -1,6 +1,5 @@
 package anagram.ml.data
 
-import java.io.BufferedWriter
 import java.net.URI
 
 import scala.util.Random
@@ -10,8 +9,6 @@ trait WordMapper {
   def toNum(word: String): Int
 
   def toWord(num: Int): String
-
-  def writeMap(wr: BufferedWriter): Unit
 
   def size: Int
 
@@ -23,7 +20,7 @@ object WordMap {
 
   private val ran = Random
 
-  def createWordMap(books: Seq[URI]): WordMapper = {
+  def createWordMapFromBooks(books: Seq[URI]): WordMapper = {
     val words: Seq[String] = BookSplitter.sentances(books)
       .flatten
       .toSet
@@ -34,7 +31,21 @@ object WordMap {
 
   }
 
-  def createMap(si: Seq[(String, Int)]): WordMapper = {
+  def createWordMapFromWordlist(wordmap: Iterable[String]): WordMapper = {
+    val si = wordmap
+      .toSeq
+      .sorted
+      .sortBy(_.length)
+      .zipWithIndex
+    createMap(si)
+  }
+
+  def createWordMapFromWordlistResource(resName: String): WordMapper = {
+    val wl = WordList.loadWordList(resName)
+    createWordMapFromWordlist(wl)
+  }
+
+  private def createMap(si: Seq[(String, Int)]): WordMapper = {
     val siMap = si.toMap
     val is: Seq[(Int, String)] = si.map { case (a, b) => (b, a) }
 
@@ -54,24 +65,7 @@ object WordMap {
         isMap(i)
       }
 
-      def writeMap(wr: BufferedWriter): Unit = {
-        for ((s, i) <- siMap.iterator) {
-          wr.write(s"$s $i\n")
-        }
-      }
-
     }
-  }
-
-  def loadMap(lines: Iterator[String]): WordMapper = {
-
-    def lineToTuple(line: String): (String, Int) = {
-      val sp = line.split("\\s")
-      (sp(0), sp(1).toInt)
-    }
-
-    val si = lines.toStream.map(lineToTuple)
-    createMap(si)
   }
 
 }
