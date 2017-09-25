@@ -1,20 +1,18 @@
 
--    Use simple wordlist
+- OK Use simple wordlist
 -- OK Wordlist loadable
 -- OK Wordlist saveable
---    Wordlist optimizer
----    Delete words from blacklist
 
--    Create data
---    Use only sentances that contain words from the simple wordlist
+- OK Create data
+-- OK Use only sentances that contain words from the simple wordlist
 
 -    Solver
 -- OK Optimize runtime with cache
 --    Parallel processing
 
 -    Word mapping
---    Map similar words to similar numbers
----    E.g. sort by wordlength, alphabetically
+-- OK Map similar words to similar numbers
+--- OK E.g. sort by wordlength, alphabetically
 ---    Similarity could be learned with ml
 ----    Get a dataset describing the similarity of words ???
 -- OK sould not return empty words. ???

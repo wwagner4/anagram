@@ -46,7 +46,7 @@ object Training {
     val nnConf = nnConfiguration(dataFile.wordLen)
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    nn.setListeners(new ScoreIterationListener(1))
+    nn.setListeners(new ScoreIterationListener(30))
     log.info(s"started the training")
     nn.fit(dsIter)
 
@@ -59,12 +59,12 @@ object Training {
 
   private def nnConfiguration(numInput: Int): MultiLayerConfiguration = {
 
-    val numHidden = 400
-    val act = Activation.SIGMOID
+    val numHidden = 200
+    val act = Activation.TANH
 
     new NeuralNetConfiguration.Builder()
       .seed(92388784L)
-      .iterations(1)
+      .iterations(5)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
       .learningRate(0.00005)
       .weightInit(WeightInit.XAVIER)

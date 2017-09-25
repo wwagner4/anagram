@@ -4,7 +4,7 @@ object TrainingMain extends App {
 
   val firstRun = Run(
     id = "firstRun",
-    dataId = "en01",
+    dataId = "en02",
     desc = "Initial Tryout",
   )
 

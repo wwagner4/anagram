@@ -26,6 +26,8 @@ object LearningData {
 
   private val log = LoggerFactory.getLogger("LearningData")
   val ran = new Random()
+  val variance = 5
+
 
   def createData(bookCollection: BookCollection): Unit = {
     val wm: WordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
@@ -71,12 +73,14 @@ object LearningData {
   }
 
   def polluteAndRateSentance(sent: Seq[String], wm: WordMapper): Seq[Seq[String]] = {
-    val ratings = Seq(100, 75, 50, 25, 0)
-    ratings.flatMap(r => Seq.fill(5) {
-      val numEx =  numExchange(sent.size, r)
+    val l = sent.length
+    val ratings = (0 to (100, 100 / l)).toList
+    ratings.flatMap(rate => Seq.fill(5) {
+      val numEx =  numExchange(sent.size, rate)
       val sentEx: Seq[String] = exchange(sent, numEx, wm)
       val sentNum = sentEx.map(w => f(wm.toNum(w)))
-      val sentRated: Seq[String] = sentNum :+ f(r)
+      val ranRate = rate + ran.nextInt(variance * 2 + 1) - variance
+      val sentRated: Seq[String] = sentNum :+ f(ranRate)
       sentRated
     })
   }

@@ -3,7 +3,7 @@ package anagram.solve
 import java.nio.file.Path
 
 import anagram.common.IoUtil
-import anagram.ml.data.{WordList, WordMap, WordMapper}
+import anagram.ml.data.{WordMap, WordMapper}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -16,19 +16,14 @@ trait Rater {
   def rate(sent: Iterable[String]): Double
 }
 
-object AiSolver extends App {
+object AiSolver {
 
-  val id = "en01"
-  val wordlist = WordList.loadWordList("wordlist/wordlist_small.txt")
-
-  val rater = new AiRater(id, wordlist)
-  //val rater = new RandomRater
-
-  SSolver.solve("klagenfurt", wordlist)
-    .map(sent => Ana(rater.rate(sent), sent))
-    .sortBy(- _.rate)
-    .foreach(ana => println("%10.3f  - '%s'".format(ana.rate, ana.sentance.mkString(" "))))
-
+  def solve(srcText: String, id: String, wordlist: Iterable[String], rater: Rater): Unit = {
+    SSolver.solve(srcText, wordlist)
+      .map(sent => Ana(rater.rate(sent), sent))
+      .sortBy(-_.rate)
+      .foreach(ana => println("%10.8f  - '%s'".format(ana.rate, ana.sentance.mkString(" "))))
+  }
 }
 
 class RandomRater extends Rater {

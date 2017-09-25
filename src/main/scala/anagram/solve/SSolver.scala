@@ -15,8 +15,9 @@ object SSolver {
     else {
       if (depth > 4) List.empty[List[String]]
       else {
-        val mws = findMatchingWords(txt, words)
-          .filter(!_.isEmpty)
+        val mws =
+          findMatchingWords(txt, words).filter(!_.isEmpty)
+        println(s"-- $depth :$txt: - ${mws.mkString(" ")}")
         mws.flatMap { mw =>
           val restText = removeChars(txt, mw.toList)
           val subAnas = solve1(restText, depth + 1, words, anaCache)
