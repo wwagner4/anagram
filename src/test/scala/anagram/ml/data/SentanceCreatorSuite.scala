@@ -7,9 +7,9 @@ class SentanceCreatorSuite extends FunSuite with MustMatchers {
   private val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_test01.txt")
 
   val equalLenData = Seq(
-    (Seq("a", "b", "c"), 3),
-    (Seq("a"), 1),
-    (Seq("c", "hallo"), 2),
+    (Seq("at", "be", "come"), 3),
+    (Seq("at"), 1),
+    (Seq("come", "hallo"), 2),
   )
 
   for ((sent, len) <- equalLenData) {
@@ -22,9 +22,9 @@ class SentanceCreatorSuite extends FunSuite with MustMatchers {
   }
 
   val plusOneLenData = Seq(
-    (Seq("a", "b", "c"), 2),
-    (Seq("a", "b", "c", "d"), 3),
-    (Seq("c", "hallo"), 1),
+    (Seq("at", "be", "come"), 2),
+    (Seq("at", "be", "come", "do"), 3),
+    (Seq("come", "hallo"), 1),
   )
 
   for ((sent, len) <- plusOneLenData) {
@@ -38,11 +38,11 @@ class SentanceCreatorSuite extends FunSuite with MustMatchers {
   }
 
   test(s"create sentances a b c d 2") {
-    val re = SentanceCreator.slideSentances(Seq("a", "b", "c", "d"), 2, wm)
+    val re = SentanceCreator.slideSentances(Seq("at", "be", "come", "do"), 2, wm)
     re.size mustBe 3
-    re(0) mustBe Seq("a", "b")
-    re(1) mustBe Seq("b", "c")
-    re(2) mustBe Seq("c", "d")
+    re(0) mustBe Seq("at", "be")
+    re(1) mustBe Seq("be", "come")
+    re(2) mustBe Seq("come", "do")
   }
 
 }
