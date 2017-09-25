@@ -6,6 +6,7 @@ import scala.util.Random
 
 trait WordMapper {
 
+
   def toNum(word: String): Int
 
   def toWord(num: Int): String
@@ -14,6 +15,7 @@ trait WordMapper {
 
   def randomWord: String
 
+  def containsWord(str: String): Boolean
 }
 
 object WordMap {
@@ -53,6 +55,10 @@ object WordMap {
     val off: Int = siMap.size / 2
 
     new WordMapper {
+
+      def containsWord(str: String): Boolean = {
+        siMap.contains(str)
+      }
 
       def toNum(word: String): Int = siMap(word) - off
 

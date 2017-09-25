@@ -28,17 +28,18 @@ object LearningData {
   val ran = new Random()
 
   def createData(bookCollection: BookCollection): Unit = {
+    val wm: WordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
-    val wm: WordMapper = WordMap.createWordMapFromBooks(uris)
     for (len <- bookCollection.sentanceLength) {
-      val sent = SentanceCreator.create(uris, len)
+      val sent: Seq[Seq[String]] = SentanceCreator.create(uris, len, wm)
       val ldPath = IoUtil.saveDataToWorkDir(bookCollection.id, len, writeSentances(sent, wm)(_))
       log.info("created learning data in " + ldPath)
     }
     log.info("Created learning data for book collection:\n" + asString(bookCollection))
   }
 
-  def writeSentances(sentances: Stream[Seq[String]], wm: WordMapper)(wr: BufferedWriter): Unit = {
+  def writeSentances(sentances: Seq[Seq[String]], wm: WordMapper)(wr: BufferedWriter): Unit = {
     for (sent <- sentances) {
       for (rated <- polluteAndRateSentance(sent, wm)) {
         writeSentance(rated)(wr)

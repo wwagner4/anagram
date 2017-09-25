@@ -63,7 +63,7 @@ object Training {
     val act = Activation.SIGMOID
 
     new NeuralNetConfiguration.Builder()
-      .seed(9238498784L)
+      .seed(92388784L)
       .iterations(1)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
       .learningRate(0.00005)

@@ -19,12 +19,12 @@ trait Rater {
 object AiSolver extends App {
 
   val id = "en01"
-  val wordlist = WordList.loadWordList("wordlist/wordlist.txt")
+  val wordlist = WordList.loadWordList("wordlist/wordlist_small.txt")
 
-  // val rater = new AiRater(id)
-  val rater = new RandomRater
+  val rater = new AiRater(id, wordlist)
+  //val rater = new RandomRater
 
-  SSolver.solve("bernd and ingrid are married", wordlist)
+  SSolver.solve("klagenfurt", wordlist)
     .map(sent => Ana(rater.rate(sent), sent))
     .sortBy(- _.rate)
     .foreach(ana => println("%10.3f  - '%s'".format(ana.rate, ana.sentance.mkString(" "))))
@@ -39,13 +39,13 @@ class RandomRater extends Rater {
 
 }
 
-class AiRater(dataId: String) extends Rater {
+class AiRater(dataId: String, wordlist: Iterable[String]) extends Rater {
 
   private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(dataId)
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
 
-  val map: WordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+  val wordmap: WordMapper = WordMap.createWordMapFromWordlist(wordlist)
 
   def rate(sent: Iterable[String]): Double = {
     if (sent.size == 1) 1000.0 else {
@@ -56,7 +56,7 @@ class AiRater(dataId: String) extends Rater {
   }
 
   def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
-    val input: Array[Double] = sent.map(map.toNum(_).toDouble).toArray
+    val input: Array[Double] = sent.map(wordmap.toNum(_).toDouble).toArray
     val out = nn.output(Nd4j.create(input))
     out.getDouble(0)
   }
