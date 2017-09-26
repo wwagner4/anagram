@@ -1,7 +1,7 @@
 package anagram.morph.impl
 
-import java.awt.{Color, Font, FontMetrics, Graphics2D, RenderingHints}
 import java.awt.image.BufferedImage
+import java.awt.{Color, Font, FontMetrics, Graphics2D, RenderingHints}
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -45,17 +45,17 @@ class JustifyImpl extends Justify {
       RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
     val fm1 = g1.getFontMetrics()
 
-    val sentances: Seq[Seq[Word]] = for (t <- lines) yield words(t, fm1)
+    val sentences: Seq[Seq[Word]] = for (t <- lines) yield words(t, fm1)
     val minSpace = fm1.stringWidth(" ")
-    val maxLen = sentances.map { words =>
-      sentanceMinLength(words, minSpace)
+    val maxLen = sentences.map { words =>
+      sentenceMinLength(words, minSpace)
     }.max
 
     val xBorder = minSpace
-    val height = (sentances.size * fontSize + fontSize * 0.4).toInt
+    val height = (sentences.size * fontSize + fontSize * 0.4).toInt
     val width = maxLen + 2 * xBorder
 
-    val sentancesOffset: Seq[Seq[WordOffset]] = wordOffsets(sentances, maxLen, minSpace)
+    val sentencesOffset: Seq[Seq[WordOffset]] = wordOffsets(sentences, maxLen, minSpace)
 
     val bi2 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
     val g2 = bi2.getGraphics.asInstanceOf[Graphics2D]
@@ -64,7 +64,7 @@ class JustifyImpl extends Justify {
     g2.setRenderingHint(
       RenderingHints.KEY_TEXT_ANTIALIASING,
       RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
-    for ((line, i) <- sentancesOffset.zipWithIndex) {
+    for ((line, i) <- sentencesOffset.zipWithIndex) {
       drawLine(line, g2, i, fontSize, xBorder)
     }
 
@@ -83,12 +83,12 @@ class JustifyImpl extends Justify {
     }
   }
 
-  def wordOffsets(sentances: Seq[Seq[Word]], maxLen: Int, minSpace: Int): Seq[Seq[WordOffset]] = {
-    sentances.map { sent =>
+  def wordOffsets(sentences: Seq[Seq[Word]], maxLen: Int, minSpace: Int): Seq[Seq[WordOffset]] = {
+    sentences.map { sent =>
       if (sent.size == 1) {
         Seq(WordOffset(sent(0).word, 0))
       } else {
-        val min = sentanceMinLength(sent, minSpace)
+        val min = sentenceMinLength(sent, minSpace)
         val diff = maxLen - min
         val fillLen = diff / (sent.size - 1)
         var off = 0
@@ -107,7 +107,7 @@ class JustifyImpl extends Justify {
     }
   }
 
-  def sentanceMinLength(sent: Seq[Word], minSpace: Int): Int = {
+  def sentenceMinLength(sent: Seq[Word], minSpace: Int): Int = {
     val spaceCnt: Int = sent.size - 1
     val wordsLen: Int = sent.foldLeft(0) { (a, b) => b.wordWidth + a }
     wordsLen + spaceCnt * minSpace

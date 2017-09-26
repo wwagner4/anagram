@@ -5,7 +5,7 @@ object LearningDataEn01 extends App {
   val books = BookCollection(
     id = "en01",
     desc = "Collection of English Books #1",
-    sentanceLength = 2 to 7,
+    sentenceLength = 2 to 7,
     books = Seq(
       Book("books/ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
       Book("books/CommonSense.txt", "Common Sense", "Thomas Paine"),

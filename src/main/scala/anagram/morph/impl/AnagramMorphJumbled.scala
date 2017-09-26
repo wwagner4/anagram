@@ -10,7 +10,7 @@ class AnagramMorphJumbled extends AnagramMorph {
   val probFlipWords = 50 // in %
   val probFlipSpaces = 60 // in %
 
-  def split(sentance: String): List[String] = sentance.split(" ").toList
+  def split(sentence: String): List[String] = sentence.split(" ").toList
 
   def morph(words: List[String]): List[String] =
     flipWords(
@@ -71,9 +71,9 @@ class AnagramMorphJumbled extends AnagramMorph {
     if (p <= 0) 100000
     else (200.0 / p.toDouble).toInt
 
-  def toRandom(sentance: String, cnt: Int): List[List[String]] = {
-    val words: List[String] = split(sentance)
-    split(sentance) :: morph(words, cnt)
+  def toRandom(sentence: String, cnt: Int): List[List[String]] = {
+    val words: List[String] = split(sentence)
+    split(sentence) :: morph(words, cnt)
   }
 
   def splitNum(num: Int): (Int, Int) = {

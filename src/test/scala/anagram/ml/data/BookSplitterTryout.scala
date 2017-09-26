@@ -6,10 +6,10 @@ object BookSplitterTryout extends App {
 
   val uris = BookSplitter.booksSmall.map(IoUtil.uri)
 
-  val sentances = BookSplitter.sentances(uris)
-  println(sentances.map(_.mkString(" ")).mkString("\n"))
+  val sentences = BookSplitter.sentences(uris)
+  println(sentences.map(_.mkString(" ")).mkString("\n"))
 
-  val sentances1 = BookSplitter.sentances(uris)
-  println("-- size:" + sentances1.size)
+  val sentences1 = BookSplitter.sentences(uris)
+  println("-- size:" + sentences1.size)
 
 }

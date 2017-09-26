@@ -10,7 +10,7 @@ import org.nd4j.linalg.factory.Nd4j
 
 import scala.util.Random
 
-case class Ana(rate: Double, sentance: Iterable[String])
+case class Ana(rate: Double, sentence: Iterable[String])
 
 trait Rater {
   def rate(sent: Iterable[String]): Double
@@ -22,7 +22,7 @@ object AiSolver {
     SSolver.solve(srcText, wordlist)
       .map(sent => Ana(rater.rate(sent), sent))
       .sortBy(-_.rate)
-      .foreach(ana => println("%10.8f  - '%s'".format(ana.rate, ana.sentance.mkString(" "))))
+      .foreach(ana => println("%10.8f  - '%s'".format(ana.rate, ana.sentence.mkString(" "))))
   }
 }
 

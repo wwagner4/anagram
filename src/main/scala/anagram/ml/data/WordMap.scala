@@ -23,7 +23,7 @@ object WordMap {
   private val ran = Random
 
   def createWordMapFromBooks(books: Seq[URI]): WordMapper = {
-    val words: Seq[String] = BookSplitter.sentances(books)
+    val words: Seq[String] = BookSplitter.sentences(books)
       .flatten
       .toSet
       .toSeq

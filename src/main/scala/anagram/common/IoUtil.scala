@@ -24,8 +24,8 @@ object IoUtil {
     loadTxtFromWorkDir(s"${id}_map", f)
   }
 
-  def saveDataToWorkDir(id: String, sentancelength: Int, f: BufferedWriter => Unit): Path = {
-    saveTxtToWorkDir(s"${id}_data_$sentancelength", f)
+  def saveDataToWorkDir(id: String, sentencelength: Int, f: BufferedWriter => Unit): Path = {
+    saveTxtToWorkDir(s"${id}_data_$sentencelength", f)
   }
 
   def loadTxtFromPath[T](path: Path, f: Iterator[String] => T): T = {
@@ -49,8 +49,8 @@ object IoUtil {
       .map(createDataFile(_, ".*_nn_(.*).ser"))
   }
 
-  def nnDataFilePath(id: String, sentanceLength: Int): Path = {
-    getCreateWorkDir.resolve(s"anagram_${id}_nn_$sentanceLength.ser")
+  def nnDataFilePath(id: String, sentenceLength: Int): Path = {
+    getCreateWorkDir.resolve(s"anagram_${id}_nn_$sentenceLength.ser")
   }
 
   def uri(res: String): URI = {
@@ -89,7 +89,7 @@ object IoUtil {
     val REG = regex.r
     path.getFileName.toString match {
       case REG(lenStr) => DataFile(lenStr.toInt, path)
-      case _ => throw new IllegalArgumentException(s"Could not extract sentance length from filename '$path'")
+      case _ => throw new IllegalArgumentException(s"Could not extract sentence length from filename '$path'")
     }
   }
 

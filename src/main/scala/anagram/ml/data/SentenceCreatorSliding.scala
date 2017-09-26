@@ -2,17 +2,17 @@ package anagram.ml.data
 
 import java.net.URI
 
-class SentanceCreatorSliding extends SentanceCreator {
+class SentenceCreatorSliding extends SentenceCreator {
 
   private val splitter = BookSplitter
 
   def create(books: Seq[URI], len: Int, wordMapper: WordMapper): Stream[Seq[String]] = {
-    splitter.sentances(books)
+    splitter.sentences(books)
       .filter(_.size >= len)
-      .flatMap(slideSentances(_, len, wordMapper))
+      .flatMap(slideSentences(_, len, wordMapper))
   }
 
-  def slideSentances(sent: Seq[String], len: Int, wordMapper: WordMapper): Seq[Seq[String]] = {
+  def slideSentences(sent: Seq[String], len: Int, wordMapper: WordMapper): Seq[Seq[String]] = {
     require(sent.size >= len)
     sent.sliding(len)
       .toList

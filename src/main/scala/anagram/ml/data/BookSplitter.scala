@@ -24,7 +24,7 @@ object BookSplitter {
 
   private val validChars: Seq[Char] = (32 :: 46 :: (65 to 90).toList ::: (97 to 122).toList).map(i => i.toChar)
 
-  def sentances(books: Seq[URI]): Stream[Seq[String]] = {
+  def sentences(books: Seq[URI]): Stream[Seq[String]] = {
     books.toStream
       .flatMap(file =>
         Source.fromFile(file, "UTF-8").iter.toStream
@@ -32,7 +32,7 @@ object BookSplitter {
           .map { case '\u000D' => ' ' case '\u000A' => ' ' case '-' => ' ' case any => any }
           .filter(validChars.contains(_))
           .map(_.toLower)
-          .foldLeft(Stream.empty[List[Char]])(splitSentances)
+          .foldLeft(Stream.empty[List[Char]])(splitSentences)
           .map(_.mkString.split("\\s")
             .toList
             .filter(!_.isEmpty))
@@ -40,7 +40,7 @@ object BookSplitter {
       )
   }
 
-  private def splitSentances(stream: Stream[List[Char]], char: Char): Stream[List[Char]] = stream match {
+  private def splitSentences(stream: Stream[List[Char]], char: Char): Stream[List[Char]] = stream match {
     case Stream.Empty => Stream(List(char))
     case head #:: rest if char == '.' => List.empty[Char] #:: head #:: rest
     case head #:: rest => (head :+ char) #:: rest
