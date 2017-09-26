@@ -28,13 +28,15 @@ object LearningData {
   val ran = new Random()
   val variance = 5
 
+  val sentanceCreator: SentanceCreator = new SentanceCreatorSliding()
+
 
   def createData(bookCollection: BookCollection): Unit = {
     val wm: WordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
 
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
     for (len <- bookCollection.sentanceLength) {
-      val sent: Seq[Seq[String]] = SentanceCreator.create(uris, len, wm)
+      val sent: Seq[Seq[String]] = sentanceCreator.create(uris, len, wm)
       val ldPath = IoUtil.saveDataToWorkDir(bookCollection.id, len, writeSentances(sent, wm)(_))
       log.info("created learning data in " + ldPath)
     }
