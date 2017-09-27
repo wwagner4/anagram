@@ -25,7 +25,7 @@ object LearningData {
   private val log = LoggerFactory.getLogger("LearningData")
 
   private val wm: WordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
-  private val variance = 5
+  private val variance = 0
 
   private val sentenceCreator: SentenceCreator = new SentenceCreatorSliding()
   private val sentenceRater: SentenceRater = new SentenceRaterAdapted(wm)

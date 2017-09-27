@@ -33,18 +33,35 @@ object WordMap {
 
   }
 
-  def createWordMapFromWordlist(wordmap: Iterable[String]): WordMapper = {
-    val si = wordmap
-      .toSeq
-      .sorted
-      .sortBy(_.length)
-      .zipWithIndex
-    createMap(si)
+  def createWordMapFromWordlist(wordlist: Iterable[String]): WordMapper = {
+    val grps = wordlist.toSeq.groupBy(w => maxVowel(w)).toSeq
+    val si: Seq[Seq[String]] = for ((_, sent) <- grps) yield {
+      sent.sorted
+    }
+    createMap(si.flatten.zipWithIndex)
   }
 
   def createWordMapFromWordlistResource(resName: String): WordMapper = {
     val wl = WordList.loadWordList(resName)
     createWordMapFromWordlist(wl)
+  }
+
+  def maxVowel(word: String): Char = {
+    val vowels = Seq('a', 'e', 'i', 'o', 'u')
+    val x: Seq[(Char, Int)] = for (v <- vowels) yield {
+      val cnt = countChar(word, v)
+      (v, cnt)
+    }
+    val y = x.sortBy(-_._2)
+    y(0)._1
+  }
+
+
+  def countChar(word: String, char: Char): Int = {
+    val x: Seq[Int] = for (c <- word) yield {
+      if (c == char) 1 else 0
+    }
+    x.sum
   }
 
   private def createMap(si: Seq[(String, Int)]): WordMapper = {
