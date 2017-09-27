@@ -7,6 +7,9 @@ trait SentenceRater {
     * and adds a rating at the end of each of these new
     * sentences.
     */
-  def rateSentence(sentence: Seq[String]): Seq[Seq[String]]
+  def rateSentence(sentence: Seq[String]): Seq[Rated]
 
 }
+
+case class Rated(sentence: Seq[String], rating: Double)
+

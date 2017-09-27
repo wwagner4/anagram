@@ -1,6 +1,7 @@
 package anagram.ml.data
 
 import java.io.BufferedWriter
+import java.util.Locale
 
 import anagram.common.IoUtil
 import org.slf4j.LoggerFactory
@@ -27,7 +28,8 @@ object LearningData {
   private val variance = 5
 
   private val sentenceCreator: SentenceCreator = new SentenceCreatorSliding()
-  private val sentenceRater: SentenceRater = new SentenceRaterSimple(wm, variance, true)
+  private val sentenceRater: SentenceRater = new SentenceRaterAdapted(wm)
+  private val ran = new util.Random()
 
   def createData(bookCollection: BookCollection): Unit = {
 
@@ -43,15 +45,21 @@ object LearningData {
   def writeSentences(sentences: Seq[Seq[String]])(wr: BufferedWriter): Unit = {
     for (sent <- sentences) {
       for (rated <- sentenceRater.rateSentence(sent)) {
-        writeSentence(rated)(wr)
+        val ranRate = rated.rating + (ran.nextInt(variance * 2 + 1) - variance)
+        val numSent = rated.sentence.map(word => f(wm.toNum(word)))
+        val numRated = Rated(numSent, ranRate)
+        writeSentence(numRated)(wr)
       }
     }
   }
 
-  def writeSentence(sent: Seq[String])(wr: BufferedWriter): Unit = {
-    wr.write(sent.mkString(";"))
+  def writeSentence(rated: Rated)(wr: BufferedWriter): Unit = {
+    val line = rated.sentence ++ Seq(f(rated.rating))
+    wr.write(line.mkString(";"))
     wr.write("\n")
   }
+
+  def f(value: Number): String = "%f".formatLocal(Locale.ENGLISH, value.doubleValue())
 
   def asString(bookCollection: BookCollection): String = {
     val sb = new StringBuilder

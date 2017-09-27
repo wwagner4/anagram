@@ -2,20 +2,18 @@ package anagram.ml.data
 
 import java.util.Locale
 
-class SentenceRaterSimple(val wm: WordMapper, val variance: Int, val convertWordsToNumbers: Boolean) extends SentenceRater {
+class SentenceRaterSimple(val wm: WordMapper) extends SentenceRater {
 
   val ran = new  util.Random()
 
-  def rateSentence(sentence: Seq[String]): Seq[Seq[String]] = {
+  def rateSentence(sentence: Seq[String]): Seq[Rated] = {
 
     val l = sentence.length
     val ratings = (0 to (100, 100 / l)).toList
     ratings.flatMap(rate => Seq.fill(5) {
       val numEx =  numExchange(sentence.size, rate)
-      val sentEx: Seq[String] = exchange(sentence, numEx, wm)
-      val sentNum = if (convertWordsToNumbers) sentEx.map(w => f(wm.toNum(w))) else sentEx
-      val ranRate = rate + ran.nextInt(variance * 2 + 1) - variance
-      sentNum :+ f(ranRate)
+      val sentEx: Seq[String] = exchange(sentence, numEx)
+      Rated(sentEx, rate)
     })
   }
 
@@ -31,7 +29,7 @@ class SentenceRaterSimple(val wm: WordMapper, val variance: Int, val convertWord
 
   def f(value: Int): String = "%d".formatLocal(Locale.ENGLISH, value)
 
-  def exchange(sent: Seq[String], numEx: Int,wm: WordMapper): Seq[String] = {
+  def exchange(sent: Seq[String], numEx: Int): Seq[String] = {
     val idx = ran.shuffle(sent.indices.toList).take(numEx)
     for ((w, i) <- sent.zipWithIndex) yield {
       if (idx.contains(i)) wm.randomWord

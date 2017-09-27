@@ -4,16 +4,19 @@ object SentenceRaterTryout extends App {
 
   val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
 
-  val sentence = Seq(
-    "ones",
-    "upon",
-    "time",
-  )
+  val sentence = Seq("ones", "upon", "time", "in", "a", "country", "far", "far", "away")
 
-  val sentenceRater: SentenceRater = new SentenceRaterSimple(wm, 0, false)
+  val sentences = (2 to 7).map(sentence.take)
 
-  val f = sentenceRater.rateSentence(sentence).map(_.mkString(" ")).mkString("\n")
+  val sentenceRater: SentenceRater = new SentenceRaterAdapted(wm)
 
-  println(f)
+  for (s <- sentences) {
+    for (r <- sentenceRater.rateSentence(s)) {
+      val s = r.sentence.mkString(" ")
+      val f = "%.2f" format r.rating
+      val g = "%10.2f - %s" format(r.rating, r.sentence.mkString(" "))
+      println(g)
+    }
+  }
 
 }

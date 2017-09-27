@@ -7,7 +7,7 @@ object AiSolverMain extends App {
 
   val log = LoggerFactory.getLogger("anagram.solve.AiSolverMain")
 
-  val srcText: String = "bernd ingrid in love"
+  val srcText: String = "noah is cool"
   val id: String = "en02"
   val wordlist: Iterable[String] = WordList.loadWordList("wordlist/wordlist_small.txt")
   val rater: Rater = new AiRater(id, wordlist)
