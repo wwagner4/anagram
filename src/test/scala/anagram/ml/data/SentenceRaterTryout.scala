@@ -12,8 +12,6 @@ object SentenceRaterTryout extends App {
 
   for (s <- sentences) {
     for (r <- sentenceRater.rateSentence(s)) {
-      val s = r.sentence.mkString(" ")
-      val f = "%.2f" format r.rating
       val g = "%10.2f - %s" format(r.rating, r.sentence.mkString(" "))
       println(g)
     }

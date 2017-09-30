@@ -4,7 +4,7 @@ import scala.collection.mutable
 
 class AnaCache {
 
-  var map =  mutable.Map.empty[String, List[List[String]]]
+  val map =  mutable.Map.empty[String, List[List[String]]]
 
   def addAna(txt: String, anas: List[List[String]]): Unit = {
     map.put(txt, anas)
