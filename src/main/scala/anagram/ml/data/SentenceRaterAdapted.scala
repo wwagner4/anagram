@@ -24,6 +24,18 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
       Rated(exchaned, rating)
     }
 
+
+    val preferredFirstWords = Seq("i", "you", "he", "she", "it",
+      "a", "an", "the", "my", "your", "her", "their",
+      "red", "green", "yellow", "blue", "white", "black")
+
+    def ratedIdentityPreferredWords(preferredRating: Double, identityRating: Double): Rated = {
+      require(sentence.nonEmpty)
+      val  rating = if (preferredFirstWords.contains(sentence(0))) 100
+      else 80
+      Rated(sentence, rating)
+    }
+
     def ratedIdentity(rate: Double): Rated = Rated(sentence, rate)
 
     def ratedRandom(rate: Double): Rated = {
@@ -37,18 +49,18 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 2 => Seq(
-        ratedIdentity(100),
+        ratedIdentityPreferredWords(100, 80),
         ratedRandom(0),
       )
       case 3 => Seq(
-        ratedIdentity(100),
+        ratedIdentityPreferredWords(100, 80),
         randomExchange(Seq(0), 33),
         randomExchange(Seq(1), 33),
         randomExchange(Seq(2), 33),
         ratedRandom(0),
       )
       case 4 => Seq(
-        ratedIdentity(100),
+        ratedIdentityPreferredWords(100, 80),
         randomExchangeN(1, 66),
         randomExchangeN(1, 66),
         randomExchangeN(1, 66),
@@ -58,7 +70,7 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 5 => Seq(
-        ratedIdentity(100),
+        ratedIdentityPreferredWords(100, 90),
         randomExchangeN(1, 70),
         randomExchangeN(1, 70),
         randomExchangeN(1, 70),
@@ -70,7 +82,7 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 6 => Seq(
-        ratedIdentity(100),
+        ratedIdentityPreferredWords(100, 91),
         randomExchangeN(1, 75),
         randomExchangeN(1, 75),
         randomExchangeN(1, 75),
@@ -83,7 +95,7 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 7 => Seq(
-        ratedIdentity(100),
+        ratedIdentityPreferredWords(100, 95),
         randomExchangeN(1, 80),
         randomExchangeN(1, 80),
         randomExchangeN(1, 80),

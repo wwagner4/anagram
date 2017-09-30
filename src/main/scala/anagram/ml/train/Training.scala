@@ -15,25 +15,18 @@ import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
 
-case class Run(
-                id: String,
-                dataId: String,
-                desc: String,
-              )
-
-
 object Training {
 
   private val log = LoggerFactory.getLogger("Training")
 
 
 
-  def train(run: Run): Unit = {
-    log.info(s"Started training for run: '${run.id}'")
-    IoUtil.getTxtDataFilesFromWorkDir(run.dataId).foreach{dataFile =>
-      trainDataFile(dataFile, run.dataId)
+  def train(dataId: String): Unit = {
+    log.info(s"Started training for run: '$dataId'")
+    IoUtil.getTxtDataFilesFromWorkDir(dataId).foreach{dataFile =>
+      trainDataFile(dataFile, dataId)
     }
-    log.info(s"Finished training for run: '${run.id}'")
+    log.info(s"Finished training for run: '$dataId'")
   }
 
   def trainDataFile(dataFile: DataFile, dataId: String): Unit = {
@@ -43,7 +36,7 @@ object Training {
     recordReader.initialize(new FileSplit(dataFile.path.toFile))
     val dsIter = new RecordReaderDataSetIterator(recordReader, 100000, dataFile.wordLen, dataFile.wordLen, true)
     log.info(s"read dataset iterator")
-    val nnConf = nnConfiguration(dataFile.wordLen)
+    val nnConf = nnConfiguration(dataFile.wordLen, iterations(dataFile.wordLen))
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
     nn.setListeners(new ScoreIterationListener(30))
@@ -57,16 +50,22 @@ object Training {
     log.info(s"Finished training data file: '${dataFile.path.getFileName}'")
   }
 
-  private def nnConfiguration(numInput: Int): MultiLayerConfiguration = {
+  def iterations(sentLen: Int): Int = {
+    if (sentLen <= 2 ) 60
+    else if (sentLen <= 3 ) 25
+    else 15
+  }
 
-    val numHidden = 200
-    val act = Activation.TANH
+  private def nnConfiguration(numInput: Int, iterations: Int): MultiLayerConfiguration = {
+
+    val numHidden = 400
+    val act = Activation.SIGMOID
 
     new NeuralNetConfiguration.Builder()
       .seed(92388784L)
-      .iterations(5)
+      .iterations(iterations)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-      .learningRate(0.00005)
+      .learningRate(0.00001)
       .weightInit(WeightInit.XAVIER)
       .updater(Updater.NESTEROVS)
       .regularization(false)
