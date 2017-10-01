@@ -10,7 +10,7 @@ object LearningDataTwoLines extends App {
       Book("books/TwoLines.txt", "TwoLines", "Test"),
     )
   )
-
-  LearningData.createData(books)
+  val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+  new LearningData(wm).createData(books)
 
 }

@@ -15,6 +15,7 @@ object LearningDataEn01 extends App {
     )
   )
 
-  LearningData.createData(books)
+  val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+  new LearningData(wm).createData(books)
 
 }

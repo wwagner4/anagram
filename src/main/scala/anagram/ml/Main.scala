@@ -1,12 +1,14 @@
 package anagram.ml
 
-import anagram.ml.data.{Book, BookCollection, LearningData}
+import anagram.ml.data.{Book, BookCollection, LearningData, WordMap}
 import anagram.ml.train.Training
 
 object Main extends App {
 
   val dataId = "en03"
   val createData = true
+
+  val wordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
 
   val books = BookCollection(
     id = dataId,
@@ -26,7 +28,7 @@ object Main extends App {
     )
   )
 
-  if (createData) LearningData.createData(books)
+  if (createData) new LearningData(wordMapper).createData(books)
   Training.train(dataId)
 
 }

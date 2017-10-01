@@ -20,11 +20,10 @@ case class BookCollection(
                          )
 
 
-object LearningData {
+class LearningData(wm: WordMapper) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
-  private val wm: WordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
   private val variance = 0
 
   private val sentenceCreator: SentenceCreator = new SentenceCreatorSliding()

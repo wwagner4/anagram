@@ -43,7 +43,7 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
       Rated(Sentence(sentence.sentenceType, sent), rate)
     }
 
-    sentence.words.length match {
+    val rated: Seq[Rated] = sentence.words.length match {
       case 1 => Seq(
         ratedIdentity(100),
         ratedRandom(0),
@@ -109,6 +109,12 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
       )
       case _ => throw new IllegalStateException(s"Cannot rate words with ${sentence.words.size} words")
     }
+
+    rated.map(r => r.sentence.sentenceType match {
+      case SentenceType_OTHER => r
+      case SentenceType_COMPLETE => Rated(r.sentence, r.rating * 1.5)
+      case SentenceType_BEGINNING => Rated(r.sentence, r.rating * 1.2)
+    })
   }
 
 
