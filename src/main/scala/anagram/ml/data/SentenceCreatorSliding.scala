@@ -10,15 +10,21 @@ class SentenceCreatorSliding extends SentenceCreator {
     splitter.sentences(books)
       .filter(_.size >= len)
       .flatMap(slideSentences(_, len, wordMapper))
-      // TODO Determine Type
-      .map(Sentence(SentenceType_OTHER, _))
   }
 
-  def slideSentences(sent: Seq[String], len: Int, wordMapper: WordMapper): Seq[Seq[String]] = {
+  def slideSentences(sent: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
     require(sent.size >= len)
-    sent.sliding(len)
-      .toList
+    if (sent.size == len) {
+      Seq(Sentence(SentenceType_COMPLETE, sent))
+    } else {
+      val words = sent.sliding(len)
+        .toList
         .filter((sent: Seq[String]) => sent.forall(wordMapper.containsWord))
+      for ((w, i) <- words.zipWithIndex) yield {
+        if (i == 0) Sentence(SentenceType_BEGINNING, w)
+        else Sentence(SentenceType_OTHER, w)
+      }
+    }
   }
 
 }
