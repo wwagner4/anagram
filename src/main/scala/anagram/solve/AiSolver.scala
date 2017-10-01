@@ -18,11 +18,9 @@ trait Rater {
 
 object AiSolver {
 
-  def solve(srcText: String, id: String, wordlist: Iterable[String], rater: Rater): Unit = {
+  def solve(srcText: String, wordlist: Iterable[String], rater: Rater): Iterable[Ana] = {
     SSolver.solve(srcText, wordlist)
       .map(sent => Ana(rater.rate(sent), sent))
-      .sortBy(-_.rate)
-      .foreach(ana => println("%10.8f  - '%s'".format(ana.rate, ana.sentence.mkString(" "))))
   }
 }
 
