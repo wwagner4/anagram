@@ -29,7 +29,6 @@ class SentenceRaterSimple(val wm: WordMapper) extends SentenceRater {
 
   def f(value: Int): String = "%d".formatLocal(Locale.ENGLISH, value)
 
-  // TODO New Sentence type
   def exchange(sent: Sentence, numEx: Int): Sentence = {
     val idx = ran.shuffle(sent.words.indices.toList).take(numEx)
     val wordsExc = for ((w, i) <- sent.words.zipWithIndex) yield {
