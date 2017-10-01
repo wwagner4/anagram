@@ -35,18 +35,21 @@ object LearningData {
 
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
     for (len <- bookCollection.sentenceLength) {
-      val sent: Seq[Seq[String]] = sentenceCreator.create(uris, len, wm)
+      val sent: Seq[Sentence] = sentenceCreator.create(uris, len, wm)
       val ldPath = IoUtil.saveDataToWorkDir(bookCollection.id, len, writeSentences(sent)(_))
       log.info("created learning data in " + ldPath)
     }
     log.info("Created learning data for book collection:\n" + asString(bookCollection))
   }
 
-  def writeSentences(sentences: Seq[Seq[String]])(wr: BufferedWriter): Unit = {
+  def writeSentences(sentences: Seq[Sentence])(wr: BufferedWriter): Unit = {
     for (sent <- sentences) {
       for (rated <- sentenceRater.rateSentence(sent)) {
         val ranRate = rated.rating + (ran.nextInt(variance * 2 + 1) - variance)
-        val numSent = rated.sentence.map(word => f(wm.toNum(word)))
+        val numSent = Sentence(
+          rated.sentence.sentenceType,
+          rated.sentence.words.map(word => f(wm.toNum(word)))
+        )
         val numRated = Rated(numSent, ranRate)
         writeSentence(numRated)(wr)
       }
@@ -54,7 +57,7 @@ object LearningData {
   }
 
   def writeSentence(rated: Rated)(wr: BufferedWriter): Unit = {
-    val line = rated.sentence ++ Seq(f(rated.rating))
+    val line = rated.sentence.words ++ Seq(f(rated.rating))
     wr.write(line.mkString(";"))
     wr.write("\n")
   }

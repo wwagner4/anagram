@@ -89,7 +89,7 @@ object IoUtil {
     val REG = regex.r
     path.getFileName.toString match {
       case REG(lenStr) => DataFile(lenStr.toInt, path)
-      case _ => throw new IllegalArgumentException(s"Could not extract sentence length from filename '$path'")
+      case _ => throw new IllegalArgumentException(s"Could not extract words length from filename '$path'")
     }
   }
 

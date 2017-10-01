@@ -5,23 +5,23 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
   val ran = new util.Random()
 
 
-  def rateSentence(sentence: Seq[String]): Seq[Rated] = {
+  def rateSentence(sentence: Sentence): Seq[Rated] = {
 
     def randomExchange(idx: Seq[Int], rating: Int): Rated = {
-      val exchaned = for ((w, i) <- sentence.zipWithIndex) yield {
+      val exchaned = for ((w, i) <- sentence.words.zipWithIndex) yield {
         if (idx.contains(i)) wm.randomWord
         else w
       }
-      Rated(exchaned, rating)
+      Rated(Sentence(sentence.sentenceType, exchaned), rating)
     }
 
     def randomExchangeN(n: Int, rating: Int): Rated = {
-      val idx = ran.shuffle(sentence.indices.toList).take(n)
-      val exchaned = for ((w, i) <- sentence.zipWithIndex) yield {
+      val idx = ran.shuffle(sentence.words.indices.toList).take(n)
+      val exchaned = for ((w, i) <- sentence.words.zipWithIndex) yield {
         if (idx.contains(i)) wm.randomWord
         else w
       }
-      Rated(exchaned, rating)
+      Rated(Sentence(sentence.sentenceType, exchaned), rating)
     }
 
 
@@ -30,8 +30,8 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
       "red", "green", "yellow", "blue", "white", "black")
 
     def ratedIdentityPreferredWords(preferredRating: Double, identityRating: Double): Rated = {
-      require(sentence.nonEmpty)
-      val  rating = if (preferredFirstWords.contains(sentence(0))) 100
+      require(sentence.words.nonEmpty)
+      val  rating = if (preferredFirstWords.contains(sentence.words(0))) 100
       else 80
       Rated(sentence, rating)
     }
@@ -39,11 +39,11 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
     def ratedIdentity(rate: Double): Rated = Rated(sentence, rate)
 
     def ratedRandom(rate: Double): Rated = {
-      val sent = sentence.indices.map(_ => wm.randomWord)
-      Rated(sent, rate)
+      val sent = sentence.words.indices.map(_ => wm.randomWord)
+      Rated(Sentence(sentence.sentenceType, sent), rate)
     }
 
-    sentence.length match {
+    sentence.words.length match {
       case 1 => Seq(
         ratedIdentity(100),
         ratedRandom(0),
@@ -107,7 +107,7 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         randomExchangeN(3, 30),
         ratedRandom(0),
       )
-      case _ => throw new IllegalStateException(s"Cannot rate sentence with ${sentence.size} words")
+      case _ => throw new IllegalStateException(s"Cannot rate words with ${sentence.words.size} words")
     }
   }
 

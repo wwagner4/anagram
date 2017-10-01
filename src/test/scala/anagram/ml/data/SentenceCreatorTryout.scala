@@ -10,7 +10,7 @@ object SentenceCreatorTryout extends App {
 
   val sent = new SentenceCreatorSliding().create(uris, 4, wm)
 
-  println(sent.map(_.mkString(" ")).mkString("\n"))
+  println(sent.map(_.words.mkString(" ")).mkString("\n"))
 
 }
 

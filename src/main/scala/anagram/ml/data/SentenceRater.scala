@@ -3,13 +3,13 @@ package anagram.ml.data
 trait SentenceRater {
 
   /**
-    * Takes a sentence, copies and changes these copies
+    * Takes a words, copies and changes these copies
     * and adds a rating at the end of each of these new
     * sentences.
     */
-  def rateSentence(sentence: Seq[String]): Seq[Rated]
+  def rateSentence(sentence: Sentence): Seq[Rated]
 
 }
 
-case class Rated(sentence: Seq[String], rating: Double)
+case class Rated(sentence: Sentence, rating: Double)
 

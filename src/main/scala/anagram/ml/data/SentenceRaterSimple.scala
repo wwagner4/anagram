@@ -6,13 +6,13 @@ class SentenceRaterSimple(val wm: WordMapper) extends SentenceRater {
 
   val ran = new  util.Random()
 
-  def rateSentence(sentence: Seq[String]): Seq[Rated] = {
+  def rateSentence(sentence: Sentence): Seq[Rated] = {
 
-    val l = sentence.length
+    val l = sentence.words.length
     val ratings = (0 to (100, 100 / l)).toList
     ratings.flatMap(rate => Seq.fill(5) {
-      val numEx =  numExchange(sentence.size, rate)
-      val sentEx: Seq[String] = exchange(sentence, numEx)
+      val numEx =  numExchange(sentence.words.size, rate)
+      val sentEx = exchange(sentence, numEx)
       Rated(sentEx, rate)
     })
   }
@@ -29,12 +29,14 @@ class SentenceRaterSimple(val wm: WordMapper) extends SentenceRater {
 
   def f(value: Int): String = "%d".formatLocal(Locale.ENGLISH, value)
 
-  def exchange(sent: Seq[String], numEx: Int): Seq[String] = {
-    val idx = ran.shuffle(sent.indices.toList).take(numEx)
-    for ((w, i) <- sent.zipWithIndex) yield {
+  // TODO New Sentence type
+  def exchange(sent: Sentence, numEx: Int): Sentence = {
+    val idx = ran.shuffle(sent.words.indices.toList).take(numEx)
+    val wordsExc = for ((w, i) <- sent.words.zipWithIndex) yield {
       if (idx.contains(i)) wm.randomWord
       else w
     }
+    Sentence(sent.sentenceType, wordsExc)
   }
 
 }
