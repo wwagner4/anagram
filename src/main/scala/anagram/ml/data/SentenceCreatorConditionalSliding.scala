@@ -2,7 +2,12 @@ package anagram.ml.data
 
 import java.net.URI
 
-class SentenceCreatorSliding extends SentenceCreator {
+/**
+  * Create sliding sentences only if length <= maxLengthSliding.
+  */
+class SentenceCreatorConditionalSliding extends SentenceCreator {
+
+  val maxLengthSliding = 4
 
   private val splitter = BookSplitter
 
@@ -21,7 +26,7 @@ class SentenceCreatorSliding extends SentenceCreator {
       } else {
         Seq.empty[Sentence]
       }
-    } else {
+    } else if (words.length <= maxLengthSliding) {
       val ws = words.sliding(len)
         .toList
         .filter(ws => ws.forall(wordMapper.containsWord))
@@ -29,6 +34,8 @@ class SentenceCreatorSliding extends SentenceCreator {
         if (i == 0) Sentence(SentenceType_BEGINNING, w)
         else Sentence(SentenceType_OTHER, w)
       }
+    } else {
+      Seq.empty[Sentence]
     }
   }
 

@@ -20,8 +20,9 @@ object LearningDataEn02 extends App {
     )
   )
 
-  val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+  val wordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+  val sentenceCreator = new SentenceCreatorConditionalSliding()
 
-  new LearningData(wm).createData(books)
+  new LearningData(wordMapper, sentenceCreator).createData(books)
 
 }

@@ -20,13 +20,12 @@ case class BookCollection(
                          )
 
 
-class LearningData(wm: WordMapper) {
+class LearningData(wm: WordMapper, sentenceCreator: SentenceCreator) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
   private val variance = 0
 
-  private val sentenceCreator: SentenceCreator = new SentenceCreatorSliding()
   private val sentenceRater: SentenceRater = new SentenceRaterAdapted(wm)
   private val ran = new util.Random()
 

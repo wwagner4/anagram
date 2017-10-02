@@ -1,6 +1,6 @@
 package anagram.ml
 
-import anagram.ml.data.{Book, BookCollection, LearningData, WordMap}
+import anagram.ml.data._
 import anagram.ml.train.Training
 
 object Main extends App {
@@ -28,7 +28,9 @@ object Main extends App {
     )
   )
 
-  if (createData) new LearningData(wordMapper).createData(books)
+  val sentenceCreator = new SentenceCreatorConditionalSliding()
+
+  if (createData) new LearningData(wordMapper, sentenceCreator).createData(books)
   Training.train(dataId)
 
 }

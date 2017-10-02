@@ -10,7 +10,8 @@ object LearningDataTwoLines extends App {
       Book("books/TwoLines.txt", "TwoLines", "Test"),
     )
   )
-  val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
-  new LearningData(wm).createData(books)
+  val wordMapper = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+  val sentenceCreator = new SentenceCreatorConditionalSliding()
+  new LearningData(wordMapper, sentenceCreator).createData(books)
 
 }

@@ -60,7 +60,10 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 4 => Seq(
-        ratedIdentityPreferredWords(100, 80),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
         randomExchangeN(1, 66),
         randomExchangeN(1, 66),
         randomExchangeN(1, 66),
@@ -70,7 +73,10 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 5 => Seq(
-        ratedIdentityPreferredWords(100, 90),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
         randomExchangeN(1, 70),
         randomExchangeN(1, 70),
         randomExchangeN(1, 70),
@@ -82,7 +88,10 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 6 => Seq(
-        ratedIdentityPreferredWords(100, 91),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
         randomExchangeN(1, 75),
         randomExchangeN(1, 75),
         randomExchangeN(1, 75),
@@ -95,7 +104,10 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         ratedRandom(0),
       )
       case 7 => Seq(
-        ratedIdentityPreferredWords(100, 95),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
+        ratedIdentity(100),
         randomExchangeN(1, 80),
         randomExchangeN(1, 80),
         randomExchangeN(1, 80),
