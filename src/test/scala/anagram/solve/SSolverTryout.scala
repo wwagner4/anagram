@@ -2,21 +2,24 @@ package anagram.solve
 
 import anagram.ml.data.WordList
 
+import scala.collection.GenIterable
+
 object SSolverTryout extends App {
 
-  val wordlist = List(
-    "as",
-    "togo",
-    "go",
-    "r",
-  )
-
   val wl = WordList.loadWordList("wordlist/wordlist_small.txt")
-  val anas = SSolver.solve("ingrid bernd", wl)
+
+  val start = System.currentTimeMillis()
+
+  private val src = "clint eastwood"
+  val anas: GenIterable[Iterable[String]] = SSolver().solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")
-  else for ((sent, i) <- anas.zipWithIndex) {
+  else for (sent <- anas) {
     val str = sent.mkString(" ")
-    println(f"$i%10d - '$str'")
+    println("%s --> %s".format(src, str))
   }
+
+  val stop = System.currentTimeMillis()
+
+  println(s"Duration: ${stop - start} ms")
 }

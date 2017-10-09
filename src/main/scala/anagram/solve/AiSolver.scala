@@ -8,6 +8,7 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
 
+import scala.collection.GenIterable
 import scala.util.Random
 
 case class Ana(rate: Double, sentence: Iterable[String])
@@ -18,8 +19,8 @@ trait Rater {
 
 object AiSolver {
 
-  def solve(srcText: String, wordlist: Iterable[String], rater: Rater): Iterable[Ana] = {
-    SSolver.solve(srcText, wordlist)
+  def solve(srcText: String, wordlist: Iterable[String], rater: Rater): GenIterable[Ana] = {
+    SSolver().solve(srcText, wordlist)
       .map(sent => Ana(rater.rate(sent), sent))
   }
 }

@@ -14,11 +14,11 @@ class SSolverSuite extends FunSuite with MustMatchers {
       "r",
     )
 
-    val anas = SSolver.solve("Oast ogr", wordlist)
+    val anas = SSolver().solve("Oast ogr", wordlist)
 
     anas.size mustBe 6
 
-    val strAnas: Seq[String] = anas.map(sent => sent.mkString(" "))
+    val strAnas = anas.map(sent => sent.mkString(" "))
 
     strAnas must contain("as togo r")
     strAnas must contain("as r togo")
@@ -33,11 +33,11 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
     val wordList = WordList.loadWordList("wordlist/wordlist_test01.txt")
 
-    val anas = SSolver.solve("wolfi", wordList)
+    val anas = SSolver().solve("wolfi", wordList)
 
     anas.size mustBe 4
 
-    val strAnas: Seq[String] = anas.map(sent => sent.mkString(" "))
+    val strAnas = anas.map(sent => sent.mkString(" "))
 
     strAnas must contain("if low")
     strAnas must contain("owl if")
@@ -64,7 +64,7 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
   for ((w, txt, re) <- validWordData) {
     test(s"validWord $w $txt") {
-      SSolver.validWord(w, txt) mustBe re
+      SSolver().validWord(w, txt) mustBe re
     }
   }
 
@@ -76,7 +76,7 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
   for ((c, s, i, re) <- removeFirstData) {
     test(s"removeFirst $c $s") {
-      SSolver.removeFirst(c, s, i) mustBe re
+      SSolver().removeFirst(c, s, i) mustBe re
     }
   }
 

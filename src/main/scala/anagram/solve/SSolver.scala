@@ -1,34 +1,37 @@
 package anagram.solve
 
-object SSolver {
+import scala.collection.GenIterable
 
-  def solve(sourceText: String, words: Iterable[String]): Seq[Iterable[String]] = {
+case class SSolver(maxDepth: Int = 4) {
+
+  def solve(sourceText: String, words: Iterable[String]): GenIterable[Iterable[String]] = {
     solve1(sourceText.toLowerCase().replaceAll("\\s", ""), 0, words.toList, new AnaCache())
   }
 
-  def solve1(txt: String, depth: Int, words: List[String], anaCache: AnaCache): List[List[String]] = {
+  def solve1(txt: String, depth: Int, words: List[String], anaCache: AnaCache): GenIterable[List[String]] = {
     anaCache.ana(txt).getOrElse(solve2(txt, depth, words, anaCache))
   }
 
-  def solve2(txt: String, depth: Int, words: List[String], anaCache: AnaCache): List[List[String]] = {
-    val re = if (txt.isEmpty) List.empty[List[String]]
-    else {
-      if (depth > 4) List.empty[List[String]]
+  def solve2(txt: String, depth: Int, words: List[String], anaCache: AnaCache): GenIterable[List[String]] = {
+    val re: GenIterable[List[String]] =
+      if (txt.isEmpty) Iterable.empty[List[String]]
       else {
-        val mws =
-          findMatchingWords(txt, words).filter(!_.isEmpty)
-        //println(s"-- $depth :$txt: - ${mws.mkString(" ")}")
-        mws.flatMap { mw =>
-          val restText = removeChars(txt, mw.toList)
-          val subAnas = solve1(restText, depth + 1, words, anaCache)
-          if (restText.isEmpty && subAnas.isEmpty) {
-            List(List(mw))
-          } else {
-            subAnas.map(sent => mw :: sent)
+        if (depth >= maxDepth) Iterable.empty[List[String]]
+        else {
+          val mws = if (depth > 2) findMatchingWords(txt, words).filter(!_.isEmpty)
+          else findMatchingWords(txt, words).filter(!_.isEmpty).par
+          //println(s"-- $depth :$txt: - ${mws.mkString(" ")}")
+          mws.flatMap { mw =>
+            val restText = removeChars(txt, mw.toList)
+            val subAnas = solve1(restText, depth + 1, words, anaCache)
+            if (restText.isEmpty && subAnas.isEmpty) {
+              List(List(mw))
+            } else {
+              subAnas.map(sent => mw :: sent)
+            }
           }
         }
       }
-    }
     anaCache.addAna(txt, re)
     re
   }
@@ -45,6 +48,7 @@ object SSolver {
         else None
       }
     }
+
     vw(word, txt)
   }
 
@@ -66,7 +70,7 @@ object SSolver {
     else s
   }
 
-  def findMatchingWords(txt: String, words: List[String]): List[String] = {
+  def findMatchingWords(txt: String, words: List[String]): Iterable[String] = {
     words.flatMap(w => validWord(w, txt))
   }
 
