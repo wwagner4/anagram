@@ -41,11 +41,9 @@ class AiRater(dataId: String, wordlist: Iterable[String]) extends Rater {
   val wordmap: WordMapper = WordMap.createWordMapFromWordlist(wordlist)
 
   def rate(sent: Iterable[String]): Double = {
-    if (sent.size == 1) 1000.0 else {
-      nnMap.get(sent.size)
-        .map(rate(_, sent))
-        .getOrElse(0.0)
-    }
+    nnMap.get(sent.size)
+      .map(rate(_, sent))
+      .getOrElse(0.0)
   }
 
   def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
