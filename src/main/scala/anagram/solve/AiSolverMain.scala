@@ -8,10 +8,10 @@ object AiSolverMain extends App {
   val log = LoggerFactory.getLogger("anagram.solve.AiSolverMain")
 
   val srcTexts = List(
-    "wolfgang wagner",
-    "noah wagner",
-    "brigitte freimueller",
-    "concordia lenz",
+    "elvis", // -> lives
+    "clint eastwood", // -> old west action
+    "william shakespeare", // -> i am a weakish speller
+    "leornado da vinci", // -> did color in a nave
   )
   val id: String = "en03"
   val wordlist: Iterable[String] = WordList.loadWordList("wordlist/wordlist_small.txt")

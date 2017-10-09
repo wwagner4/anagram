@@ -28,7 +28,7 @@ object Main extends App {
     )
   )
 
-  val sentenceCreator = new SentenceCreatorConditionalSliding()
+  val sentenceCreator = new SentenceCreatorSliding()
 
   if (createData) new LearningData(wordMapper, sentenceCreator).createData(books)
   Training.train(dataId)
