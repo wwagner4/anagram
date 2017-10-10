@@ -18,7 +18,7 @@ case class SSolver(maxDepth: Int = 4) {
       else {
         if (depth >= maxDepth) Iterable.empty[List[String]]
         else {
-          val mws = if (depth > 2) findMatchingWords(txt, words).filter(!_.isEmpty)
+          val mws = if (depth >= 1) findMatchingWords(txt, words).filter(!_.isEmpty)
           else findMatchingWords(txt, words).filter(!_.isEmpty).par
           //println(s"-- $depth :$txt: - ${mws.mkString(" ")}")
           mws.flatMap { mw =>

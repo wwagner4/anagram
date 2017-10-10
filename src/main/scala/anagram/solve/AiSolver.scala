@@ -7,6 +7,7 @@ import anagram.ml.data.{WordMap, WordMapper}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
+import org.slf4j.LoggerFactory
 
 import scala.collection.GenIterable
 import scala.util.Random
@@ -35,6 +36,10 @@ class RandomRater extends Rater {
 
 class AiRater(dataId: String, wordlist: Iterable[String]) extends Rater {
 
+  private val log = LoggerFactory.getLogger("AiRater")
+
+  var cnt = 0
+
   private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(dataId)
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
@@ -48,6 +53,8 @@ class AiRater(dataId: String, wordlist: Iterable[String]) extends Rater {
   }
 
   def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
+    if (cnt % 1000 == 0) log.info(s"Rated $cnt sentences")
+    cnt += 1
     val input: Array[Double] = sent.map(wordmap.toNum(_).toDouble).toArray
     val out = nn.output(Nd4j.create(input))
     out.getDouble(0)
