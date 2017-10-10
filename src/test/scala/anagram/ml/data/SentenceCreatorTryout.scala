@@ -8,7 +8,11 @@ object SentenceCreatorTryout extends App {
 
   val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_test01.txt")
 
-  val sent = new SentenceCreatorSliding().create(uris, 4, wm)
+  val splitter = BookSplitter
+
+  val split = splitter.sentences(uris)
+
+  val sent = new SentenceCreatorSliding().create(split, 4, wm)
 
   println(sent.map(_.words.mkString(" ")).mkString("\n"))
 

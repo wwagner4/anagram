@@ -26,6 +26,7 @@ class LearningData(wm: WordMapper, sentenceCreator: SentenceCreator) {
 
   private val variance = 0
 
+  private val bookSplitter = BookSplitter
   private val sentenceRater: SentenceRater = new SentenceRaterAdapted(wm)
   private val ran = new util.Random()
 
@@ -33,7 +34,8 @@ class LearningData(wm: WordMapper, sentenceCreator: SentenceCreator) {
 
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename))
     for (len <- bookCollection.sentenceLength) {
-      val sent: Seq[Sentence] = sentenceCreator.create(uris, len, wm)
+      val split = bookSplitter.sentences(uris)
+      val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
       val ldPath = IoUtil.saveDataToWorkDir(bookCollection.id, len, writeSentences(sent)(_))
       log.info("created learning data in " + ldPath)
     }

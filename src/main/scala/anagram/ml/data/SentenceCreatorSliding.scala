@@ -4,10 +4,8 @@ import java.net.URI
 
 class SentenceCreatorSliding extends SentenceCreator {
 
-  private val splitter = BookSplitter
-
-  def create(books: Seq[URI], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
-    splitter.sentences(books)
+  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
+    sentences
       .filter(_.size >= len)
       .flatMap(slideSentences(_, len, wordMapper))
   }

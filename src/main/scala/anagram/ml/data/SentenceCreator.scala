@@ -15,6 +15,6 @@ case class Sentence (
 
 trait SentenceCreator {
 
-  def create(books: Seq[URI], len: Int, wordMapper: WordMapper): Stream[Sentence]
+  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence]
 
 }
