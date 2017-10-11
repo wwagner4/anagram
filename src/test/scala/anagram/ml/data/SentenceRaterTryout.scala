@@ -14,6 +14,8 @@ object SentenceRaterTryout extends App {
 
   val sentenceRater: SentenceRater = new SentenceRaterAdapted(wm)
 
+  val splitter = new BookSplitterTxt
+
   val rated: Seq[Seq[Rated]] = for (s <- sentences) yield {
     sentenceRater.rateSentence(s)
   }
@@ -24,8 +26,8 @@ object SentenceRaterTryout extends App {
   }
 
   private def createSentences1(sentLen: Int, _screa: SentenceCreator):Seq[Sentence] = {
-    val books = Seq(IoUtil.uri("books/CommonSense.txt"))
-    val s: Stream[Seq[String]] = BookSplitter.sentences(books);
+    val books = IoUtil.uri("books/CommonSense.txt")
+    val s: Stream[Seq[String]] = splitter.splitSentences(books);
     _screa.create(s, sentLen, wm)
   }
 

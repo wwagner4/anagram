@@ -21,9 +21,12 @@ trait WordMapper {
 object WordMap {
 
   private val ran = Random
+  private val splitter: BookSplitter = new BookSplitterTxt
 
-  def createWordMapFromBooks(books: Seq[URI]): WordMapper = {
-    val words: Seq[String] = BookSplitter.sentences(books)
+  def createWordMapFromBooks(bookUris: Stream[URI]): WordMapper = {
+    val allSent: Stream[Seq[String]] = bookUris.flatMap(splitter.splitSentences)
+
+    val words: Seq[String] = bookUris.flatMap(splitter.splitSentences)
       .flatten
       .toSet
       .toSeq

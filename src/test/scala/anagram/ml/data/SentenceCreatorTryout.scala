@@ -4,13 +4,13 @@ import anagram.common.IoUtil
 
 object SentenceCreatorTryout extends App {
 
-  val uris = BookSplitter.booksBig.map(IoUtil.uri)
+  val uris = BookSplitterTxt.booksBig.toStream.map(IoUtil.uri)
 
   val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_test01.txt")
 
-  val splitter = BookSplitter
+  val splitter = new BookSplitterTxt
 
-  val split = splitter.sentences(uris)
+  val split = uris.flatMap(splitter.splitSentences)
 
   val sent = new SentenceCreatorSliding().create(split, 4, wm)
 

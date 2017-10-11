@@ -4,12 +4,13 @@ import anagram.common.IoUtil
 
 object BookSplitterTryout extends App {
 
-  val uris = BookSplitter.booksSmall.map(IoUtil.uri)
+  val uri = IoUtil.uri(BookSplitterTxt.bookSmallRes)
+  val splitter = new BookSplitterTxt
 
-  val sentences = BookSplitter.sentences(uris)
+  val sentences = splitter.splitSentences(uri)
   println(sentences.map(_.mkString(" ")).mkString("\n"))
 
-  val sentences1 = BookSplitter.sentences(uris)
+  val sentences1 = splitter.splitSentences(uri)
   println("-- size:" + sentences1.size)
 
 }

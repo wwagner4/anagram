@@ -9,7 +9,7 @@ class SentenceCreatorConditionalSliding extends SentenceCreator {
 
   val maxLengthSliding = 4
 
-  private val splitter = BookSplitter
+  private val splitter: BookSplitter = new BookSplitterTxt
 
   def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
     sentences

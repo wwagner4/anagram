@@ -5,7 +5,6 @@ import anagram.common.IoUtil
 object WordMapTryout extends App {
 
   val id = "tryout_twoLines"
-  val uris = BookSplitter.booksSmall.map(IoUtil.uri)
 
   val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
 
