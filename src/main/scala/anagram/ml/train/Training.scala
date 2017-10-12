@@ -51,9 +51,9 @@ object Training {
   }
 
   def iterations(sentLen: Int): Int = {
-    if (sentLen <= 2 ) 60
-    else if (sentLen <= 3 ) 25
-    else 15
+    if (sentLen <= 2 ) 180
+    else if (sentLen <= 3 ) 150
+    else 120
   }
 
   private def nnConfiguration(numInput: Int, iterations: Int): MultiLayerConfiguration = {
