@@ -6,40 +6,25 @@ import java.util.Locale
 import anagram.common.IoUtil
 import org.slf4j.LoggerFactory
 
-case class Book(
-                 filename: String,
-                 title: String,
-                 author: String,
-               )
 
-case class BookCollection(
-                           id: String,
-                           desc: String,
-                           books: Seq[Book],
-                           sentenceLength: Seq[Int],
-                         )
-
-
-class LearningData(wm: WordMapper, sentenceCreator: SentenceCreator) {
+class LearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
   private val variance = 0
 
-  private val bookSplitter: BookSplitter = new BookSplitterTxt
-  private val sentenceRater: SentenceRater = new SentenceRaterAdapted(wm)
   private val ran = new util.Random()
 
-  def createData(bookCollection: BookCollection): Unit = {
+  def createData(id: String, bookCollection: BookCollection): Unit = {
 
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename)).toStream
     for (len <- bookCollection.sentenceLength) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
       val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
-      val ldPath = IoUtil.saveDataToWorkDir(bookCollection.id, len, writeSentences(sent)(_))
+      val ldPath = IoUtil.saveDataToWorkDir(id, len, writeSentences(sent)(_))
       log.info("created learning data in " + ldPath)
     }
-    log.info("Created learning data for book collection:\n" + asString(bookCollection))
+    log.info("Created learning data for book collection:\n" + asString(id, bookCollection))
   }
 
   def writeSentences(sentences: Seq[Sentence])(wr: BufferedWriter): Unit = {
@@ -64,13 +49,13 @@ class LearningData(wm: WordMapper, sentenceCreator: SentenceCreator) {
 
   def f(value: Number): String = "%f".formatLocal(Locale.ENGLISH, value.doubleValue())
 
-  def asString(bookCollection: BookCollection): String = {
+  def asString(id: String, bookCollection: BookCollection): String = {
     val sb = new StringBuilder
     sb.append("%30s: %s%n".format("Description", bookCollection.desc))
     for ((book, i) <- bookCollection.books.zipWithIndex) {
       sb.append("%30s: %-30s %-30s %s%n".format(s"Book #${i + 1}", book.title, book.author, book.filename))
     }
-    sb.append("%30s: %s%n".format("ID", bookCollection.id))
+    sb.append("%30s: %s%n".format("ID", id))
     sb.append("%30s: %s%n".format("Sentence Lengths", bookCollection.sentenceLength.mkString(", ")))
     sb.toString()
   }

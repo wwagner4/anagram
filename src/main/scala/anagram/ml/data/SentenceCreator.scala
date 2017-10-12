@@ -1,7 +1,5 @@
 package anagram.ml.data
 
-import java.net.URI
-
 sealed trait SentenceType
 
 case object SentenceType_COMPLETE extends SentenceType

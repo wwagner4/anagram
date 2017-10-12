@@ -1,23 +1,14 @@
 package anagram.ml.data
 
+import java.net.URI
+
 object LearningDataEn01 extends App {
 
-  val books = BookCollection(
-    id = "en01",
-    desc = "Collection of English Books #1",
-    sentenceLength = 2 to 7,
-    books = Seq(
-      Book("books/ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
-      Book("books/CommonSense.txt", "Common Sense", "Thomas Paine"),
-      Book("books/StoriesbyEnglishAuthors.txt", "Stories by English Authors", "Various"),
-      Book("books/TheAdventuresofTomSawyer.txt", "The Adventures of Tom Sawyer", "Mark Twain"),
-      Book("books/ThePictureofDorianGray.txt", "The Picture of Dorian Gray", "Oscar Wilde"),
-    )
-  )
-
-  val sentenceCreator = new SentenceCreatorConditionalSliding()
-
   val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
-  new LearningData(wm, sentenceCreator).createData(books)
+  val splitter = new BookSplitterTxt()
+  val screator = new SentenceCreatorConditionalSliding()
+  val srater = new SentenceRaterStraight(wm)
+
+  new LearningData(wm, splitter, screator, srater).createData("en01", BookCollections.collectionEn1)
 
 }

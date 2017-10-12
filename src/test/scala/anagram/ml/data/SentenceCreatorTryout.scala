@@ -5,16 +5,42 @@ import anagram.common.IoUtil
 object SentenceCreatorTryout extends App {
 
   val uris = BookSplitterTxt.booksBig.toStream.map(IoUtil.uri)
-
   val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_test01.txt")
-
   val splitter = new BookSplitterTxt
+  val creator = new SentenceCreatorSliding()
 
-  val split = uris.flatMap(splitter.splitSentences)
+  showSentences
+  //completeWords
 
-  val sent = new SentenceCreatorSliding().create(split, 4, wm)
+  def completeWords: Unit = {
+    val split = uris.flatMap(splitter.splitSentences)
 
-  println(sent.map(_.words.mkString(" ")).mkString("\n"))
+    List(2, 3, 4, 5, 6, 7).map { size =>
+      val stat: Map[SentenceType, Stream[Sentence]] = creator.create(split, size, wm)
+        .groupBy(s => s.sentenceType)
 
+      stat.foreach{ case (k, v) =>
+        println("%3d - %4s - %d" format(size, short(k), v.size))
+      }
+
+    }
+  }
+
+  def showSentences: Unit = {
+    val split = uris.flatMap(splitter.splitSentences)
+    val sent = creator.create(split, 2, wm)
+    sent.foreach { sent =>
+      val ws = sent.words.mkString(" ")
+      println("%5s - %s" format(short(sent.sentenceType), ws))
+    }
+  }
+
+  private def short(sentenceType: SentenceType): String = {
+    sentenceType match {
+      case SentenceType_BEGINNING => "B"
+      case SentenceType_COMPLETE => "C"
+      case SentenceType_OTHER => "O"
+    }
+  }
 }
 

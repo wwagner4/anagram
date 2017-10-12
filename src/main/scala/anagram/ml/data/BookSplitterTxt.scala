@@ -22,16 +22,6 @@ object BookSplitterTxt {
   */
 class BookSplitterTxt extends BookSplitter {
 
-  val booksBig = Seq(
-    "books/ATaleofTwoCities.txt",
-    "books/CommonSense.txt",
-    "books/StoriesbyEnglishAuthors.txt",
-    "books/TheAdventuresofTomSawyer.txt",
-    "books/ThePictureofDorianGray.txt",
-  )
-
-  val bookSmallRes = "books/TwoLines.txt"
-
   private val validChars: Seq[Char] = (32 :: 46 :: (65 to 90).toList ::: (97 to 122).toList).map(i => i.toChar)
 
   def splitSentences(bookUri: URI): Stream[Seq[String]] = {
