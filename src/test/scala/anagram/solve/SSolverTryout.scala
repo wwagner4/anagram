@@ -2,8 +2,6 @@ package anagram.solve
 
 import anagram.ml.data.WordList
 
-import scala.collection.GenIterable
-
 object SSolverTryout extends App {
 
   val wl = WordList.loadWordList("wordlist/wordlist_small.txt")
@@ -11,11 +9,11 @@ object SSolverTryout extends App {
   val start = System.currentTimeMillis()
 
   private val src = "clint eastwood"
-  val anas: GenIterable[Iterable[String]] = SSolver().solve(src, wl)
+  val anas = SSolver(4).solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")
-  else for (sent <- anas) {
-    val str = sent.mkString(" ")
+  else for (ana <- anas) {
+    val str = ana.sentence.mkString(" ")
     println("%s --> %s".format(src, str))
   }
 

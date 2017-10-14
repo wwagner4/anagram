@@ -9,20 +9,17 @@ import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
 import org.slf4j.LoggerFactory
 
-import scala.collection.GenIterable
 import scala.util.Random
-
-case class Ana(rate: Double, sentence: Iterable[String])
 
 trait Rater {
   def rate(sent: Iterable[String]): Double
 }
 
-object AiSolver {
+case class AiSolver(parentSolver: Solver, rater: Rater) extends Solver {
 
-  def solve(srcText: String, wordlist: Iterable[String], rater: Rater): GenIterable[Ana] = {
-    SSolver().solve(srcText, wordlist)
-      .map(sent => Ana(rater.rate(sent), sent))
+  def solve(srcText: String, wordlist: Iterable[String]): Stream[Ana] = {
+    parentSolver.solve(srcText, wordlist)
+      .map(parentAna => Ana(rater.rate(parentAna.sentence) * parentAna.rate, parentAna.sentence))
   }
 }
 
@@ -53,7 +50,7 @@ class AiRater(dataId: String, wordlist: Iterable[String]) extends Rater {
   }
 
   def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
-    if (cnt % 1000 == 0) log.info(s"Rated $cnt sentences")
+    if (cnt % 50000 == 0) log.info(s"Rated $cnt sentences")
     cnt += 1
     val input: Array[Double] = sent.map(wordmap.toNum(_).toDouble).toArray
     val out = nn.output(Nd4j.create(input))

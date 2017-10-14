@@ -2,10 +2,12 @@ package anagram.solve
 
 import scala.collection.GenIterable
 
-case class SSolver(maxDepth: Int = 4) {
+case class SSolver(maxDepth: Int) extends Solver {
 
-  def solve(sourceText: String, words: Iterable[String]): GenIterable[Iterable[String]] = {
+  def solve(sourceText: String, words: Iterable[String]): Stream[Ana] = {
     solve1(sourceText.toLowerCase().replaceAll("\\s", ""), 0, words.toList, new AnaCache())
+      .map(sent => Ana(1.0, sent))
+      .toStream
   }
 
   def solve1(txt: String, depth: Int, words: List[String], anaCache: AnaCache): GenIterable[List[String]] = {

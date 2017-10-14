@@ -67,6 +67,10 @@ object IoUtil {
     dirWork
   }
 
+  def saveToWorkDir(fileName: String, f: BufferedWriter => Unit): Path = {
+    save(getCreateWorkDir, fileName, f)
+  }
+
   private def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
     val file = dir.resolve(fileName)
     val wr: BufferedWriter = Files.newBufferedWriter(file)
