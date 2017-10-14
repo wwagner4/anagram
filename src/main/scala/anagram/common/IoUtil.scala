@@ -33,6 +33,11 @@ object IoUtil {
     f(iter)
   }
 
+  def loadTxtFromWorkdir[T](fileName: String, f: Iterator[String] => T): T = {
+    val file = getCreateWorkDir.resolve(fileName)
+    loadTxtFromPath(file, f)
+  }
+
   def getTxtDataFilesFromWorkDir(id: String): Seq[DataFile] = {
     Files.list(getCreateWorkDir)
       .iterator().asScala.toStream

@@ -11,9 +11,11 @@ object AiSolverMain extends App {
   val srcTexts = List(
     "elvis", // -> lives
     "clint eastwood", // -> old west action
-    "william shakespeare", // -> i am a weakish speller
-    "leornado da vinci", // -> did color in a nave
-    "wolfgang"
+    //"william shakespeare", // -> i am a weakish speller
+    //"leornado da vinci", // -> did color in a nave
+    "wolfgang",
+    "ditschi",
+    "noah the great",
   )
 
   val id: String = "en04"
