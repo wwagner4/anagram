@@ -15,7 +15,9 @@ object AiSolverMain extends App {
     //"leornado da vinci", // -> did color in a nave
     "wolfgang",
     "ditschi",
+    "ditschi wolfi",
     "noah the great",
+    "ingrid bernd",
   )
 
   val id: String = "en04"

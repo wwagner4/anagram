@@ -5,6 +5,7 @@ import java.net.URI
 import java.nio.file.{Files, Path, Paths}
 
 import scala.collection.JavaConverters._
+import scala.io.Codec
 
 /**
   * Description for a datafile
@@ -28,8 +29,8 @@ object IoUtil {
     saveTxtToWorkDir(s"${id}_data_$sentencelength", f)
   }
 
-  def loadTxtFromPath[T](path: Path, f: Iterator[String] => T): T = {
-    val iter = scala.io.Source.fromFile(path.toFile).getLines()
+  def loadTxtFromPath[T](path: Path, f: Iterator[String] => T, codec: Codec = Codec.UTF8): T = {
+    val iter = scala.io.Source.fromFile(path.toFile)(codec).getLines()
     f(iter)
   }
 
