@@ -35,10 +35,10 @@ class GcideTransformSuite  extends FunSuite with MustMatchers {
   }
 
   val wtypeList = Seq(
-    ("a.", """<hw>Am`a*to"ri*an</hw> <pr>(<?/)</pr>, <pos>a.</pos> <def>Amatory.</def> <mark>[R.]</mark>  <rj><au>Johnson.</au></rj><br/"""),
-    ("a.1", """<hw>Am"a*to*ry</hw> <pr>(<?/)</pr>, <pos>a.1</pos> <def>Pertaining to, producing, or expressing, sexual love; <as>as, <ex>amatory</ex> potions</as>.</def><br/"""),
-    ("v. t.", """<hw>A*maze"</hw> <pr>(<?/)</pr>, <pos>v. t.</pos> <vmorph>[<pos>imp. & p. p.</pos> <conjf>Amazed</conjf> <pr>(<?/)</pr>; <pos>p. pr. & vb. n.</pos> <conjf>Amazing</conjf>.]</vmorph> <ety>[Pref. <ets>a-</ets> + <ets>maze</"""),
-    ("n.", """<mhw>{ \'d8<hw>am`bly*o"pi*a</hw> <pr>(<acr/m`bl<esl/*<omac/"p<esl/*<adot/)</pr>, <hw>am"bly*o`py</hw> <pr>(<acr/m"bl<esl/*<omac/`p<ycr/)</pr>, }</mhw> <pos>n.</pos> <ety>[Gr. <grk>'amblywpi`a</grk>; <grk>'ambly`"""),
+    ("a", """<hw>Am`a*to"ri*an</hw> <pr>(<?/)</pr>, <pos>a.</pos> <def>Amatory.</def> <mark>[R.]</mark>  <rj><au>Johnson.</au></rj><br/"""),
+    ("a1", """<hw>Am"a*to*ry</hw> <pr>(<?/)</pr>, <pos>a.1</pos> <def>Pertaining to, producing, or expressing, sexual love; <as>as, <ex>amatory</ex> potions</as>.</def><br/"""),
+    ("vt", """<hw>A*maze"</hw> <pr>(<?/)</pr>, <pos>v. t.</pos> <vmorph>[<pos>imp. & p. p.</pos> <conjf>Amazed</conjf> <pr>(<?/)</pr>; <pos>p. pr. & vb. n.</pos> <conjf>Amazing</conjf>.]</vmorph> <ety>[Pref. <ets>a-</ets> + <ets>maze</"""),
+    ("n", """<mhw>{ \'d8<hw>am`bly*o"pi*a</hw> <pr>(<acr/m`bl<esl/*<omac/"p<esl/*<adot/)</pr>, <hw>am"bly*o`py</hw> <pr>(<acr/m"bl<esl/*<omac/`p<ycr/)</pr>, }</mhw> <pos>n.</pos> <ety>[Gr. <grk>'amblywpi`a</grk>; <grk>'ambly`"""),
   )
 
   for ((ty, line) <- wtypeList) {
