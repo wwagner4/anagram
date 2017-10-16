@@ -29,7 +29,7 @@ object IoUtil {
     saveTxtToWorkDir(s"${id}_data_$sentencelength", f)
   }
 
-  def loadTxtFromPath[T](path: Path, f: Iterator[String] => T, codec: Codec = Codec.UTF8): T = {
+  def loadTxtFromPath[T](path: Path, f: Iterator[String] => T, codec: Codec = Codec.default): T = {
     val iter = scala.io.Source.fromFile(path.toFile)(codec).getLines()
     f(iter)
   }
