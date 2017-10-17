@@ -7,7 +7,7 @@ import anagram.common.IoUtil
 import org.slf4j.LoggerFactory
 
 
-class LearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater) {
+class LearningData(wm: WordMapper, wg: WordGrouper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
@@ -20,7 +20,7 @@ class LearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: 
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename)).toStream
     for (len <- bookCollection.sentenceLength) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
-      val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
+      val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm, wg)
       val ldPath = IoUtil.saveDataToWorkDir(id, len, writeSentences(sent)(_))
       log.info("created learning data in " + ldPath)
     }

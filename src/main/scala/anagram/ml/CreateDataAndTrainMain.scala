@@ -11,12 +11,13 @@ object CreateDataAndTrainMain extends App {
 
   val wordList = IoUtil.loadWordList("wordlist/wordlist_small.txt")
   val mapper = WordMapSingleWord.createWordMapperFromWordlist(wordList)
+  val grouper = WordGrouperIdentity
 
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()
   val srater = new SentenceRaterStraight(mapper)
 
-  if (createData) new LearningData(mapper, splitter, screator, srater).createData(dataId, BookCollections.collectionEn2)
+  if (createData) new LearningData(mapper, grouper, splitter, screator, srater).createData(dataId, BookCollections.collectionEn2)
   Training.train(dataId)
 
 }

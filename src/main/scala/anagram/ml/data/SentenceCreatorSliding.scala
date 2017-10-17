@@ -2,9 +2,10 @@ package anagram.ml.data
 
 class SentenceCreatorSliding extends SentenceCreator {
 
-  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
+  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper, wordGrouper: WordGrouper): Stream[Sentence] = {
     sentences
       .filter(_.size >= len)
+      .map(words => words.map(wordGrouper.group))
       .flatMap(slideSentences(_, len, wordMapper))
   }
 
