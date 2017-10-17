@@ -1,26 +1,10 @@
 package anagram.ml.data
 
-import java.net.URI
-
-import anagram.common.IoUtil
-
 import scala.util.Random
 
 object WordMapSingleWord {
 
   private val ran = Random
-  private val splitter: BookSplitter = new BookSplitterTxt
-
-  def createWordMapperFromBooks(bookUris: Stream[URI]): WordMapper = {
-    val words: Seq[String] = bookUris.flatMap(splitter.splitSentences)
-      .flatten
-      .toSet
-      .toSeq
-    val si: Seq[(String, Int)] = words.zipWithIndex
-
-    createMapper(si)
-
-  }
 
   def createWordMapperFromWordlist(wordlist: Iterable[String]): WordMapper = {
     val grps = wordlist.toSeq.groupBy(w => maxVowel(w)).toSeq
@@ -28,11 +12,6 @@ object WordMapSingleWord {
       sent.sorted
     }
     createMapper(si.flatten.zipWithIndex)
-  }
-
-  def createWordMapperFromWordlistResource(resName: String): WordMapper = {
-    val wl = IoUtil.loadWordList(resName)
-    createWordMapperFromWordlist(wl)
   }
 
   def maxVowel(word: String): Char = {

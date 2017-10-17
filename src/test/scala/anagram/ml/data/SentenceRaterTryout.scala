@@ -4,16 +4,17 @@ import anagram.common.IoUtil
 
 object SentenceRaterTryout extends App {
 
-  val wm = WordMapSingleWord.createWordMapperFromWordlistResource("wordlist/wordlist_small.txt")
+  val wordList = IoUtil.loadWordList("wordlist/wordlist_small.txt")
+  val mapper = WordMapSingleWord.createWordMapperFromWordlist(wordList)
   val screa: SentenceCreator = new SentenceCreatorSliding()
   val splitter = new BookSplitterTxt
-  val sentenceRater: SentenceRater = new SentenceRaterStraight(wm)
+  val sentenceRater: SentenceRater = new SentenceRaterStraight(mapper)
 
 
   val bookUri = IoUtil.uri("books/CommonSense.txt")
 
   val s: Stream[Seq[String]] = splitter.splitSentences(bookUri)
-  val rated = screa.create(s, 4, wm).flatMap(sentenceRater.rateSentence(_))
+  val rated = screa.create(s, 4, mapper).flatMap(sentenceRater.rateSentence(_))
 
   for ((r, i) <- rated.sortBy(-_.rating).zipWithIndex) {
     val sentString = r.sentence.words.mkString(" ")

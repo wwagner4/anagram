@@ -8,17 +8,17 @@ class SentenceCreatorSliding extends SentenceCreator {
       .flatMap(slideSentences(_, len, wordMapper))
   }
 
-  def slideSentences(groups: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
-    require(groups.size >= len)
+  def slideSentences(words: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
+    require(words.size >= len)
 
-    if (groups.size == len) {
-      if (groups.forall(wordMapper.containsWord)) {
-        Seq(Sentence(SentenceType_COMPLETE, groups))
+    if (words.size == len) {
+      if (words.forall(wordMapper.containsWord)) {
+        Seq(Sentence(SentenceType_COMPLETE, words))
       } else {
         Seq.empty[Sentence]
       }
     } else {
-      val ws = groups.sliding(len)
+      val ws = words.sliding(len)
         .toList
         .filter(ws => ws.forall(wordMapper.containsWord))
       for ((w, i) <- ws.zipWithIndex) yield {
