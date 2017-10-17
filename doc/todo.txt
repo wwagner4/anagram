@@ -4,17 +4,17 @@
 -- OK Wordlist saveable
 
 - OK Create data
--- OK Use only sentances that contain words from the simple wordlist
+-- OK Use only sentances that contain groups from the simple wordlist
 
 -    Solver
 -- OK Optimize runtime with cache
 --    Parallel processing
 
 -    Word mapping
--- OK Map similar words to similar numbers
+-- OK Map similar groups to similar numbers
 --- OK E.g. sort by wordlength, alphabetically
 ---    Similarity could be learned with ml
-----    Get a dataset describing the similarity of words ???
--- OK sould not return empty words. ???
+----    Get a dataset describing the similarity of groups ???
+-- OK sould not return empty groups. ???
 -- OK sould not return duplicate sentances. ???
 --- OK make testcase 'wolfi' with wordlist

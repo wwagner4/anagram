@@ -5,7 +5,7 @@ import anagram.common.IoUtil
 object SentenceCreatorTryout extends App {
 
   val uris = BookSplitterTxt.booksBig.toStream.map(IoUtil.uri)
-  val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_test01.txt")
+  val wm = WordMapSingleWord.createWordMapperFromWordlistResource("wordlist/wordlist_test01.txt")
   val splitter = new BookSplitterTxt
   val creator = new SentenceCreatorSliding()
 

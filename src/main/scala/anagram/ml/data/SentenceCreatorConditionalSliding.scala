@@ -1,15 +1,11 @@
 package anagram.ml.data
 
-import java.net.URI
-
 /**
   * Create sliding sentences only if length <= maxLengthSliding.
   */
 class SentenceCreatorConditionalSliding extends SentenceCreator {
 
   val maxLengthSliding = 4
-
-  private val splitter: BookSplitter = new BookSplitterTxt
 
   def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
     sentences

@@ -119,7 +119,7 @@ class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
         randomExchangeN(3, 30),
         ratedRandom(0),
       )
-      case _ => throw new IllegalStateException(s"Cannot rate words with ${sentence.words.size} words")
+      case _ => throw new IllegalStateException(s"Cannot rate groups with ${sentence.words.size} groups")
     }
 
     rated.map(r => r.sentence.sentenceType match {

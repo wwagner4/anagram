@@ -3,12 +3,12 @@ package anagram.ml
 import anagram.ml.data._
 import anagram.ml.train.Training
 
-object Main extends App {
+object CreateDataAndTrainMain extends App {
 
   val dataId = "en04"
   val createData = true
 
-  val wm = WordMap.createWordMapFromWordlistResource("wordlist/wordlist_small.txt")
+  val wm = WordMapSingleWord.createWordMapperFromWordlistResource("wordlist/wordlist_small.txt")
 
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()

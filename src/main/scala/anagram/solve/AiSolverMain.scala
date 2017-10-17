@@ -1,7 +1,6 @@
 package anagram.solve
 
 import anagram.common.IoUtil
-import anagram.ml.data.WordList
 import org.slf4j.LoggerFactory
 
 object AiSolverMain extends App {
@@ -21,7 +20,7 @@ object AiSolverMain extends App {
   )
 
   val id: String = "en04"
-  val wordlist: Iterable[String] = WordList.loadWordList("wordlist/wordlist_small.txt")
+  val wordlist: Iterable[String] = IoUtil.loadWordList("wordlist/wordlist_small.txt")
   val rater: Rater = new AiRater(id, wordlist)
   val baseSolver = SSolver(4)
   val aiSolver = AiSolver(baseSolver, rater)

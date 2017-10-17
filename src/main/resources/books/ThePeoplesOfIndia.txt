@@ -739,7 +739,7 @@ custom, not unknown to ourselves, of _hypergamy_. This simply means that
 a man may take a wife from a lower caste, but will not give his
 daughters to men of that caste. The result is a uniformity of physical
 type found nowhere else in India. Moreover these people speak a language
-of the Indo-European family, and have many words and idioms in common
+of the Indo-European family, and have many groups and idioms in common
 with ourselves. The present theory of their origin is simply that they
 are in the bulk immigrants into India, immigrants who came into the land
 from the north-west with their herds and families, as the Jews entered
@@ -1332,7 +1332,7 @@ the present population is the result of the secular intermingling of
 various race types, rather than of events within the historical period."
 Mr Crooke's view is supported by the recently issued Census Report of
 the Bombay Presidency, which says, "the term Marātha is derived by some
-from two Sanskrit words, _mahā_, 'great,' and _rathi_, 'a warrior.'"
+from two Sanskrit groups, _mahā_, 'great,' and _rathi_, 'a warrior.'"
 According to Sir Rāmkrishna Gopāl Bhandārkar it is derived from Rattas,
 a tribe which held political supremacy in the Deccan from the remotest
 time. "The Rattas called themselves Mahā Rattas or Great Rattas, and
@@ -1510,7 +1510,7 @@ indigenous families of language in India, the Dravidian and Mundā
 families. Sir G. Grierson's _Survey_ has definitely established the fact
 that, in spite of the close physical resemblance between the Dravidian
 races properly so called and the inhabitants of Chota Nagpore, there is
-no linguistic affinity between them. In Sir George Grierson's own words
+no linguistic affinity between them. In Sir George Grierson's own groups
 "they differ in their pronunciation, in their modes of indicating
 gender, in their declensions of nouns, in their method of indicating the
 relationship of a verb to its objects, in their numeral systems, in
@@ -1572,7 +1572,7 @@ irrational beings are of the neuter gender. The distinction of male and
 female appears only in the pronoun of the third person, in adjectives
 formed by suffixing the pronominal terminations, and in the third person
 of the verb. In all other cases, the distinction of gender is marked by
-separate words signifying 'male' and 'female.' Dravidian nouns are
+separate groups signifying 'male' and 'female.' Dravidian nouns are
 inflected, not by means of case terminations, but by means of suffixed
 postpositions and separable particles. Dravidian neuter nouns are rarely
 pluralized; Dravidian languages use postpositions instead of
@@ -1607,7 +1607,7 @@ by emigrant coolies. As might be expected from its geographical
 position, it is the oldest, richest, and most highly organised of
 Dravidian languages. It has an extensive literature written in a
 literary dialect called "Shen" or "perfect" as compared with the
-colloquial "Kodum" or "rude" speech of ordinary men. The words "Tamil"
+colloquial "Kodum" or "rude" speech of ordinary men. The groups "Tamil"
 and "Drāvida" are both corruptions of an original "Drānida." Tamil has
 an alphabet of its own.
 
@@ -1678,16 +1678,16 @@ completely victorious. The peculiar philosophic and religious ideas of
 Hinduism find apt and copious expression in the Aryan vocabulary of the
 north. But Dravidian India, too, in accepting Hinduism, perforce
 accepted with it much of the Aryan vocabulary. It is Dravidian still, as
-England is still mainly Germanic. But without Aryan words it could
+England is still mainly Germanic. But without Aryan groups it could
 hardly give expression to Hindu speculations and aspirations. As our own
-language, as these words I write, have a strong intermixture of Latin
+language, as these groups I write, have a strong intermixture of Latin
 phrase and idiom, so the Aryan influence has in a greater or less degree
 penetrated to Ceylon itself, once held by Aryan poets to be the home of
 demoniac and barbarian races. There are Dravidian traces in the north,
 survivals of old days of Dravidian supremacy. In the south, a veneer of
 Aryan culture has been added to the ancient Dravidian civilisation. This
 was strong to resist a change of idiom: it clung sturdily to most of its
-vocabulary; but there has been an infusion of Aryan words, needed for
+vocabulary; but there has been an infusion of Aryan groups, needed for
 ritual and, in some cases, for administrative purposes. The use of the
 word "administrative" reminds me to say, before passing on, that nowhere
 in India is English so freely used as in the Dravidian south. Originally
@@ -1702,7 +1702,7 @@ _The Aryan Languages._
 
 We now return to the fascinating story of the spread of the Indo-Aryan
 languages over the north and west of the peninsula. In the tale,
-captured from the patient study of words and idioms, and finding only
+captured from the patient study of groups and idioms, and finding only
 occasional support from legend, and practically none from history, since
 history had not yet begun to exist, we get a singularly moving and
 interesting picture of the social existence of vanished tribes of men.
@@ -1739,7 +1739,7 @@ order of European and Semitic letters, bear testimony. In the Indian
 alphabets the letters are arranged in order, according to the vocal
 organs chiefly used in their pronunciation, as Gutturals, Palatals,
 Cerebrals, Dentals, and Labials. All the phonetic changes which occur in
-the formation of the numerous compound words are carefully reduced to
+the formation of the numerous compound groups are carefully reduced to
 rule, and the spelling professes to be (what perhaps no spelling ever
 has been or can be) phonetic.
 
@@ -1910,7 +1910,7 @@ Cambridge, London, and Dublin. In the strictest sense Hindustāni is the
 dialect of western Hindi spoken between Meerut and Delhi. It was much
 cultivated, as a literary dialect, by both Hindus and Musalmāns. The
 latter wrote, and write it, in the Persian character, and have added a
-large number of Persian and Arabic words. In this Persianised form it is
+large number of Persian and Arabic groups. In this Persianised form it is
 known as Urdū, "a name derived from the _Urdū-e mu 'alla_, or royal
 military bazaar outside the imperial palace at Delhi, where it is
 supposed to have had its origin." Under Muhammadan rule Urdū was almost
@@ -1941,7 +1941,7 @@ their friends and cousins the Chandāls and other indigenous castes.
 
 _The Indo-Chinese Languages._
 
-Finally, I must say a few words about the Indo-Chinese and Mon-Khmer
+Finally, I must say a few groups about the Indo-Chinese and Mon-Khmer
 languages. I spent most of my official life among people speaking these
 languages, and find, somewhat shamefacedly, that Sir G. A. Grierson
 makes me responsible for sundry vocabularies compiled in my distant
@@ -2413,7 +2413,7 @@ dangerous riots.
 
 The sects of Islam in India, unlike the Hindu sects, are not due to the
 instinct for differentiation, for obvious reasons. They are, in Mr
-Crooke's words, either puritanical or pietistic. Consequently, followers
+Crooke's groups, either puritanical or pietistic. Consequently, followers
 of them are apt to show a tendency to fanaticism. The Hindu sectarian
 adores some favourite deity, but does not deny the merits, or the
 Hinduism, of other deities or their followers. The Musalmān sectarian is

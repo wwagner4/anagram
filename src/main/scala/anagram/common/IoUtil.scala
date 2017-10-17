@@ -17,6 +17,10 @@ case class DataFile(
 
 object IoUtil {
 
+  def loadWordList(resName: String): Iterable[String] = {
+    IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (l) => l.toIterable)
+  }
+
   def saveMapToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
     saveTxtToWorkDir(s"${id}_map", f)
   }
@@ -99,7 +103,7 @@ object IoUtil {
     val REG = regex.r
     path.getFileName.toString match {
       case REG(lenStr) => DataFile(lenStr.toInt, path)
-      case _ => throw new IllegalArgumentException(s"Could not extract words length from filename '$path'")
+      case _ => throw new IllegalArgumentException(s"Could not extract groups length from filename '$path'")
     }
   }
 

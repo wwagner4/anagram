@@ -2,51 +2,37 @@ package anagram.ml.data
 
 import java.net.URI
 
+import anagram.common.IoUtil
+
 import scala.util.Random
 
-trait WordMapper {
-
-
-  def toNum(word: String): Int
-
-  def toWord(num: Int): String
-
-  def size: Int
-
-  def randomWord: String
-
-  def containsWord(str: String): Boolean
-}
-
-object WordMap {
+object WordMapSingleWord {
 
   private val ran = Random
   private val splitter: BookSplitter = new BookSplitterTxt
 
-  def createWordMapFromBooks(bookUris: Stream[URI]): WordMapper = {
-    val allSent: Stream[Seq[String]] = bookUris.flatMap(splitter.splitSentences)
-
+  def createWordMapperFromBooks(bookUris: Stream[URI]): WordMapper = {
     val words: Seq[String] = bookUris.flatMap(splitter.splitSentences)
       .flatten
       .toSet
       .toSeq
     val si: Seq[(String, Int)] = words.zipWithIndex
 
-    createMap(si)
+    createMapper(si)
 
   }
 
-  def createWordMapFromWordlist(wordlist: Iterable[String]): WordMapper = {
+  def createWordMapperFromWordlist(wordlist: Iterable[String]): WordMapper = {
     val grps = wordlist.toSeq.groupBy(w => maxVowel(w)).toSeq
     val si: Seq[Seq[String]] = for ((_, sent) <- grps) yield {
       sent.sorted
     }
-    createMap(si.flatten.zipWithIndex)
+    createMapper(si.flatten.zipWithIndex)
   }
 
-  def createWordMapFromWordlistResource(resName: String): WordMapper = {
-    val wl = WordList.loadWordList(resName)
-    createWordMapFromWordlist(wl)
+  def createWordMapperFromWordlistResource(resName: String): WordMapper = {
+    val wl = IoUtil.loadWordList(resName)
+    createWordMapperFromWordlist(wl)
   }
 
   def maxVowel(word: String): Char = {
@@ -67,7 +53,7 @@ object WordMap {
     x.sum
   }
 
-  private def createMap(si: Seq[(String, Int)]): WordMapper = {
+  private def createMapper(si: Seq[(String, Int)]): WordMapper = {
     val siMap = si.toMap
     val is: Seq[(Int, String)] = si.map { case (a, b) => (b, a) }
 
@@ -75,6 +61,12 @@ object WordMap {
     val off: Int = siMap.size / 2
 
     new WordMapper {
+
+      // Identity. There are no groups
+      def mapToGroup(word: String): String = word
+
+      // As there are no groups it is the same as contains word
+      def containsGroup(grp: String): Boolean = containsWord(grp)
 
       def containsWord(str: String): Boolean = {
         siMap.contains(str)

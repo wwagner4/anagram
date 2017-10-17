@@ -1,7 +1,5 @@
 package anagram.ml.data
 
-import java.net.URI
-
 class SentenceCreatorSliding extends SentenceCreator {
 
   def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
@@ -10,17 +8,17 @@ class SentenceCreatorSliding extends SentenceCreator {
       .flatMap(slideSentences(_, len, wordMapper))
   }
 
-  def slideSentences(words: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
-    require(words.size >= len)
+  def slideSentences(groups: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
+    require(groups.size >= len)
 
-    if (words.size == len) {
-      if (words.forall(wordMapper.containsWord)) {
-        Seq(Sentence(SentenceType_COMPLETE, words))
+    if (groups.size == len) {
+      if (groups.forall(wordMapper.containsWord)) {
+        Seq(Sentence(SentenceType_COMPLETE, groups))
       } else {
         Seq.empty[Sentence]
       }
     } else {
-      val ws = words.sliding(len)
+      val ws = groups.sliding(len)
         .toList
         .filter(ws => ws.forall(wordMapper.containsWord))
       for ((w, i) <- ws.zipWithIndex) yield {

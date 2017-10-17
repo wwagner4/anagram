@@ -3,7 +3,7 @@ package anagram.ml.data
 trait SentenceRater {
 
   /**
-    * Takes a words, copies and changes these copies
+    * Takes a groups, copies and changes these copies
     * and adds a rating at the end of each of these new
     * sentences.
     */

@@ -2,7 +2,7 @@ package anagram.ml.data
 
 import org.scalatest.{FunSuite, MustMatchers}
 
-class WordMapSuite extends FunSuite with MustMatchers {
+class WordMapSingleWordSuite extends FunSuite with MustMatchers {
 
   val maxVowelData = Seq(
     ("assel", 'a'),
@@ -19,7 +19,7 @@ class WordMapSuite extends FunSuite with MustMatchers {
 
   for((w, c) <- maxVowelData) {
     test(s"maxVowel $w $c") {
-      WordMap.maxVowel(w) mustBe c
+      WordMapSingleWord.maxVowel(w) mustBe c
     }
 
   }
@@ -33,7 +33,7 @@ class WordMapSuite extends FunSuite with MustMatchers {
 
   for ((w, c, cnt) <- countCharData) {
     test(s"countChar $w $c") {
-      WordMap.countChar(w, c) mustBe cnt
+      WordMapSingleWord.countChar(w, c) mustBe cnt
     }
   }
 }

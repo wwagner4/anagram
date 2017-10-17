@@ -3,7 +3,7 @@ package anagram.solve
 import java.nio.file.Path
 
 import anagram.common.IoUtil
-import anagram.ml.data.{WordMap, WordMapper}
+import anagram.ml.data.{WordMapSingleWord, WordMapper}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -41,7 +41,7 @@ class AiRater(dataId: String, wordlist: Iterable[String]) extends Rater {
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
 
-  val wordmap: WordMapper = WordMap.createWordMapFromWordlist(wordlist)
+  val wordmap: WordMapper = WordMapSingleWord.createWordMapperFromWordlist(wordlist)
 
   def rate(sent: Iterable[String]): Double = {
     nnMap.get(sent.size)
