@@ -1,10 +1,11 @@
 package anagram.solve
 
 import anagram.common.IoUtil
+import anagram.ml.data.WordList
 
 object SSolverTryout extends App {
 
-  val wl = IoUtil.loadWordList("wordlist/wordlist_small.txt")
+  val wl =  WordList.loadWordListSmall
 
   val start = System.currentTimeMillis()
 

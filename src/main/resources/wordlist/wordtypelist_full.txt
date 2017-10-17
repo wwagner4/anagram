@@ -7632,7 +7632,6 @@ n;attritus
 a;attry
 vt;attune
 adv;atwain
-adv<plain>or</plain>prep;atween
 a&adv;atwirl
 vt;atwite
 adv;atwixt
@@ -95977,7 +95976,6 @@ n;soot
 vt;soot
 a;soot
 n;sooterkin
-a;<plain>also</plain>adv;sooth
 n;sooth
 vt;soothe
 n;soother

@@ -17,10 +17,6 @@ case class DataFile(
 
 object IoUtil {
 
-  def loadWordList(resName: String): Iterable[String] = {
-    IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (l) => l.toIterable)
-  }
-
   def saveMapToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
     saveTxtToWorkDir(s"${id}_map", f)
   }

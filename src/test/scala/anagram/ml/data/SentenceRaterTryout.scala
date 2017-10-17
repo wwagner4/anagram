@@ -4,7 +4,7 @@ import anagram.common.IoUtil
 
 object SentenceRaterTryout extends App {
 
-  val wordList = IoUtil.loadWordList("wordlist/wordlist_small.txt")
+  val wordList =  WordList.loadWordListSmall
   val mapper = WordMapSingleWord.createWordMapperFromWordlist(wordList)
   val grouper = WordGrouperIdentity
   val screa: SentenceCreator = new SentenceCreatorSliding()

@@ -88,6 +88,7 @@ object GcideTransfom extends App {
           .replaceAll("<or/", ",")
           .replaceAll("<and/", "&")
         if (str.length > 150) None
+        else if (str.contains("plain")) None
         else Some(str)
       }
       else None

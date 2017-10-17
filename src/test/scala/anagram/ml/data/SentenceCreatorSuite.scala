@@ -5,7 +5,7 @@ import org.scalatest.{FunSuite, MustMatchers}
 
 class SentenceCreatorSuite extends FunSuite with MustMatchers {
 
-  private val wordList = IoUtil.loadWordList("wordlist/wordlist_small.txt")
+  private val wordList =  WordList.loadWordListSmall
   private val wm = WordMapSingleWord.createWordMapperFromWordlist(wordList)
   private val scSliding = new SentenceCreatorSliding()
 

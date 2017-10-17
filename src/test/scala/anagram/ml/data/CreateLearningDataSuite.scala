@@ -2,7 +2,7 @@ package anagram.ml.data
 
 import org.scalatest.{FunSuite, MustMatchers}
 
-class LearningDataSuite extends FunSuite with MustMatchers {
+class CreateLearningDataSuite extends FunSuite with MustMatchers {
 
   val numExchangeData = Seq(
 
