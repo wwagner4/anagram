@@ -60,17 +60,18 @@ class SSolverSuite extends FunSuite with MustMatchers {
     ("ab", "cacbc", Some("ab")),
     ("ab", "abca", Some("ab")),
     ("ab", "abcxxxx", Some("ab")),
+    ("ba", "abcxxxx", Some("ab")),
   )
 
   for ((w, txt, re) <- validWordData) {
     test(s"validWord $w $txt") {
-      SSolver(4).validWord(w, txt) mustBe re
+      sorted(SSolver(4).validWord(w, txt)) mustBe re
     }
   }
 
   for ((w, txt, re) <- validWordData) {
     test(s"validWord1 $w $txt") {
-      SSolver(4).validWord(w, txt.sorted) mustBe re
+      sorted(SSolver(4).validWord(w.sorted, txt.sorted)) mustBe re
     }
   }
 
@@ -85,5 +86,7 @@ class SSolverSuite extends FunSuite with MustMatchers {
       SSolver(4).removeFirst(c, s, i) mustBe re
     }
   }
+
+  private def sorted(in: Option[String]): Option[String] = in.map(str => str.sorted)
 
 }
