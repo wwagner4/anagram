@@ -53,7 +53,26 @@ case class SSolver(maxDepth: Int) extends Solver {
       }
     }
 
-    println(s"validWord: $word - $txt")
+    //println(s"validWord: $word - $txt")
+    vw(word, txt)
+  }
+
+  def validWord1(word: String, txt: String): Option[String] = {
+
+    // TODO Optimize. txt and word sorted ???
+    def vw(w: String, txt: String): Option[String] = {
+      if (w.isEmpty) Some(word)
+      else {
+        val l = w.length
+        val head = w.substring(0, 1)(0)
+        val tail = w.substring(1, l)
+        val i = txt.indexOf(head)
+        if (i >= 0) vw(tail, removeFirst(head, txt, i))
+        else None
+      }
+    }
+
+    //println(s"validWord: $word - $txt")
     vw(word, txt)
   }
 

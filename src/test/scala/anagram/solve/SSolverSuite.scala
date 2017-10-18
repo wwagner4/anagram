@@ -68,6 +68,12 @@ class SSolverSuite extends FunSuite with MustMatchers {
     }
   }
 
+  for ((w, txt, re) <- validWordData) {
+    test(s"validWord1 $w $txt") {
+      SSolver(4).validWord(w, txt.sorted) mustBe re
+    }
+  }
+
   val removeFirstData = List(
     ('a', "a", 0, ""),
     ('a', "ab", 0, "b"),
