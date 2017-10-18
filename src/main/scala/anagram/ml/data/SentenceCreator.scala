@@ -13,6 +13,6 @@ case class Sentence (
 
 trait SentenceCreator {
 
-  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper, grouper: WordGrouper): Stream[Sentence]
+  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence]
 
 }

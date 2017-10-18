@@ -32,6 +32,7 @@ class WordMapGrammer {
 
       override def containsWord(str: String): Boolean = ???
 
+      override def group(value: String) = ???
     }
 
 

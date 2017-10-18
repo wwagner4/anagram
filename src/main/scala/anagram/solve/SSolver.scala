@@ -5,7 +5,7 @@ import scala.collection.GenIterable
 case class SSolver(maxDepth: Int) extends Solver {
 
   def solve(sourceText: String, words: Iterable[String]): Stream[Ana] = {
-    solve1(sourceText.toLowerCase().replaceAll("\\s", ""), 0, words.toList, new AnaCache())
+    solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
       .map(sent => Ana(1.0, sent))
       .toStream
   }
@@ -39,6 +39,8 @@ case class SSolver(maxDepth: Int) extends Solver {
   }
 
   def validWord(word: String, txt: String): Option[String] = {
+
+    // TODO Optimize. txt and word sorted ???
     def vw(w: String, txt: String): Option[String] = {
       if (w.isEmpty) Some(word)
       else {
@@ -51,6 +53,7 @@ case class SSolver(maxDepth: Int) extends Solver {
       }
     }
 
+    println(s"validWord: $word - $txt")
     vw(word, txt)
   }
 

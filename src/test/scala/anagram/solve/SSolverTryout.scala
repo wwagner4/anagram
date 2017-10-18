@@ -1,6 +1,5 @@
 package anagram.solve
 
-import anagram.common.IoUtil
 import anagram.ml.data.WordList
 
 object SSolverTryout extends App {
@@ -9,8 +8,8 @@ object SSolverTryout extends App {
 
   val start = System.currentTimeMillis()
 
-  private val src = "clint eastwood"
-  val anas = SSolver(4).solve(src, wl)
+  private val src = "wolfi wagner"
+  val anas = SSolver(3).solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")
   else for (ana <- anas) {

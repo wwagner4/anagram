@@ -41,27 +41,17 @@ object WordMapSingleWord {
 
     new WordMapper {
 
-      // Identity. There are no groups
-      def mapToGroup(word: String): String = word
+      override def containsWord(str: String): Boolean = siMap.contains(str)
 
-      // As there are no groups it is the same as contains word
-      def containsGroup(grp: String): Boolean = containsWord(grp)
+      override def toNum(word: String): Int = siMap(word) - off
 
-      def containsWord(str: String): Boolean = {
-        siMap.contains(str)
-      }
+      override def toWord(num: Int): String = isMap(num + off)
 
-      def toNum(word: String): Int = siMap(word) - off
+      override lazy val  size: Int = siMap.size
 
-      def toWord(num: Int): String = isMap(num + off)
+      override def randomWord: String = isMap(ran.nextInt(size))
 
-      lazy val size: Int = siMap.size
-
-      def randomWord: String = {
-        val i = ran.nextInt(size)
-        isMap(i)
-      }
-
+      override def group(value: String) = value
     }
   }
 
