@@ -13,7 +13,7 @@ object SentenceCreatorTryout extends App {
   showSentences
   //completeWords
 
-  def completeWords: Unit = {
+  def completeWords(): Unit = {
     val split = uris.flatMap(splitter.splitSentences)
 
     List(2, 3, 4, 5, 6, 7).map { size =>
@@ -27,7 +27,7 @@ object SentenceCreatorTryout extends App {
     }
   }
 
-  def showSentences: Unit = {
+  def showSentences(): Unit = {
     val split = uris.flatMap(splitter.splitSentences)
     val sent = creator.create(split, 2, wm)
     sent.foreach { sent =>
