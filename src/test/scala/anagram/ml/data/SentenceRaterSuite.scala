@@ -12,8 +12,10 @@ class SentenceRaterSuite extends FunSuite with MustMatchers {
   )
 
   for ((s, r, l) <- lines) {
-    val rating = SentenceRaterGenericLengthFactor.mkGenRating(s)
-    rating.sentLen mustBe l
-    rating.rating mustBe r
+    test(s"mkGenRating $s") {
+      val rating = SentenceRaterGenericLengthFactor.mkGenRating(s)
+      rating.sentLen mustBe l
+      rating.rating mustBe r
+    }
   }
 }

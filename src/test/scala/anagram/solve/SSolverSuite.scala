@@ -71,7 +71,7 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
   for ((w, txt, re) <- validWordData) {
     test(s"validWord1 $w $txt") {
-      sorted(SSolver(4).validWord(w.sorted, txt.sorted)) mustBe re
+      sorted(SSolver(4).validWordFromSorted(w.sorted, txt.sorted)) mustBe re
     }
   }
 

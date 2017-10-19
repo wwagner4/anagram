@@ -21,10 +21,10 @@ case class SSolver(maxDepth: Int) extends Solver {
         if (depth >= maxDepth) Iterable.empty[List[String]]
         else {
           val mws =
-            if (depth >= 1) Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
+            if (depth >= 1) Seq(findMatchingWords(txt, words))
             else {
               val parallel = 8
-              val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
+              val mws1 = findMatchingWords(txt, words)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
               val grps = mws1.grouped(grpSize).toSeq
@@ -67,6 +67,25 @@ case class SSolver(maxDepth: Int) extends Solver {
     vw(word, txt)
   }
 
+  def validWordFromSorted(word: String, txt: String): Option[String] = {
+
+    // TODO Optimize. txt and word sorted ???
+    def vw(w: String, txt: String): Option[String] = {
+      if (w.isEmpty) Some(word)
+      else {
+        val l = w.length
+        val head = w.substring(0, 1)(0)
+        val tail = w.substring(1, l)
+        val i = txt.indexOf(head)
+        if (i >= 0) vw(tail, removeFirst(head, txt, i))
+        else None
+      }
+    }
+
+    // println(s"validWord: $word - $txt")
+    vw(word, txt)
+  }
+
   def removeFirst(c: Char, s: String, i: Int): String = {
     val l = s.length
     if (i == 0) {
@@ -86,7 +105,7 @@ case class SSolver(maxDepth: Int) extends Solver {
   }
 
   def findMatchingWords(txt: String, words: List[String]): Iterable[String] = {
-    words.flatMap(w => validWord(w, txt))
+    words.flatMap(w => validWord(w, txt)).filter(!_.isEmpty)
   }
 
   def removeChars(txt: String, mw: List[Char]): String = {
