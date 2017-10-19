@@ -8,13 +8,13 @@ object SSolverTryout extends App {
 
   val start = System.currentTimeMillis()
 
-  private val src = "wolfi wagner"
-  val anas = SSolver(3).solve(src, wl)
+  private val src = "ingrid in love bernd"
+  val anas = SSolver(4).solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")
-  else for (ana <- anas) {
+  else for ((ana, i) <- anas.zipWithIndex) {
     val str = ana.sentence.mkString(" ")
-    println("%s --> %s".format(src, str))
+    println("%10d - %s".format(i, str))
   }
 
   val stop = System.currentTimeMillis()

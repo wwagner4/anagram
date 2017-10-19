@@ -23,12 +23,13 @@ case class SSolver(maxDepth: Int) extends Solver {
           val mws =
             if (depth >= 1) Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
             else {
+              val parallel = 8
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
-              val  grpSize = mws1Size / 4
-              val  grps = mws1.grouped(grpSize).toSeq
+              val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
+              val grps = mws1.grouped(grpSize).toSeq
               val sizes = grps.map(_.size).mkString(", ")
-              println(s"-- parallel $depth - $mws1Size - $sizes")
+              //println(s"-- parallel $depth - $mws1Size - $sizes")
               grps.par
             }
           //println(s"-- $depth :$txt: - ${mws.mkString(" ")}")
@@ -62,7 +63,7 @@ case class SSolver(maxDepth: Int) extends Solver {
       }
     }
 
-    println(s"validWord: $word - $txt")
+    // println(s"validWord: $word - $txt")
     vw(word, txt)
   }
 
