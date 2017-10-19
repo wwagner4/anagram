@@ -20,10 +20,19 @@ case class SSolver(maxDepth: Int) extends Solver {
       else {
         if (depth >= maxDepth) Iterable.empty[List[String]]
         else {
-          val mws = if (depth >= 1) findMatchingWords(txt, words).filter(!_.isEmpty)
-          else findMatchingWords(txt, words).filter(!_.isEmpty).par
+          val mws =
+            if (depth >= 1) Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
+            else {
+              val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
+              val mws1Size = mws1.size
+              val  grpSize = mws1Size / 4
+              val  grps = mws1.grouped(grpSize).toSeq
+              val sizes = grps.map(_.size).mkString(", ")
+              println(s"-- parallel $depth - $mws1Size - $sizes")
+              grps.par
+            }
           //println(s"-- $depth :$txt: - ${mws.mkString(" ")}")
-          mws.flatMap { mw =>
+          mws.flatMap(_.flatMap { mw =>
             val restText = removeChars(txt, mw.toList)
             val subAnas = solve1(restText, depth + 1, words, anaCache)
             if (restText.isEmpty && subAnas.isEmpty) {
@@ -31,7 +40,7 @@ case class SSolver(maxDepth: Int) extends Solver {
             } else {
               subAnas.map(sent => mw :: sent)
             }
-          }
+          })
         }
       }
     anaCache.addAna(txt, re)
@@ -53,26 +62,7 @@ case class SSolver(maxDepth: Int) extends Solver {
       }
     }
 
-    //println(s"validWord: $word - $txt")
-    vw(word, txt)
-  }
-
-  def validWord1(word: String, txt: String): Option[String] = {
-
-    // TODO Optimize. txt and word sorted ???
-    def vw(w: String, txt: String): Option[String] = {
-      if (w.isEmpty) Some(word)
-      else {
-        val l = w.length
-        val head = w.substring(0, 1)(0)
-        val tail = w.substring(1, l)
-        val i = txt.indexOf(head)
-        if (i >= 0) vw(tail, removeFirst(head, txt, i))
-        else None
-      }
-    }
-
-    //println(s"validWord: $word - $txt")
+    println(s"validWord: $word - $txt")
     vw(word, txt)
   }
 
