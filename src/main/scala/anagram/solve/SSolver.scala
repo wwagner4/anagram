@@ -1,20 +1,22 @@
 package anagram.solve
 
+import anagram.ml.data.Word
+
 import scala.collection.GenIterable
 
 case class SSolver(maxDepth: Int) extends Solver {
 
-  def solve(sourceText: String, words: Iterable[String]): Stream[Ana] = {
+  def solve(sourceText: String, words: Iterable[Word]): Stream[Ana] = {
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
       .map(sent => Ana(1.0, sent))
       .toStream
   }
 
-  def solve1(txt: String, depth: Int, words: List[String], anaCache: AnaCache): GenIterable[List[String]] = {
+  def solve1(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
     anaCache.ana(txt).getOrElse(solve2(txt, depth, words, anaCache))
   }
 
-  def solve2(txt: String, depth: Int, words: List[String], anaCache: AnaCache): GenIterable[List[String]] = {
+  def solve2(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
     val re: GenIterable[List[String]] =
       if (txt.isEmpty) Iterable.empty[List[String]]
       else {
@@ -23,7 +25,7 @@ case class SSolver(maxDepth: Int) extends Solver {
           val mws =
             if (depth >= 1) Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
             else {
-              val parallel = 8
+              val parallel = 4
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
@@ -48,11 +50,11 @@ case class SSolver(maxDepth: Int) extends Solver {
     re
   }
 
-  def validWord(word: String, txt: String): Option[String] = {
+  def validWord(word: Word, txt: String): Option[String] = {
 
     // TODO Optimize. txt and word sorted ???
     def vw(w: String, txt: String): Option[String] = {
-      if (w.isEmpty) Some(word)
+      if (w.isEmpty) Some(word.word)
       else {
         val l = w.length
         val head = w.substring(0, 1)(0)
@@ -64,7 +66,7 @@ case class SSolver(maxDepth: Int) extends Solver {
     }
 
     // println(s"validWord: $word - $txt")
-    vw(word, txt)
+    vw(word.word, txt)
   }
 
   def removeFirst(c: Char, s: String, i: Int): String = {
@@ -85,7 +87,7 @@ case class SSolver(maxDepth: Int) extends Solver {
     else s
   }
 
-  def findMatchingWords(txt: String, words: List[String]): Iterable[String] = {
+  def findMatchingWords(txt: String, words: List[Word]): Iterable[String] = {
     words.flatMap(w => validWord(w, txt))
   }
 

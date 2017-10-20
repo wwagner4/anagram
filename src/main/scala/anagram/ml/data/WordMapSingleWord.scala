@@ -6,8 +6,8 @@ object WordMapSingleWord {
 
   private val ran = Random
 
-  def createWordMapperFromWordlist(wordlist: Iterable[String]): WordMapper = {
-    val grps = wordlist.toSeq.groupBy(w => maxVowel(w)).toSeq
+  def createWordMapperFromWordlist(wordlist: Iterable[Word]): WordMapper = {
+    val grps = wordlist.map(w => w.word).toSeq.groupBy(w => maxVowel(w)).toSeq
     val si: Seq[Seq[String]] = for ((_, sent) <- grps) yield {
       sent.sorted
     }
