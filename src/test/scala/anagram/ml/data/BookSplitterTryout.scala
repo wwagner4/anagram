@@ -4,7 +4,7 @@ import anagram.common.IoUtil
 
 object BookSplitterTryout extends App {
 
-  val uri = IoUtil.uri(BookSplitterTxt.bookSmallRes)
+  val uri = IoUtil.uri(BookSplitterTxt.bookCommonSenseRes)
   val splitter = new BookSplitterTxt
 
   val sentences = splitter.splitSentences(uri)

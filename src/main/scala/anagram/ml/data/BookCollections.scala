@@ -4,6 +4,14 @@ object BookCollections {
 
   val bookSmallRes = "books/TwoLines.txt"
 
+  val collectionOneBook = BookCollection(
+    desc = "Collection of English Books #1",
+    sentenceLength = 2 to 7,
+    books = Seq(
+      Book("books/CommonSense.txt", "Common Sense", "Thomas Paine"),
+    )
+  )
+
   val collectionEn1 = BookCollection(
     desc = "Collection of English Books #1",
     sentenceLength = 2 to 7,

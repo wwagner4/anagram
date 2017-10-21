@@ -7,7 +7,7 @@ import anagram.common.IoUtil
 import org.slf4j.LoggerFactory
 
 
-class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater) {
+class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater, mapWordsToNumbers: Boolean = false) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
@@ -20,9 +20,11 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
     val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename)).toStream
     for (len <- bookCollection.sentenceLength) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
+      log.info(s"Found ${split.size} sentences in ${bookCollection.desc}")
       val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
+      log.info(s"Created ${sent.size} sentences of length $len")
       val ldPath = IoUtil.saveDataToWorkDir(id, len, writeSentences(sent)(_))
-      log.info("created learning data in " + ldPath)
+      log.info("Created learning data in " + ldPath)
     }
     log.info("Created learning data for book collection:\n" + asString(id, bookCollection))
   }
@@ -33,7 +35,7 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
         val ranRate = rated.rating + (ran.nextInt(variance * 2 + 1) - variance)
         val numSent = Sentence(
           rated.sentence.sentenceType,
-          rated.sentence.words.map(word => f(wm.toNum(word)))
+          rated.sentence.words.map(word => if (mapWordsToNumbers) f(wm.toNum(word)) else word)
         )
         val numRated = Rated(numSent, ranRate)
         writeSentence(numRated)(wr)

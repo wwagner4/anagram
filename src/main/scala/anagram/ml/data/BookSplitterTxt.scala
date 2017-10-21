@@ -15,6 +15,7 @@ object BookSplitterTxt {
   )
 
   val bookSmallRes = "books/TwoLines.txt"
+  val bookCommonSenseRes = "books/CommonSense.txt"
 }
 
   /**

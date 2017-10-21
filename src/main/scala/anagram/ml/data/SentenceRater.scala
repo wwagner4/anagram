@@ -1,15 +1,15 @@
 package anagram.ml.data
 
+case class Rated(sentence: Sentence, rating: Double)
+
 trait SentenceRater {
 
   /**
-    * Takes a groups, copies and changes these copies
-    * and adds a rating at the end of each of these new
-    * sentences.
+    * Takes a sentence, and returns a sequence
+    * rated sentences.
     */
   def rateSentence(sentence: Sentence): Seq[Rated]
 
 }
 
-case class Rated(sentence: Sentence, rating: Double)
 

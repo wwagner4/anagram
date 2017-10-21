@@ -85,12 +85,12 @@ object IoUtil {
   }
 
   private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
-    val filename = s"anagram_$id.txtSorted"
+    val filename = s"anagram_$id.txt"
     save(getCreateWorkDir, filename, f)
   }
 
   private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
-    val fileName = s"anagram_$id.txtSorted"
+    val fileName = s"anagram_$id.txt"
     val file = getCreateWorkDir.resolve(fileName)
     loadTxtFromPath(file, f)
   }

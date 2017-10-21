@@ -2,17 +2,21 @@ package anagram.ml.data
 
 object CreateLearningDataGrammer {
 
-  private val wordList = WordList.loadWordListGrammer
-  private val mapper = WordMapSingleWord.createWordMapperFromWordlist(wordList)
+  private val mapper = WordMapGrammer.createWordMapperFull
 
-  val splitter = new BookSplitterTxt()
-  val screator = new SentenceCreatorSliding()
-  val srater = new SentenceRaterStraight(mapper)
-
-  val creator = new CreateLearningData(mapper, splitter, screator, srater)
+  val splitter: BookSplitter = new BookSplitterTxt()
+  val screator: SentenceCreator = new SentenceCreatorSliding()
+  val srater: SentenceRater = DummyRater
+  val creator = new CreateLearningData(mapper, splitter, screator, srater, mapWordsToNumbers = false)
 
   def createData(dataId: String, bookCollection: BookCollection): Unit = {
     creator.createData(dataId, bookCollection)
   }
 
+}
+
+object DummyRater extends SentenceRater {
+  override def rateSentence(sentence: Sentence): Seq[Rated] = {
+    Seq(Rated(sentence, 0.0))
+  }
 }
