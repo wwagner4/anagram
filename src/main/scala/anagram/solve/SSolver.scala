@@ -29,12 +29,9 @@ case class SSolver(maxDepth: Int) extends Solver {
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
-              val grps = mws1.grouped(grpSize).toSeq
-              val sizes = grps.map(_.size).mkString(", ")
-              //println(s"-- parallel $depth - $mws1Size - $sizes")
-              grps.par
+              mws1.grouped(grpSize).toSeq.par
             }
-          //println(s"-- $depth :$txt: - ${mws.mkString(" ")}")
+          //println(s"-- $depth :$txtSorted: - ${mws.mkString(" ")}")
           mws.flatMap(_.flatMap { mw =>
             val restText = removeChars(txt, mw.toList)
             val subAnas = solve1(restText, depth + 1, words, anaCache)
@@ -50,42 +47,25 @@ case class SSolver(maxDepth: Int) extends Solver {
     re
   }
 
-  def validWord(word: Word, txt: String): Option[String] = {
-
-    // TODO Optimize. txt and word sorted ???
-    def vw(w: String, txt: String): Option[String] = {
-      if (w.isEmpty) Some(word.word)
-      else {
-        val l = w.length
-        val head = w.substring(0, 1)(0)
-        val tail = w.substring(1, l)
-        val i = txt.indexOf(head)
-        if (i >= 0) vw(tail, removeFirst(head, txt, i))
-        else None
+  def validWordFromSorted(word: Word, txtSorted: String): Option[String] = {
+    val lw = word.wordSorted.length
+    val lt = txtSorted.length
+    if (lw > lt) None
+    else {
+      def v(iw: Int, it: Int): Option[String] = {
+        if (iw >= lw) {
+          Some(word.word)
+        }
+        else if (it >= lt) {
+          None
+        }
+        else {
+          if (word.wordSorted(iw) == txtSorted(it)) v(iw+1, it+1)
+          else v(iw, it+1)
+        }
       }
+      v(0, 0)
     }
-
-    // println(s"validWord: $word - $txt")
-    vw(word.word, txt)
-  }
-
-  def validWordFromSorted(word: String, txt: String): Option[String] = {
-
-    // TODO Optimize. txt and word sorted ???
-    def vw(w: String, txt: String): Option[String] = {
-      if (w.isEmpty) Some(word)
-      else {
-        val l = w.length
-        val head = w.substring(0, 1)(0)
-        val tail = w.substring(1, l)
-        val i = txt.indexOf(head)
-        if (i >= 0) vw(tail, removeFirst(head, txt, i))
-        else None
-      }
-    }
-
-    // println(s"validWord: $word - $txt")
-    vw(word, txt)
   }
 
   def removeFirst(c: Char, s: String, i: Int): String = {
@@ -107,7 +87,7 @@ case class SSolver(maxDepth: Int) extends Solver {
   }
 
   def findMatchingWords(txt: String, words: List[Word]): Iterable[String] = {
-    words.flatMap(w => validWord(w, txt))
+    words.flatMap(w => validWordFromSorted(w, txt))
   }
 
   def removeChars(txt: String, mw: List[Char]): String = {
