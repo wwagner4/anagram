@@ -30,8 +30,7 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
   }
 
   def writeSentences(sentences: Seq[Sentence])(wr: BufferedWriter): Unit = {
-    for (sent <- sentences) {
-      for (rated <- sentenceRater.rateSentence(sent)) {
+      for (rated <- sentenceRater.rateSentence(sentences)) {
         val ranRate = rated.rating + (ran.nextInt(variance * 2 + 1) - variance)
         val numSent = Sentence(
           rated.sentence.sentenceType,
@@ -40,7 +39,6 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
         val numRated = Rated(numSent, ranRate)
         writeSentence(numRated)(wr)
       }
-    }
   }
 
   def writeSentence(rated: Rated)(wr: BufferedWriter): Unit = {

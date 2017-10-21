@@ -8,7 +8,7 @@ trait SentenceRater {
     * Takes a sentence, and returns a sequence
     * rated sentences.
     */
-  def rateSentence(sentence: Sentence): Seq[Rated]
+  def rateSentence(sentence: Iterable[Sentence]): Iterable[Rated]
 
 }
 

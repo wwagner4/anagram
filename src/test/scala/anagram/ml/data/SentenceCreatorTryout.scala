@@ -32,7 +32,7 @@ object SentenceCreatorTryout extends App {
     val sent = creator.create(split, 2, wm)
     sent.foreach { sent =>
       val ws = sent.words.mkString(" ")
-      println("%5s - %s" format(short(sent.sentenceType), ws))
+      println("%5s - %s".format(short(sent.sentenceType), ws))
     }
   }
 

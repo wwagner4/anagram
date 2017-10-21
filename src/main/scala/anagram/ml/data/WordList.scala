@@ -11,7 +11,7 @@ object WordList {
   def loadWordListSmall: Iterable[Word] = loadWordList("wordlist/wordlist_small.txt")
     .map(line => Word(line, line.sorted))
 
-  def loadWordListGrammer: Iterable[Word] =
+  def loadWordListGrammar: Iterable[Word] =
     loadWordList("wordlist/wordtypelist_full.txt")
       .map { line =>
         val s = line.split(";")

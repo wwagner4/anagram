@@ -6,15 +6,17 @@ class SentenceRaterSimple(val wm: WordMapper) extends SentenceRater {
 
   val ran = new  util.Random()
 
-  def rateSentence(sentence: Sentence): Seq[Rated] = {
+  def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
 
-    val l = sentence.words.length
-    val ratings = (0 to (100, 100 / l)).toList
-    ratings.flatMap(rate => Seq.fill(5) {
-      val numEx =  numExchange(sentence.words.size, rate)
-      val sentEx = exchange(sentence, numEx)
-      Rated(sentEx, rate)
-    })
+    sentences.flatMap { sentence =>
+      val l = sentence.words.length
+      val ratings = (0 to (100, 100 / l)).toList
+      ratings.flatMap(rate => Seq.fill(5) {
+        val numEx =  numExchange(sentence.words.size, rate)
+        val sentEx = exchange(sentence, numEx)
+        Rated(sentEx, rate)
+      })
+    }
   }
 
   def numExchange(sentSize: Int, rating: Int): Int = {

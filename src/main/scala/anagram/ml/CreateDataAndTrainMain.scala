@@ -6,6 +6,6 @@ object CreateDataAndTrainMain extends App {
 
   val id = "enGrm01"
 
-  CreateLearningDataGrammer.createData(id, BookCollections.collectionEn2)
+  CreateLearningDataGrammar.createData(id, BookCollections.collectionEn2)
 
 }

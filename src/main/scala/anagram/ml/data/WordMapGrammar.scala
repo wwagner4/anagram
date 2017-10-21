@@ -6,7 +6,7 @@ import anagram.common.IoUtil
 
 import scala.util.Random
 
-object WordMapGrammer {
+object WordMapGrammar {
 
   case class GrpoupedWord(grp: String, value: String)
 
