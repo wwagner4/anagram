@@ -8,7 +8,7 @@ object SSolverTryout extends App {
 
   val start = System.currentTimeMillis()
 
-  private val src = "ingrid in love bernd"
+  private val src = "ingrid bernd love"
   val anas = SSolver(4).solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")

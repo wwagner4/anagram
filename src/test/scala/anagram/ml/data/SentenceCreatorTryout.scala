@@ -10,13 +10,13 @@ object SentenceCreatorTryout extends App {
   val splitter = new BookSplitterTxt
   val creator = new SentenceCreatorSliding()
 
-  showSentences
+  showSentences()
   //completeWords
 
   def completeWords(): Unit = {
     val split = uris.flatMap(splitter.splitSentences)
 
-    List(2, 3, 4, 5, 6, 7).map { size =>
+    List(2, 3, 4, 5, 6, 7).foreach { size =>
       val stat: Map[SentenceType, Stream[Sentence]] = creator.create(split, size, wm)
         .groupBy(s => s.sentenceType)
 

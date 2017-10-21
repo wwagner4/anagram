@@ -23,7 +23,7 @@ object GcideTransfom extends App {
     .toStream
     .filter(_.getFileName.toString.startsWith("CIDE"))
 
-  val outFileName = "wordTypeList.txt"
+  val outFileName = "wordTypeList.txtSorted"
 
   log.info("STARTED writing to <workdir>/" + outFileName)
   IoUtil.saveToWorkDir(outFileName, { bw =>

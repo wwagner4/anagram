@@ -18,7 +18,7 @@ class WordMapGrammer {
 
     val grps: Seq[Grp] = IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (iter) => iter.toSeq.map(readLine))
 
-    val idxGrps = for((grp, index) <- grps.zipWithIndex) yield IdxGrp(index, grp.grp, grp.value)
+    val idxGrps: Seq[IdxGrp] = for((grp, index) <- grps.zipWithIndex) yield IdxGrp(index, grp.grp, grp.value)
 
     new WordMapper {
 
@@ -32,7 +32,7 @@ class WordMapGrammer {
 
       override def containsWord(str: String): Boolean = ???
 
-      override def group(value: String) = ???
+      override def group(value: String): Nothing = ???
     }
 
 

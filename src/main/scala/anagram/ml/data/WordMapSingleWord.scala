@@ -51,7 +51,7 @@ object WordMapSingleWord {
 
       override def randomWord: String = isMap(ran.nextInt(size))
 
-      override def group(value: String) = value
+      override def group(value: String): String = value
     }
   }
 

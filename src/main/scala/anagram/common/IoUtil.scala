@@ -43,7 +43,7 @@ object IoUtil {
     Files.list(getCreateWorkDir)
       .iterator().asScala.toStream
       .filter(s => s.getFileName.toString.contains(s"${id}_data_"))
-      .map(createDataFile(_, ".*_data_(.*).txt"))
+      .map(createDataFile(_, ".*_data_(.*).txtSorted"))
   }
 
   def getNnDataFilesFromWorkDir(id: String): Seq[DataFile] = {
@@ -85,12 +85,12 @@ object IoUtil {
   }
 
   private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
-    val filename = s"anagram_$id.txt"
+    val filename = s"anagram_$id.txtSorted"
     save(getCreateWorkDir, filename, f)
   }
 
   private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
-    val fileName = s"anagram_$id.txt"
+    val fileName = s"anagram_$id.txtSorted"
     val file = getCreateWorkDir.resolve(fileName)
     loadTxtFromPath(file, f)
   }

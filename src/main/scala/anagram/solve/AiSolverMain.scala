@@ -43,7 +43,7 @@ object AiSolverMain extends App {
 
   def fileName(id: String, src: String): String = {
     val s1 = src.replaceAll("\\s", "_")
-    s"${id}_$s1.txt"
+    s"${id}_$s1.txtSorted"
   }
 
 }

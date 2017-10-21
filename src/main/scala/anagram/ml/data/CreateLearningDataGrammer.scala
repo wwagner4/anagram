@@ -1,14 +1,9 @@
 package anagram.ml.data
 
-import java.net.URI
-import java.nio.file.Paths
-
-import anagram.common.IoUtil
-
 object CreateLearningDataGrammer {
 
-  val wordList = WordList.loadWordListGrammer
-  val mapper = WordMapSingleWord.createWordMapperFromWordlist(wordList)
+  private val wordList = WordList.loadWordListGrammer
+  private val mapper = WordMapSingleWord.createWordMapperFromWordlist(wordList)
 
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()

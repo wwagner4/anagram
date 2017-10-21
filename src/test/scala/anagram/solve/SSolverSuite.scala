@@ -59,19 +59,20 @@ class SSolverSuite extends FunSuite with MustMatchers {
     ("ab", "cabc", Some("ab")),
     ("ab", "cacbc", Some("ab")),
     ("ab", "abca", Some("ab")),
+    ("ab", "abcx", Some("ab")),
+    ("ab", "abcb", Some("ab")),
+    ("ab", "abcabcabcabc", Some("ab")),
+    ("ab", "cabcabcabcabc", Some("ab")),
     ("ab", "abcxxxx", Some("ab")),
     ("ba", "abcxxxx", Some("ab")),
+    ("rs", "abcxxxx", Option.empty[String]),
+    ("oooo", "abcxxxx", Option.empty[String]),
+    ("bcdefghijklmn", "a", Option.empty[String]),
   )
 
   for ((w, txt, re) <- validWordData) {
-    test(s"validWord $w $txt") {
-      sorted(SSolver(4).validWord(toWord(w), txt)) mustBe re
-    }
-  }
-
-  for ((w, txt, re) <- validWordData) {
-    test(s"validWord1 $w $txt") {
-      sorted(SSolver(4).validWord(toWord(w), txt.sorted)) mustBe re
+    test(s"validWordFromSorted $w $txt") {
+      sorted(SSolver(4).validWordFromSorted(toWord(w), txt.sorted)) mustBe re
     }
   }
 
