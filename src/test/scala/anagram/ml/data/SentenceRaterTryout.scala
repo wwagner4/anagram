@@ -14,7 +14,7 @@ object SentenceRaterTryout extends App {
   val bookUri = IoUtil.uri("books/CommonSense.txt")
 
   val s: Stream[Seq[String]] = splitter.splitSentences(bookUri)
-  val rated = screa.create(s, 4, mapper).flatMap(sentenceRater.rateSentence(_))
+  val rated = screa.create(s, 4, mapper).flatMap(sentenceRater.rateSentence)
 
   for ((r, i) <- rated.sortBy(-_.rating).zipWithIndex) {
     val sentString = r.sentence.words.mkString(" ")
