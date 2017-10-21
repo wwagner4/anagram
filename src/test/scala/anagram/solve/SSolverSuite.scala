@@ -1,6 +1,6 @@
 package anagram.solve
 
-import anagram.ml.data.WordList
+import anagram.ml.data.{Word, WordList}
 import org.scalatest.{FunSuite, MustMatchers}
 
 class SSolverSuite extends FunSuite with MustMatchers {
@@ -12,7 +12,7 @@ class SSolverSuite extends FunSuite with MustMatchers {
       "togo",
       "go",
       "r",
-    )
+    ).map(toWord)
 
     val anas = SSolver(4).solve("Oast ogr", wordlist)
 
@@ -65,13 +65,13 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
   for ((w, txt, re) <- validWordData) {
     test(s"validWord $w $txt") {
-      sorted(SSolver(4).validWord(w, txt)) mustBe re
+      sorted(SSolver(4).validWord(toWord(w), txt)) mustBe re
     }
   }
 
   for ((w, txt, re) <- validWordData) {
     test(s"validWord1 $w $txt") {
-      sorted(SSolver(4).validWordFromSorted(w.sorted, txt.sorted)) mustBe re
+      sorted(SSolver(4).validWord(toWord(w), txt.sorted)) mustBe re
     }
   }
 
@@ -89,4 +89,5 @@ class SSolverSuite extends FunSuite with MustMatchers {
 
   private def sorted(in: Option[String]): Option[String] = in.map(str => str.sorted)
 
+  private def toWord(str: String): Word = Word(str, str.sorted)
 }

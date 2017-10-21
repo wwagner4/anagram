@@ -3,7 +3,7 @@ package anagram.solve
 import java.nio.file.Path
 
 import anagram.common.IoUtil
-import anagram.ml.data.{WordMapSingleWord, WordMapper}
+import anagram.ml.data.{Word, WordMapSingleWord, WordMapper}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -17,7 +17,7 @@ trait Rater {
 
 case class AiSolver(parentSolver: Solver, rater: Rater) extends Solver {
 
-  def solve(srcText: String, wordlist: Iterable[String]): Stream[Ana] = {
+  def solve(srcText: String, wordlist: Iterable[Word]): Stream[Ana] = {
     parentSolver.solve(srcText, wordlist)
       .map(parentAna => Ana(rater.rate(parentAna.sentence) * parentAna.rate, parentAna.sentence))
   }
@@ -31,7 +31,7 @@ class RandomRater extends Rater {
 
 }
 
-class AiRater(dataId: String, wordlist: Iterable[String]) extends Rater {
+class AiRater(dataId: String, wordlist: Iterable[Word]) extends Rater {
 
   private val log = LoggerFactory.getLogger("AiRater")
 
