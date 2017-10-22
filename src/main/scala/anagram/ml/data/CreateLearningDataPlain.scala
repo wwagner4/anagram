@@ -15,7 +15,8 @@ object CreateLearningDataPlain {
   val creator = new CreateLearningData(mapper, splitter, screator, srater)
 
   def createData(dataId: String, bookCollection: BookCollection): Unit = {
-    creator.createData(dataId, bookCollection)
+    val cfg = CreateDataConfig(dataId, bookCollection, 2 to 7)
+    creator.createData(cfg)
   }
 
 }

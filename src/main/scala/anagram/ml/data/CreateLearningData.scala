@@ -6,6 +6,12 @@ import java.util.Locale
 import anagram.common.IoUtil
 import org.slf4j.LoggerFactory
 
+case class CreateDataConfig(
+                             id: String,
+                             bookCollection: BookCollection,
+                             sentenceLength: Iterable[Int],
+                           )
+
 
 class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater, mapWordsToNumbers: Boolean = true) {
 
@@ -15,30 +21,30 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
 
   private val ran = new util.Random()
 
-  def createData(id: String, bookCollection: BookCollection): Unit = {
+  def createData(config: CreateDataConfig): Unit = {
 
-    val uris = bookCollection.books.map(bc => IoUtil.uri(bc.filename)).toStream
-    for (len <- bookCollection.sentenceLength) {
+    val uris = config.bookCollection.books.map(bc => IoUtil.uri(bc.filename)).toStream
+    for (len <- config.sentenceLength) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
-      log.info(s"Found ${split.size} sentences in ${bookCollection.desc}")
+      log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
       val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
       log.info(s"Created ${sent.size} sentences of length $len")
-      val ldPath = IoUtil.saveDataToWorkDir(id, len, writeSentences(sent)(_))
+      val ldPath = IoUtil.saveDataToWorkDir(config.id, len, writeSentences(sent)(_))
       log.info("Created learning data in " + ldPath)
     }
-    log.info("Created learning data for book collection:\n" + asString(id, bookCollection))
+    log.info("Created learning data for book collection:\n" + asString(config.id, config.bookCollection))
   }
 
   def writeSentences(sentences: Seq[Sentence])(wr: BufferedWriter): Unit = {
-      for (rated <- sentenceRater.rateSentence(sentences)) {
-        val ranRate = rated.rating + (ran.nextInt(variance * 2 + 1) - variance)
-        val numSent = Sentence(
-          rated.sentence.sentenceType,
-          rated.sentence.words.map(word => if (mapWordsToNumbers) f(wm.toNum(word)) else word)
-        )
-        val numRated = Rated(numSent, ranRate)
-        writeSentence(numRated)(wr)
-      }
+    for (rated <- sentenceRater.rateSentence(sentences)) {
+      val ranRate = rated.rating + (ran.nextInt(variance * 2 + 1) - variance)
+      val numSent = Sentence(
+        rated.sentence.sentenceType,
+        rated.sentence.words.map(word => if (mapWordsToNumbers) f(wm.toNum(word)) else word)
+      )
+      val numRated = Rated(numSent, ranRate)
+      writeSentence(numRated)(wr)
+    }
   }
 
   def writeSentence(rated: Rated)(wr: BufferedWriter): Unit = {
@@ -56,7 +62,6 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
       sb.append("%30s: %-30s %-30s %s%n".format(s"Book #${i + 1}", book.title, book.author, book.filename))
     }
     sb.append("%30s: %s%n".format("ID", id))
-    sb.append("%30s: %s%n".format("Sentence Lengths", bookCollection.sentenceLength.mkString(", ")))
     sb.toString()
   }
 

@@ -6,7 +6,6 @@ object BookCollections {
 
   val collectionOneBook = BookCollection(
     desc = "Collection of English Books #1",
-    sentenceLength = 2 to 7,
     books = Seq(
       Book("books/CommonSense.txt", "Common Sense", "Thomas Paine"),
     )
@@ -14,7 +13,6 @@ object BookCollections {
 
   val collectionEn1 = BookCollection(
     desc = "Collection of English Books #1",
-    sentenceLength = 2 to 7,
     books = Seq(
       Book("books/ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
       Book("books/CommonSense.txt", "Common Sense", "Thomas Paine"),
@@ -26,7 +24,6 @@ object BookCollections {
 
   val collectionEn2 = BookCollection(
     desc = "Collection of English Books #2",
-    sentenceLength = 2 to 7,
     books = Seq(
       Book("books/ATaleofTwoCities.txt", "A Tale of Two Cities", "Charles Dickens"),
       Book("books/CommonSense.txt", "Common Sense", "Thomas Paine"),
@@ -43,7 +40,6 @@ object BookCollections {
 
   val collectionTwoLines = BookCollection(
     desc = "Testset with one book containing only two lines",
-    sentenceLength = 2 to 3,
     books = Seq(
       Book("books/TwoLines.txt", "TwoLines", "Test"),
     )
@@ -60,6 +56,5 @@ case class Book(
 case class BookCollection(
                            desc: String,
                            books: Seq[Book],
-                           sentenceLength: Seq[Int],
                          )
 
