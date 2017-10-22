@@ -7,7 +7,7 @@ object CreateLearningDataGrammar {
   val splitter: BookSplitter = new BookSplitterTxt()
   val screator: SentenceCreator = new SentenceCreatorSliding()
   val srater: SentenceRater = SentenceRaterGrammar
-  val creator = new CreateLearningData(mapper, splitter, screator, srater, mapWordsToNumbers = false)
+  val creator = new CreateLearningData(mapper, splitter, screator, srater)
 
   def createData(dataId: String, bookCollection: BookCollection): Unit = {
     creator.createData(dataId, bookCollection)

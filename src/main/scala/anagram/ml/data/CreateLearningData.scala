@@ -7,7 +7,7 @@ import anagram.common.IoUtil
 import org.slf4j.LoggerFactory
 
 
-class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater, mapWordsToNumbers: Boolean = false) {
+class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater, mapWordsToNumbers: Boolean = true) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 

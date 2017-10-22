@@ -43,7 +43,7 @@ object IoUtil {
     Files.list(getCreateWorkDir)
       .iterator().asScala.toStream
       .filter(s => s.getFileName.toString.contains(s"${id}_data_"))
-      .map(createDataFile(_, ".*_data_(.*).txtSorted"))
+      .map(createDataFile(_, ".*_data_(.*).txt"))
   }
 
   def getNnDataFilesFromWorkDir(id: String): Seq[DataFile] = {
