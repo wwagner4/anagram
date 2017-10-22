@@ -9,14 +9,32 @@ object CreateLearningDataGrammar {
   val srater: SentenceRater = SentenceRaterGrammar
   val creator = new CreateLearningData(mapper, splitter, screator, srater)
 
+  case class LinearAdjust(a: Double, k: Double)
+
+  private lazy val adjustments = List(
+    (2, LinearAdjust(365.1829,1453.9288)),
+    (3, LinearAdjust(40.8586,159.4014)),
+    (4, LinearAdjust(8.1286,23.6480)),
+    (5, LinearAdjust(2.7777,4.7699)),
+    (6, LinearAdjust(1.5649,1.6038)),
+    (7, LinearAdjust(1.3092,1.1270)),
+  ).toMap
+
+  def adjustRating(rating: Double, sentLength: Int): Double = {
+    val adj = adjustments(sentLength)
+    (rating - adj.a) / adj.k
+  }
+
   def createData(dataId: String, bookCollection: BookCollection): Unit = {
     val cfg = CreateDataConfig(
       dataId,
       bookCollection,
-      2 to 7
+      2 to 7,
+      adjustRating,
     )
     creator.createData(cfg)
   }
+
 
 }
 

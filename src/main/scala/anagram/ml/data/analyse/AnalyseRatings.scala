@@ -23,13 +23,20 @@ object AnalyseRatings extends App {
 
 
   val descs: Seq[DataFileDesc] = Files.list(workdir)
-    .iterator()
+    .iterator
     .asScala
     .toSeq
     .flatMap(toDataFileDesc(id))
 
+  val loc = java.util.Locale.ENGLISH
+
   descs.map(stat)
-      .foreach(stat => println(stat))
+    .foreach { stat =>
+      val len = stat.len
+      val a = "%.4f".formatLocal(loc,  stat.mean)
+      val k = "%.4f".formatLocal(loc, stat.dev)
+      println(s"    ($len, LinearAdjust($a,$k)),")
+    }
 
   def stat(desc: DataFileDesc): Stat = {
     IoUtil.loadTxtFromPath(desc.file, toStat(desc.sentenceLength))

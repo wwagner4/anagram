@@ -10,16 +10,13 @@ case class CreateDataConfig(
                              id: String,
                              bookCollection: BookCollection,
                              sentenceLength: Iterable[Int],
+                             adjustRating: (Double, Int) => Double,
                            )
 
 
 class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater, mapWordsToNumbers: Boolean = true) {
 
   private val log = LoggerFactory.getLogger("LearningData")
-
-  private val variance = 0
-
-  private val ran = new util.Random()
 
   def createData(config: CreateDataConfig): Unit = {
 
@@ -29,21 +26,20 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
       val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
       log.info(s"Created ${sent.size} sentences of length $len")
-      val ldPath = IoUtil.saveDataToWorkDir(config.id, len, writeSentences(sent)(_))
+      val ldPath = IoUtil.saveDataToWorkDir(config.id, len, writeSentences(len, sent, config.adjustRating)(_))
       log.info("Created learning data in " + ldPath)
     }
     log.info("Created learning data for book collection:\n" + asString(config.id, config.bookCollection))
   }
 
-  def writeSentences(sentences: Seq[Sentence])(wr: BufferedWriter): Unit = {
+  def writeSentences(sentLength: Int, sentences: Seq[Sentence], adjRating: (Double, Int) => Double)(wr: BufferedWriter): Unit = {
     for (rated <- sentenceRater.rateSentence(sentences)) {
-      val ranRate = rated.rating + (ran.nextInt(variance * 2 + 1) - variance)
-      val numSent = Sentence(
+      val sentAdjusted = Sentence(
         rated.sentence.sentenceType,
         rated.sentence.words.map(word => if (mapWordsToNumbers) f(wm.toNum(word)) else word)
       )
-      val numRated = Rated(numSent, ranRate)
-      writeSentence(numRated)(wr)
+      val ratingAdjusted = adjRating(rated.rating, sentLength)
+      writeSentence(Rated(sentAdjusted, ratingAdjusted))(wr)
     }
   }
 
