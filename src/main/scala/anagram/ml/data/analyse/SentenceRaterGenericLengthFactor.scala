@@ -1,9 +1,15 @@
-package anagram.ml.data
+package anagram.ml.data.analyse
 
 import anagram.common.IoUtil
 
 case class GenRating(sentLen: Int, rating: Double)
 
+/**
+  * The NNs for different Length produce output values
+  * in different ranges. This program calculates a factor for
+  * each sentence length, in order to make the output values
+  * for sentences with different lengths comparable.
+  */
 object SentenceRaterGenericLengthFactor extends App {
 
   val ref = 10.0

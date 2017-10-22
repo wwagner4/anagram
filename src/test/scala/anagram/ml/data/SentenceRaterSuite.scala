@@ -1,5 +1,6 @@
 package anagram.ml.data
 
+import anagram.ml.data.analyse.SentenceRaterGenericLengthFactor
 import org.scalatest.{FunSuite, MustMatchers}
 
 class SentenceRaterSuite extends FunSuite with MustMatchers {
