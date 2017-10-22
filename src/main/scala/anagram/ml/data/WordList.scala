@@ -8,8 +8,9 @@ case class Word(word: String, wordSorted: String)
 
 object WordList {
 
-  def loadWordListSmall: Iterable[Word] = loadWordList("wordlist/wordlist_small.txt")
-    .map(line => Word(line, line.sorted))
+  def loadWordListSmall: Iterable[Word] =
+    loadWordList("wordlist/wordlist_small.txt")
+      .map(line => Word(line, line.sorted))
 
   def loadWordListGrammar: Iterable[Word] =
     loadWordList("wordlist/wordtypelist_full.txt")
