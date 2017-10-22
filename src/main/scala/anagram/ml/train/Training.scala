@@ -15,45 +15,43 @@ import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
 
+
+case class TrainingConfig(
+                         id: String,
+                         iterations: Int => Int
+                         )
+
 object Training {
 
   private val log = LoggerFactory.getLogger("Training")
 
-
-
-  def train(dataId: String): Unit = {
-    log.info(s"Started training for run: '$dataId'")
-    IoUtil.getTxtDataFilesFromWorkDir(dataId).foreach{dataFile =>
-      trainDataFile(dataFile, dataId)
+  def train(cfg: TrainingConfig): Unit = {
+    log.info(s"Started training for run: '${cfg.id}'")
+    IoUtil.getTxtDataFilesFromWorkDir(cfg.id).foreach{dataFile =>
+      trainDataFile(dataFile, cfg)
     }
-    log.info(s"Finished training for run: '$dataId'")
+    log.info(s"Finished training for run: '${cfg.id}'")
   }
 
-  def trainDataFile(dataFile: DataFile, dataId: String): Unit = {
+  def trainDataFile(dataFile: DataFile, cfg: TrainingConfig): Unit = {
     log.info(s"Started training data file: '${dataFile.path.getFileName}'")
 
     val recordReader = new CSVRecordReader(0, ";")
     recordReader.initialize(new FileSplit(dataFile.path.toFile))
     val dsIter = new RecordReaderDataSetIterator(recordReader, 100000, dataFile.wordLen, dataFile.wordLen, true)
     log.info(s"read dataset iterator")
-    val nnConf = nnConfiguration(dataFile.wordLen, iterations(dataFile.wordLen))
+    val nnConf = nnConfiguration(dataFile.wordLen, cfg.iterations(dataFile.wordLen))
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
     nn.setListeners(new ScoreIterationListener(30))
     log.info(s"started the training")
     nn.fit(dsIter)
 
-    val serfile = IoUtil.nnDataFilePath(dataId, dataFile.wordLen)
+    val serfile = IoUtil.nnDataFilePath(cfg.id, dataFile.wordLen)
     ModelSerializer.writeModel(nn, serfile.toFile, true)
     log.info(s"Wrote net to: '$serfile'")
 
     log.info(s"Finished training data file: '${dataFile.path.getFileName}'")
-  }
-
-  def iterations(sentLen: Int): Int = {
-    if (sentLen <= 2 ) 180
-    else if (sentLen <= 3 ) 150
-    else 120
   }
 
   private def nnConfiguration(numInput: Int, iterations: Int): MultiLayerConfiguration = {
