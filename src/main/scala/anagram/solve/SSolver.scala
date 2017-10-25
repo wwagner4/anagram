@@ -25,7 +25,7 @@ case class SSolver(maxDepth: Int) extends Solver {
           val mws =
             if (depth >= 1) Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
             else {
-              val parallel = 4
+              val parallel = 2
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel

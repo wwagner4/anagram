@@ -12,12 +12,24 @@ object WordList {
     loadWordList("wordlist/wordlist_small.txt")
       .map(line => Word(line, line.sorted))
 
-  def loadWordListGrammar: Iterable[Word] =
-    loadWordList("wordlist/wordtypelist_full.txt")
+  def loadWordListGrammarTypes: Iterable[Word] =
+    loadWordList("wordlist/wordtypelist_small.txt")
       .map { line =>
         val s = line.split(";")
         require(s.length == 2)
         s(0)
+      }
+      .toSet
+      .toSeq
+      .sorted
+      .map(w => Word(w, w.sorted))
+
+  def loadWordListGrammarWords: Iterable[Word] =
+    loadWordList("wordlist/wordtypelist_small.txt")
+      .map { line =>
+        val s = line.split(";")
+        require(s.length == 2)
+        s(1)
       }
       .toSet
       .toSeq

@@ -3,7 +3,7 @@ package anagram.solve
 import java.nio.file.Path
 
 import anagram.common.IoUtil
-import anagram.ml.data.{Word, WordMapSingleWord, WordMapper}
+import anagram.ml.data.{Word, WordMapper}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -31,7 +31,7 @@ class RandomRater extends Rater {
 
 }
 
-class AiRater(dataId: String, wordlist: Iterable[Word]) extends Rater {
+class AiRater(dataId: String, wordmap: WordMapper) extends Rater {
 
   private val log = LoggerFactory.getLogger("AiRater")
 
@@ -40,8 +40,6 @@ class AiRater(dataId: String, wordlist: Iterable[Word]) extends Rater {
   private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(dataId)
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
-
-  val wordmap: WordMapper = WordMapSingleWord.createWordMapperFromWordlist(wordlist)
 
   def rate(sent: Iterable[String]): Double = {
     nnMap.get(sent.size)
@@ -52,7 +50,10 @@ class AiRater(dataId: String, wordlist: Iterable[Word]) extends Rater {
   def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
     if (cnt % 50000 == 0) log.info(s"Rated $cnt sentences")
     cnt += 1
-    val input: Array[Double] = sent.map(wordmap.toNum(_).toDouble).toArray
+    val input: Array[Double] = sent
+      .map(wordmap.group)
+      .map(wordmap.toNum(_).toDouble)
+      .toArray
     val out = nn.output(Nd4j.create(input))
     out.getDouble(0)
   }

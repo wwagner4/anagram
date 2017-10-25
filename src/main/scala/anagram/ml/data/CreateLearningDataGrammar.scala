@@ -12,12 +12,10 @@ object CreateLearningDataGrammar {
   case class LinearAdjust(a: Double, k: Double)
 
   private lazy val adjustments = List(
-    (2, LinearAdjust(365.1829,1453.9288)),
-    (3, LinearAdjust(40.8586,159.4014)),
-    (4, LinearAdjust(8.1286,23.6480)),
-    (5, LinearAdjust(2.7777,4.7699)),
-    (6, LinearAdjust(1.5649,1.6038)),
-    (7, LinearAdjust(1.3092,1.1270)),
+    (2, LinearAdjust(31.2029,229.6509)),
+    (3, LinearAdjust(4.8286,23.7397)),
+    (4, LinearAdjust(1.9724,4.4061)),
+    (5, LinearAdjust(1.4014,1.5247)),
   ).toMap
 
   def adjustRating(rating: Double, sentLength: Int): Double = {
@@ -29,7 +27,7 @@ object CreateLearningDataGrammar {
     val cfg = CreateDataConfig(
       dataId,
       bookCollection,
-      2 to 7,
+      2 to 5,
       adjustRating,
     )
     creator.createData(cfg)

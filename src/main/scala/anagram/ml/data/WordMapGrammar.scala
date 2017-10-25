@@ -11,7 +11,7 @@ object WordMapGrammar {
   case class GrpoupedWord(grp: String, value: String)
 
   def createWordMapperFull: WordMapper = {
-    createWordMapperFromResource("wordlist/wordtypelist_full.txt")
+    createWordMapperFromResource("wordlist/wordtypelist_small.txt")
   }
 
   private def createWordMapperFromResource(resName: String): WordMapper = {

@@ -1,7 +1,7 @@
 package anagram.solve
 
 import anagram.common.IoUtil
-import anagram.ml.data.{Word, WordList}
+import anagram.ml.data.{Word, WordList, WordMapGrammar}
 import org.slf4j.LoggerFactory
 
 object AiSolverMain extends App {
@@ -20,9 +20,12 @@ object AiSolverMain extends App {
     "ingrid bernd",
   )
 
-  val id: String = "en04"
-  val wordlist: Iterable[Word] =  WordList.loadWordListSmall
-  val rater: Rater = new AiRater(id, wordlist)
+  val id: String = "enGrm01"
+  val wordlist: Iterable[Word] = WordList.loadWordListGrammarWords
+  println(s"wordlist (size): ${wordlist.size}")
+  println(s"wordlist (100): ${wordlist.take(100)}")
+  val wordMapper = WordMapGrammar.createWordMapperFull
+  val rater: Rater = new AiRater(id, wordMapper)
   val baseSolver = SSolver(4)
   val aiSolver = AiSolver(baseSolver, rater)
 
@@ -43,7 +46,7 @@ object AiSolverMain extends App {
 
   def fileName(id: String, src: String): String = {
     val s1 = src.replaceAll("\\s", "_")
-    s"${id}_$s1.txtSorted"
+    s"${id}_$s1.txt"
   }
 
 }
