@@ -4,12 +4,12 @@ import anagram.ml.data.WordList
 
 object SSolverTryout extends App {
 
-  val wl =  WordList.loadWordListSmall
+  val wl =  WordList.loadWordListGrammarWords
 
   val start = System.currentTimeMillis()
 
-  private val src = "ingrid bernd love"
-  val anas = SSolver(4).solve(src, wl)
+  private val src = "noah wagner"
+  val anas = SSolver(maxDepth = 4, parallel = 4).solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")
   else for ((ana, i) <- anas.zipWithIndex) {

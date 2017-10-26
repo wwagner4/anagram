@@ -4,7 +4,7 @@ import anagram.ml.data.Word
 
 import scala.collection.GenIterable
 
-case class SSolver(maxDepth: Int) extends Solver {
+case class SSolver(maxDepth: Int, parallel: Int) extends Solver {
 
   def solve(sourceText: String, words: Iterable[Word]): Stream[Ana] = {
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
@@ -25,7 +25,6 @@ case class SSolver(maxDepth: Int) extends Solver {
           val mws =
             if (depth >= 1) Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
             else {
-              val parallel = 2
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel

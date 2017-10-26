@@ -26,7 +26,7 @@ object AiSolverMain extends App {
   println(s"wordlist (100): ${wordlist.take(100)}")
   val wordMapper = WordMapGrammar.createWordMapperFull
   val rater: Rater = new AiRater(id, wordMapper)
-  val baseSolver = SSolver(4)
+  val baseSolver = SSolver(maxDepth = 4, parallel = 3)
   val aiSolver = AiSolver(baseSolver, rater)
 
   for (srcText <- srcTexts) {
