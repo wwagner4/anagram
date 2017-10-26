@@ -6,11 +6,16 @@ import anagram.common.IoUtil
 
 import scala.util.Random
 
+// TODO Put together the creation of wordlist and mapper using the same resource file
 object WordMapGrammar {
 
   case class GrpoupedWord(grp: String, value: String)
 
   def createWordMapperFull: WordMapper = {
+    createWordMapperFromResource("wordlist/wordtypelist_full.txt")
+  }
+
+  def createWordMapperSmall: WordMapper = {
     createWordMapperFromResource("wordlist/wordtypelist_small.txt")
   }
 

@@ -23,7 +23,7 @@ case class AiSolver(parentSolver: Solver, rater: Rater) extends Solver {
   }
 }
 
-class RandomRater extends Rater {
+class RaterRandom extends Rater {
 
   def rate(sent: Iterable[String]): Double = {
     Random.nextDouble() * 10
@@ -31,9 +31,17 @@ class RandomRater extends Rater {
 
 }
 
-class AiRater(dataId: String, wordmap: WordMapper) extends Rater {
+class RaterNone extends Rater {
 
-  private val log = LoggerFactory.getLogger("AiRater")
+  def rate(sent: Iterable[String]): Double = {
+    0.0
+  }
+
+}
+
+class RaterAi(dataId: String, wordmap: WordMapper) extends Rater {
+
+  private val log = LoggerFactory.getLogger("RaterAi")
 
   var cnt = 0
 

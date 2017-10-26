@@ -9,24 +9,26 @@ object AiSolverMain extends App {
   val log = LoggerFactory.getLogger("anagram.solve.AiSolverMain")
 
   val srcTexts = List(
-    "elvis", // -> lives
-    "clint eastwood", // -> old west action
-    //"william shakespeare", // -> i am a weakish speller
-    //"leornado da vinci", // -> did color in a nave
     "wolfgang",
     "ditschi",
+    "ingrid bernd",
     "ditschi wolfi",
     "noah the great",
-    "ingrid bernd",
+    //"clint eastwood", // -> old west action
+    //"leornado da vinci", // -> did color in a nave
+    //"william shakespeare", // -> i am a weakish speller
+    //"ingrid bernd in love",
   )
 
-  val id: String = "enGrm01"
+  val id: String = "enGrm03"
+  //val id: String = "enGrmUnrated01"
   val wordlist: Iterable[Word] = WordList.loadWordListGrammarWords
-  println(s"wordlist (size): ${wordlist.size}")
-  println(s"wordlist (100): ${wordlist.take(100)}")
+  log.info(s"wordlist (size): ${wordlist.size}")
+
   val wordMapper = WordMapGrammar.createWordMapperFull
-  val rater: Rater = new AiRater(id, wordMapper)
-  val baseSolver = SSolver(maxDepth = 4, parallel = 3)
+  //val rater: Rater = new RaterAi(id, wordMapper)
+  val rater: Rater = new RaterNone
+  val baseSolver = SSolver(maxDepth = 4, parallel = 5)
   val aiSolver = AiSolver(baseSolver, rater)
 
   for (srcText <- srcTexts) {
@@ -36,13 +38,13 @@ object AiSolverMain extends App {
     IoUtil.saveToWorkDir(fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {
-        if (cnt % 100000 == 0) log.info(s"Wrote $cnt anagrams")
+        if (cnt % 10000 == 0 && cnt > 0) log.info(s"Wrote $cnt anagrams")
         bw.append("%5d - %5.5f - '%s'%n".format(i + 1, ana.rate, ana.sentence.mkString(" ")))
         cnt += 1
       }
     })
-
   }
+  log.info("Finished")
 
   def fileName(id: String, src: String): String = {
     val s1 = src.replaceAll("\\s", "_")
