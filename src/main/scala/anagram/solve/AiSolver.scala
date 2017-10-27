@@ -56,7 +56,7 @@ class RaterAi(dataId: String, wordmap: WordMapper) extends Rater {
   }
 
   def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
-    if (cnt % 50000 == 0) log.info(s"Rated $cnt sentences")
+    if (cnt % 1000 == 0 && cnt > 0) log.info(s"Rated $cnt sentences")
     cnt += 1
     val input: Array[Double] = sent
       .map(wordmap.group)
