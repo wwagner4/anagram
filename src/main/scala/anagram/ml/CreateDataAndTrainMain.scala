@@ -5,7 +5,7 @@ import anagram.ml.train.{Training, TrainingConfig}
 
 object CreateDataAndTrainMain extends App {
 
-  val id = "enGrm03"
+  val id = "enGrm11"
 
   CreateLearningDataGrammar.createData(id, BookCollections.collectionEn2)
 

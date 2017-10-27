@@ -6,7 +6,6 @@ import org.scalatest.{FunSuite, MustMatchers}
 class SentenceCreatorSuite extends FunSuite with MustMatchers {
 
   private val wm = WordMappers.createWordMapperPlain
-  private val wordList =  wm.wordList
   private val scSliding = new SentenceCreatorSliding()
 
   val equalLenData = Seq(

@@ -12,7 +12,7 @@ case class Stat(len: Int, mean: Double, dev: Double)
 
 object AnalyseRatings extends App {
 
-  val id = "enGrm03"
+  val id = "enGrm11"
 
   lazy val homeDir = System.getProperty("user.home")
 

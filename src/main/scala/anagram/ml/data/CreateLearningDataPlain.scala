@@ -8,7 +8,6 @@ object CreateLearningDataPlain {
   val createData = true
 
   private val mapper = WordMappers.createWordMapperPlain
-  private val wordList = mapper.wordList
 
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()

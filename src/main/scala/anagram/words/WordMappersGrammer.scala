@@ -20,16 +20,15 @@ object WordMappersGrammer extends WordMappersAbstract {
       GrpoupedWord(split(0), split(1))
     }
 
+    lazy val wl = WordMappersPlain.createWordMapperPlain.wordList
+
     val unknown = "?"
 
     val words: Seq[GrpoupedWord] = IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (iter) => iter.toSeq.map(readLine))
-
     val wordMap: Map[String, GrpoupedWord] = words.map(gword => (gword.value, gword)).toMap
 
     val grpList = words.map(groupedWord =>  groupedWord.grp).distinct.sorted :+ unknown
-
     val grpListIdx = grpList.zipWithIndex
-
     val grpListWordMap: Map[String, Int] = grpListIdx.toMap
     val grpListIntMap: Map[Int, String] = grpListIdx.map{case (w, i) => (i, w)}.toMap
 
@@ -48,11 +47,10 @@ object WordMappersGrammer extends WordMappersAbstract {
 
       override def containsWord(str: String): Boolean = grpList.contains(str)
 
-      override def group(value: String): String = {
+      override def group(value: String): String =
         wordMap.get(value).map(_.grp).getOrElse(unknown)
-      }
 
-      override def wordList: Iterable[Word] = ???
+      override def wordList: Iterable[Word] = wl
 
     }
 

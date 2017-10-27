@@ -1,9 +1,8 @@
-package anagram.ml.data
+package anagram.words
 
-import anagram.words.WordMappersPlain
 import org.scalatest.{FunSuite, MustMatchers}
 
-class WordMapSingleWordSuite extends FunSuite with MustMatchers {
+class WordMappersPlainSuite extends FunSuite with MustMatchers {
 
   val maxVowelData = Seq(
     ("assel", 'a'),
