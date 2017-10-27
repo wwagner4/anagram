@@ -4,6 +4,7 @@ import java.io.BufferedWriter
 import java.util.Locale
 
 import anagram.common.IoUtil
+import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
 
 case class CreateDataConfig(

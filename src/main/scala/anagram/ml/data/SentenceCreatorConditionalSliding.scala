@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import anagram.words.WordMapper
+
 /**
   * Create sliding sentences only if length <= maxLengthSliding.
   */

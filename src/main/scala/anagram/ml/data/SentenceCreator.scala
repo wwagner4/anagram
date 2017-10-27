@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import anagram.words.WordMapper
+
 sealed trait SentenceType
 
 case object SentenceType_COMPLETE extends SentenceType

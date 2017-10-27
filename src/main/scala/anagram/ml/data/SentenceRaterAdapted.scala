@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import anagram.words.WordMapper
+
 class SentenceRaterAdapted(val wm: WordMapper) extends SentenceRater {
 
   val ran = new util.Random()

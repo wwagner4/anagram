@@ -3,6 +3,7 @@ package anagram.ml.data
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
+import anagram.words.WordMapper
 
 import scala.util.Random
 

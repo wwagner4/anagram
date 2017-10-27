@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import anagram.words.WordMapper
+
 class SentenceCreatorSliding extends SentenceCreator {
 
   def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {

@@ -3,7 +3,8 @@ package anagram.solve
 import java.nio.file.Path
 
 import anagram.common.IoUtil
-import anagram.ml.data.{Word, WordMapper}
+import anagram.ml.data.Word
+import anagram.words.WordMapper
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j

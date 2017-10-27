@@ -2,6 +2,8 @@ package anagram.ml.data
 
 import java.util.Locale
 
+import anagram.words.WordMapper
+
 class SentenceRaterSimple(val wm: WordMapper) extends SentenceRater {
 
   val ran = new  util.Random()

@@ -1,5 +1,7 @@
 package anagram.ml.data
 
+import anagram.words.WordMapper
+
 import scala.util.Random
 
 object WordMapSingleWord {
