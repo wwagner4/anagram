@@ -26,25 +26,23 @@ object AiSolverMain extends App {
     "ingrid bernd",
   )
 
-  val srcTexts = srcTextsShort
+  val srcTexts = srcTextsFull
 
-  val id: String = "enGrm03"
+  val idLearning: String = "enGrm03"
+  val idSolving: String = "01"
 
-  val wordListShort = WordList.loadWordListSmall.toSeq
+  val wordlist = loadWordlist
 
-  val wordlist: Iterable[Word] = WordList
-    .loadWordListGrammarWords
-    .filter(wordListShort.contains(_))
   log.info(s"wordlist (size): ${wordlist.size}")
 
   val wordMapper = WordMapGrammar.createWordMapperSmall
-  val rater: Rater = new RaterAi(id, wordMapper)
+  val rater: Rater = new RaterAi(idLearning, wordMapper)
   //val rater: Rater = new RaterNone
   val baseSolver = SSolver(maxDepth = 4, parallel = 5)
   val aiSolver = AiSolver(baseSolver, rater)
 
   for (srcText <- srcTexts) {
-    val fn = fileName(id, srcText)
+    val fn = fileName(idLearning, idSolving, srcText)
     log.info(s"Write anagrams for '$srcText' to $fn")
     val anas = aiSolver.solve(srcText, wordlist)
     IoUtil.saveToWorkDir(fn, (bw) => {
@@ -58,9 +56,16 @@ object AiSolverMain extends App {
   }
   log.info("Finished")
 
-  def fileName(id: String, src: String): String = {
+  def fileName(idLearning: String, idSolving: String, src: String): String = {
     val s1 = src.replaceAll("\\s", "_")
-    s"${id}_$s1.txt"
+    s"anagrams_${idLearning}_${idSolving}_$s1.txt"
+  }
+
+  def loadWordlist: Iterable[Word] = {
+    val wordListShort = WordList.loadWordListSmall.toSet
+    WordList
+      .loadWordListGrammarWords
+      .filter(wordListShort.contains)
   }
 
 }
