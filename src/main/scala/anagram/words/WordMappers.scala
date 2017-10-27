@@ -2,8 +2,8 @@ package anagram.words
 
 object WordMappers {
 
-  def createWordMapperPlain: WordMapper = ???
+  def createWordMapperPlain: WordMapper = WordMappersPlain.createWordMapperPlain
 
-  def createWordMapperGrammer: WordMapper = ???
+  def createWordMapperGrammer: WordMapper = WordMappersGrammer.createWordMapperGrammer
 
 }

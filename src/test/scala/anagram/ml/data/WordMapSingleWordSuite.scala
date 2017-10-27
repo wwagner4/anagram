@@ -1,6 +1,6 @@
 package anagram.ml.data
 
-import anagram.words.WordMappersImpl
+import anagram.words.WordMappersPlain
 import org.scalatest.{FunSuite, MustMatchers}
 
 class WordMapSingleWordSuite extends FunSuite with MustMatchers {
@@ -20,7 +20,7 @@ class WordMapSingleWordSuite extends FunSuite with MustMatchers {
 
   for((w, c) <- maxVowelData) {
     test(s"maxVowel $w $c") {
-      WordMappersImpl.maxVowel(w) mustBe c
+      WordMappersPlain.maxVowel(w) mustBe c
     }
 
   }
@@ -34,7 +34,7 @@ class WordMapSingleWordSuite extends FunSuite with MustMatchers {
 
   for ((w, c, cnt) <- countCharData) {
     test(s"countChar $w $c") {
-      WordMappersImpl.countChar(w, c) mustBe cnt
+      WordMappersPlain.countChar(w, c) mustBe cnt
     }
   }
 }
