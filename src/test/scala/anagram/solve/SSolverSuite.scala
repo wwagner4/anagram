@@ -30,11 +30,8 @@ class SSolverSuite extends FunSuite with MustMatchers {
   }
 
   test("anagramm wolfi with wordlist test01") {
-
     val wordList = WordList.loadWordListSmall
-
     val anas = SSolver(4, 2).solve("wolfi", wordList)
-
     anas.size mustBe 10
 
     val strAnas = anas.map(sent => sent.sentence.mkString(" "))
@@ -44,6 +41,16 @@ class SSolverSuite extends FunSuite with MustMatchers {
     strAnas must contain("if owl")
     strAnas must contain("low if")
 
+  }
+
+  test("anagramm iset with wordlist test01") {
+    val wordList = WordList.loadWordListSmall
+    val anas = SSolver(4, 2).solve("iset", wordList)
+
+    val strAnas = anas.map(sent => sent.sentence.mkString(" "))
+
+    strAnas must contain("i set")
+    strAnas must contain("set i")
   }
 
   val validWordData = List(
