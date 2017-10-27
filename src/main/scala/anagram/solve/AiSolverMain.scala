@@ -8,26 +8,38 @@ object AiSolverMain extends App {
 
   val log = LoggerFactory.getLogger("anagram.solve.AiSolverMain")
 
-  val srcTexts = List(
+  val srcTextsFull = List(
     "wolfgang",
     "ditschi",
     "ingrid bernd",
     "ditschi wolfi",
     "noah the great",
-    //"clint eastwood", // -> old west action
-    //"leornado da vinci", // -> did color in a nave
-    //"william shakespeare", // -> i am a weakish speller
-    //"ingrid bernd in love",
+    "clint eastwood", // -> old west action
+    "leornado da vinci", // -> did color in a nave
+    "william shakespeare", // -> i am a weakish speller
+    "ingrid bernd in love",
   )
 
+  val srcTextsShort = List(
+    "wolfgang",
+    "ditschi",
+    "ingrid bernd",
+  )
+
+  val srcTexts = srcTextsShort
+
   val id: String = "enGrm03"
-  //val id: String = "enGrmUnrated01"
-  val wordlist: Iterable[Word] = WordList.loadWordListGrammarWords
+
+  val wordListShort = WordList.loadWordListSmall.toSeq
+
+  val wordlist: Iterable[Word] = WordList
+    .loadWordListGrammarWords
+    .filter(wordListShort.contains(_))
   log.info(s"wordlist (size): ${wordlist.size}")
 
-  val wordMapper = WordMapGrammar.createWordMapperFull
-  //val rater: Rater = new RaterAi(id, wordMapper)
-  val rater: Rater = new RaterNone
+  val wordMapper = WordMapGrammar.createWordMapperSmall
+  val rater: Rater = new RaterAi(id, wordMapper)
+  //val rater: Rater = new RaterNone
   val baseSolver = SSolver(maxDepth = 4, parallel = 5)
   val aiSolver = AiSolver(baseSolver, rater)
 
