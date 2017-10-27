@@ -1,12 +1,12 @@
 package anagram.ml.data
 
 import anagram.common.IoUtil
+import anagram.words.WordMappers
 
 object SentenceCreatorTryout extends App {
 
   val uris = BookSplitterTxt.booksBig.toStream.map(IoUtil.uri)
-  val wordList =  WordList.loadWordListSmall
-  val wm = WordMapSingleWord.createWordMapperFromWordlist(wordList)
+  val wm = WordMappers.createWordMapperPlain
   val splitter = new BookSplitterTxt
   val creator = new SentenceCreatorSliding()
 

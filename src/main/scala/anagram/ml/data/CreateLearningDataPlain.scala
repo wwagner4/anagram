@@ -1,12 +1,14 @@
 package anagram.ml.data
 
+import anagram.words.WordMappers
+
 object CreateLearningDataPlain {
 
   val dataId = "en04"
   val createData = true
 
-  private val wordList = WordList.loadWordListSmall
-  private val mapper = WordMapSingleWord.createWordMapperFromWordlist(wordList)
+  private val mapper = WordMappers.createWordMapperPlain
+  private val wordList = mapper.wordList
 
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()

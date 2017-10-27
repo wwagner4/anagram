@@ -14,5 +14,7 @@ trait WordMapper {
 
   def containsWord(str: String): Boolean
 
+  def wordList: Iterable[Word]
+
 }
 

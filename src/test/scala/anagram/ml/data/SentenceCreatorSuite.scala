@@ -1,12 +1,12 @@
 package anagram.ml.data
 
-import anagram.common.IoUtil
+import anagram.words.WordMappers
 import org.scalatest.{FunSuite, MustMatchers}
 
 class SentenceCreatorSuite extends FunSuite with MustMatchers {
 
-  private val wordList =  WordList.loadWordListSmall
-  private val wm = WordMapSingleWord.createWordMapperFromWordlist(wordList)
+  private val wm = WordMappers.createWordMapperPlain
+  private val wordList =  wm.wordList
   private val scSliding = new SentenceCreatorSliding()
 
   val equalLenData = Seq(

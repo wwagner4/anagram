@@ -1,10 +1,10 @@
 package anagram.solve
 
-import anagram.ml.data.WordList
+import anagram.words.WordMappers
 
 object SSolverTryout extends App {
 
-  val wl =  WordList.loadWordListGrammarWords
+  val wl =  WordMappers.createWordMapperGrammer.wordList
 
   val start = System.currentTimeMillis()
 

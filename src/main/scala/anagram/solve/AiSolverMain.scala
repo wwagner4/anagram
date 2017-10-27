@@ -1,7 +1,7 @@
 package anagram.solve
 
 import anagram.common.IoUtil
-import anagram.ml.data.{Word, WordList, WordMapGrammar}
+import anagram.words.WordMappers
 import org.slf4j.LoggerFactory
 
 object AiSolverMain extends App {
@@ -31,11 +31,12 @@ object AiSolverMain extends App {
   val idLearning: String = "enGrm03"
   val idSolving: String = "01"
 
-  val wordlist = loadWordlist
 
+
+  val wordMapper = WordMappers.createWordMapperGrammer
+  val wordlist = wordMapper.wordList
   log.info(s"wordlist (size): ${wordlist.size}")
 
-  val wordMapper = WordMapGrammar.createWordMapperSmall
   val rater: Rater = new RaterAi(idLearning, wordMapper)
   //val rater: Rater = new RaterNone
   val baseSolver = SSolver(maxDepth = 4, parallel = 5)
@@ -59,13 +60,6 @@ object AiSolverMain extends App {
   def fileName(idLearning: String, idSolving: String, src: String): String = {
     val s1 = src.replaceAll("\\s", "_")
     s"anagrams_${idLearning}_${idSolving}_$s1.txt"
-  }
-
-  def loadWordlist: Iterable[Word] = {
-    val wordListShort = WordList.loadWordListSmall.toSet
-    WordList
-      .loadWordListGrammarWords
-      .filter(wordListShort.contains)
   }
 
 }

@@ -1,8 +1,10 @@
 package anagram.ml.data
 
+import anagram.words.WordMappers
+
 object CreateLearningDataGrammar {
 
-  private val mapper = WordMapGrammar.createWordMapperFull
+  private val mapper = WordMappers.createWordMapperGrammer
 
   val splitter: BookSplitter = new BookSplitterTxt()
   val screator: SentenceCreator = new SentenceCreatorSliding()

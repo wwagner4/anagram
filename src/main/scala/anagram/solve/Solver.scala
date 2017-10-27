@@ -1,6 +1,6 @@
 package anagram.solve
 
-import anagram.ml.data.Word
+import anagram.words.Word
 
 case class Ana(rate: Double, sentence: Iterable[String])
 
