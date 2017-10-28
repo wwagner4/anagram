@@ -1,4 +1,4 @@
-package anagram.ml.data.analyse
+package anagram.ml.data.analyze
 
 import anagram.common.IoUtil
 

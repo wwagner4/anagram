@@ -43,10 +43,10 @@ object CreateLearningData {
   def createData(dataId: String, bookCollection: BookCollection): Unit = {
 
     val adjRating = List(
-      (2, LinearAdjustParam(10.1645,3.3469)),
-      (3, LinearAdjustParam(9.9123,3.4459)),
-      (4, LinearAdjustParam(9.8736,3.5693)),
-      (5, LinearAdjustParam(9.9484,3.7168)),
+      (2, LinearAdjustParam(21.7562,7.1637)),
+      (3, LinearAdjustParam(21.9250,7.6221)),
+      (4, LinearAdjustParam(22.0688,7.9778)),
+      (5, LinearAdjustParam(22.1913,8.2909)),
     ).toMap
 
     val mapper = WordMappers.createWordMapperPlain
