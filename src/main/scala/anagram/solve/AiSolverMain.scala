@@ -26,16 +26,14 @@ object AiSolverMain extends App {
     "ingrid bernd",
   )
 
-  val srcTexts = srcTextsFull
+  val srcTexts = srcTextsShort
 
-  val idLearning: String = "enGrm03"
+  val idLearning: String = "enPlain11"
   val idSolving: String = "01"
 
-
-
   val wordMapper = WordMappers.createWordMapperGrammer
-  val wordlist = wordMapper.wordList
-  log.info(s"wordlist (size): ${wordlist.size}")
+
+  val wordlist = WordMappers.createWordMapperPlain.wordList
 
   val rater: Rater = new RaterAi(idLearning, wordMapper)
   //val rater: Rater = new RaterNone
