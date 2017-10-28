@@ -4,7 +4,13 @@ import java.util.Locale
 
 import anagram.words.WordMapper
 
-class SentenceRaterSimple(val wm: WordMapper) extends SentenceRater {
+/**
+  * Rates every existing sentence with 100. Then creates new sentences
+  * from the existing sentences by exchanging one ore more words
+  * by random words. These created sentences are rated lower than 100
+  * depending on the amount of words exchanged
+  */
+class SentenceRaterExchangeWords(val wm: WordMapper) extends SentenceRater {
 
   val ran = new  util.Random()
 

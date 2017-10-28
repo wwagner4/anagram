@@ -12,7 +12,7 @@ case class Stat(len: Int, mean: Double, dev: Double)
 
 object AnalyseRatings extends App {
 
-  val id = "enGrm11"
+  val id = "enPlain11"
 
   lazy val homeDir = System.getProperty("user.home")
 
@@ -35,7 +35,7 @@ object AnalyseRatings extends App {
       val len = stat.len
       val a = "%.4f".formatLocal(loc,  stat.mean)
       val k = "%.4f".formatLocal(loc, stat.dev)
-      println(s"    ($len, LinearAdjust($a,$k)),")
+      println(s"    ($len, LinearAdjustParam($a,$k)),")
     }
 
   def stat(desc: DataFileDesc): Stat = {

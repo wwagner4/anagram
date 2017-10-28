@@ -57,7 +57,7 @@ class CreateLearningDataSuite extends FunSuite with MustMatchers {
     (8, 0, 8),
   )
 
-  val rater = new SentenceRaterSimple(null)
+  val rater = new SentenceRaterExchangeWords(null)
 
   for ((len, rating, should) <- numExchangeData) {
     test(s"num exchange $len $rating") {
