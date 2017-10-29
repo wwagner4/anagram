@@ -12,12 +12,12 @@ object AiSolverMain extends App {
     "wolfgang",
     "ditschi",
     "ingrid bernd",
-    "ditschi wolfi",
-    "noah the great",
-    "clint eastwood", // -> old west action
-    "leornado da vinci", // -> did color in a nave
-    "william shakespeare", // -> i am a weakish speller
-    "ingrid bernd in love",
+    "ditschi wolfi", //                                 12 -> 17k
+    "noah the great", //                                12 -> 708k
+    "clint eastwood", // -> old west action             13 -> 700k
+    "leornado da vinci", // -> did color in a nave      15 -> 1900k
+    "william shakespeare", // -> i am a weakish speller 18 ->
+    "ingrid bernd in love", //                          17 ->
   )
 
   val srcTextsShort = List(
@@ -26,14 +26,22 @@ object AiSolverMain extends App {
     "ingrid bernd",
   )
 
-  val srcTexts = srcTextsShort
+  val srcTexts = srcTextsFull
 
   val idLearning: String = "enPlain11"
   val idSolving: String = "01"
 
   val wordMapper = WordMappers.createWordMapperGrammer
 
-  val wordlist = WordMappers.createWordMapperPlain.wordList
+  val ignoreWords = Seq(
+    "ere",
+    "nth",
+    "id",
+    "dreg",
+  ).toSet
+  val wordlist = WordMappers.createWordMapperPlain
+    .wordList
+    .filter(w => !ignoreWords.contains(w.word))
 
   val rater: Rater = new RaterAi(idLearning, wordMapper)
   //val rater: Rater = new RaterNone
