@@ -1,6 +1,6 @@
 package anagram.solve
 
-import anagram.common.IoUtil
+import anagram.common.{IoUtil, SortedList}
 import anagram.words.WordMappers
 import org.slf4j.LoggerFactory
 
@@ -26,9 +26,9 @@ object AiSolverMain extends App {
     "ingrid bernd",
   )
 
-  val srcTexts = srcTextsFull
+  val srcTexts = srcTextsShort
 
-  val idLearning: String = "enPlain11"
+  val idLearning: String = "enGrm11"
   val idSolving: String = "01"
 
   val wordMapper = WordMappers.createWordMapperGrammer
@@ -49,9 +49,33 @@ object AiSolverMain extends App {
   val aiSolver = AiSolver(baseSolver, rater)
 
   for (srcText <- srcTexts) {
+    val anas: Stream[Ana] = aiSolver.solve(srcText, wordlist)
+    //writeToFile(anas, srcText)
+    stdout(anas, srcText)
+  }
+  log.info("Finished")
+
+
+  def stdout(anas: Stream[Ana], srcText: String): Unit = {
+
+    log.info(s"searching anagrams for: '$srcText'")
+
+    val sl = SortedList.instance(new OrderingAnaRatingDesc)
+    anas.foreach(ana => sl.add(ana))
+
+    val re: String = sl.take(10).map(ana => ana.sentence.mkString(" ")).mkString(", ")
+    log.info(s"found: $re")
+  }
+
+  def writeToFile(anas: Stream[Ana], srcText: String): Unit = {
+
+    def fileName(idLearning: String, idSolving: String, src: String): String = {
+      val s1 = src.replaceAll("\\s", "_")
+      s"anagrams_${idLearning}_${idSolving}_$s1.txt"
+    }
+
     val fn = fileName(idLearning, idSolving, srcText)
     log.info(s"Write anagrams for '$srcText' to $fn")
-    val anas = aiSolver.solve(srcText, wordlist)
     IoUtil.saveToWorkDir(fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {
@@ -61,11 +85,8 @@ object AiSolverMain extends App {
       }
     })
   }
-  log.info("Finished")
+}
 
-  def fileName(idLearning: String, idSolving: String, src: String): String = {
-    val s1 = src.replaceAll("\\s", "_")
-    s"anagrams_${idLearning}_${idSolving}_$s1.txt"
-  }
-
+class OrderingAnaRatingDesc extends Ordering[Ana] {
+  override def compare(x: Ana, y: Ana): Int = y.rate.compareTo(x.rate)
 }
