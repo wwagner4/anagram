@@ -1,6 +1,6 @@
 package anagram.solve
 
-import anagram.common.{IoUtil, SortedList}
+import anagram.common.IoUtil
 import anagram.words.{WordMapper, WordMappers}
 import org.slf4j.LoggerFactory
 
@@ -9,9 +9,9 @@ case class CfgAiSolver(
                         mapper: WordMapper,
                       )
 
-object AiSolverMain extends App {
+object SolverMain extends App {
 
-  val log = LoggerFactory.getLogger("anagram.solve.AiSolverMain")
+  val log = LoggerFactory.getLogger("anagram.solve.SolverMain")
 
   val srcTextsFull = List(
     "wolfgang",
@@ -48,7 +48,7 @@ object AiSolverMain extends App {
 
   val idSolving: String = "01"
   val srcTexts = srcTextsMedium
-  val cfg = cfgPlain
+  val cfg = cfgGrm
 
   val ignoreWords = Seq(
     "ere",
@@ -95,19 +95,18 @@ object AiSolverMain extends App {
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
-    val rater: Rater = new RaterAi(cfg.id, cfg.mapper, None)
-    //val rater: Rater = new RaterNone
+    //val rater: Rater = new RaterAi(cfg.id, cfg.mapper, None)
+    val rater: Rater = new RaterRandom
     val baseSolver = SolverImpl(maxDepth = 4, parallel = 5)
     val aiSolver = SolverRating(baseSolver, rater)
 
     val anagrams: Stream[Ana] = aiSolver.solve(srcText, wordlist)
-    //writeToFile(anagrams, srcText)
-    //stdout(anagrams, srcText)
-    iter(anagrams, srcText)
+    //outWriteToFile(anagrams, srcText)
+    outIter(anagrams, srcText)
   }
   log.info("Finished")
 
-  def iter(anas: Stream[Ana], srcText: String): Unit = {
+  def outIter(anas: Stream[Ana], srcText: String): Unit = {
     val solverIter = SolverIter.instance(anas, 10)
     while (solverIter.hasNext) {
       for (anas <- solverIter.toStream) {
@@ -125,22 +124,7 @@ object AiSolverMain extends App {
     }
   }
 
-  def stdout(anas: Stream[Ana], srcText: String): Unit = {
-
-    log.info(s"searching anagrams for: '$srcText'")
-
-    val sl = SortedList.instance(new OrderingAnaRatingDesc)
-    anas.foreach(ana => sl.add(ana))
-
-    val re: String = sl.take(10)
-      .map(ana => ana.sentence.mkString(" "))
-      .map(anaStr => "%20s".format(anaStr))
-      .mkString(", ")
-    log.info(s"found: $re")
-
-  }
-
-  def writeToFile(anas: Stream[Ana], srcText: String): Unit = {
+  def outWriteToFile(anas: Stream[Ana], srcText: String): Unit = {
 
     def fileName(idLearning: String, idSolving: String, src: String): String = {
       val s1 = src.replaceAll("\\s", "_")
