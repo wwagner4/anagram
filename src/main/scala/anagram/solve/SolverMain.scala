@@ -1,8 +1,13 @@
 package anagram.solve
 
 import anagram.common.{IoUtil, SortedList}
-import anagram.words.WordMappers
+import anagram.words.{WordMapper, WordMappers}
 import org.slf4j.LoggerFactory
+
+case class CfgAiSolver (
+                       id: String,
+                       mapper: WordMapper,
+                       )
 
 object AiSolverMain extends App {
 
@@ -16,8 +21,8 @@ object AiSolverMain extends App {
     "noah the great", //                                12 -> 708k
     "clint eastwood", // -> old west action             13 -> 700k
     "leornado da vinci", // -> did color in a nave      15 -> 1900k
-    "william shakespeare", // -> i am a weakish speller 18 ->
     "ingrid bernd in love", //                          17 ->
+//    "william shakespeare", // -> i am a weakish speller 18 ->
   )
 
   val srcTextsShort = List(
@@ -26,35 +31,80 @@ object AiSolverMain extends App {
     "ingrid bernd",
   )
 
-  val srcTexts = srcTextsShort
+  val srcTextsWs = List(
+    "william shakespeare", // -> i am a weakish speller 18 ->
+  )
 
-  val idLearning: String = "enGrm11"
+  val srcTexts = srcTextsWs
+
   val idSolving: String = "01"
 
-  val wordMapper = WordMappers.createWordMapperGrammer
+  val cfgPlain = CfgAiSolver("enPlain11", WordMappers.createWordMapperPlain)
+  val cfgGrm = CfgAiSolver("enGrm11", WordMappers.createWordMapperGrammer)
+
+  val cfg = cfgPlain
 
   val ignoreWords = Seq(
     "ere",
     "nth",
     "id",
     "dreg",
+    "cal",
+    "inc",
+    "nevi",
+    "von",
+    "cit",
+    "esc",
+    "alt",
+    "brin",
+    "veer",
+    "brin",
+    "bin",
+    "nil",
+    "chi",
+    "cd",
+    "ohs",
+    "lith",
+    "noir",
+    "veda",
+    "vade",
+    "vinal",
   ).toSet
   val wordlist = WordMappers.createWordMapperPlain
     .wordList
     .filter(w => !ignoreWords.contains(w.word))
 
-  val rater: Rater = new RaterAi(idLearning, wordMapper)
-  //val rater: Rater = new RaterNone
-  val baseSolver = SSolver(maxDepth = 4, parallel = 5)
-  val aiSolver = AiSolver(baseSolver, rater)
 
   for (srcText <- srcTexts) {
-    val anas: Stream[Ana] = aiSolver.solve(srcText, wordlist)
-    //writeToFile(anas, srcText)
-    stdout(anas, srcText)
+    log.info(s"Solving $srcText")
+
+    val rater: Rater = new RaterAi(cfg.id, cfg.mapper, Some(10000))
+    //val rater: Rater = new RaterNone
+    val baseSolver = SolverImpl(maxDepth = 4, parallel = 5)
+    val aiSolver = SolverRating(baseSolver, rater)
+
+    val anagrams: Stream[Ana] = aiSolver.solve(srcText, wordlist)
+    writeToFile(anagrams, srcText)
+    //stdout(anagrams, srcText)
+    //iter(anagrams, srcText)
   }
   log.info("Finished")
 
+  def iter(anas: Stream[Ana], srcText: String): Unit = {
+    val solverIter = SolverIter.instance(anas, 10)
+
+    for (anas <- solverIter.toStream) {
+      if (anas.isEmpty) {
+        log.info("-- NO RESULT SO LONG --")
+      } else {
+        val re = anas
+          .map(ana => ana.sentence.mkString(" "))
+          .map(anaStr => "%20s".format(anaStr))
+          .mkString(", ")
+        log.info(re)
+      }
+    }
+  }
 
   def stdout(anas: Stream[Ana], srcText: String): Unit = {
 
@@ -63,8 +113,12 @@ object AiSolverMain extends App {
     val sl = SortedList.instance(new OrderingAnaRatingDesc)
     anas.foreach(ana => sl.add(ana))
 
-    val re: String = sl.take(10).map(ana => ana.sentence.mkString(" ")).mkString(", ")
+    val re: String = sl.take(10)
+      .map(ana => ana.sentence.mkString(" "))
+      .map(anaStr => "%20s".format(anaStr))
+      .mkString(", ")
     log.info(s"found: $re")
+
   }
 
   def writeToFile(anas: Stream[Ana], srcText: String): Unit = {
@@ -74,7 +128,7 @@ object AiSolverMain extends App {
       s"anagrams_${idLearning}_${idSolving}_$s1.txt"
     }
 
-    val fn = fileName(idLearning, idSolving, srcText)
+    val fn = fileName(cfg.id, idSolving, srcText)
     log.info(s"Write anagrams for '$srcText' to $fn")
     IoUtil.saveToWorkDir(fn, (bw) => {
       var cnt = 0
@@ -87,6 +141,3 @@ object AiSolverMain extends App {
   }
 }
 
-class OrderingAnaRatingDesc extends Ordering[Ana] {
-  override def compare(x: Ana, y: Ana): Int = y.rate.compareTo(x.rate)
-}

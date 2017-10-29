@@ -9,7 +9,7 @@ object SSolverTryout extends App {
   val start = System.currentTimeMillis()
 
   private val src = "noah wagner"
-  val anas = SSolver(maxDepth = 4, parallel = 4).solve(src, wl)
+  val anas = SolverImpl(maxDepth = 4, parallel = 4).solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")
   else for ((ana, i) <- anas.zipWithIndex) {

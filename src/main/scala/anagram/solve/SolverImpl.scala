@@ -4,7 +4,7 @@ import anagram.words.Word
 
 import scala.collection.GenIterable
 
-case class SSolver(maxDepth: Int, parallel: Int) extends Solver {
+case class SolverImpl(maxDepth: Int, parallel: Int) extends Solver {
 
   def solve(sourceText: String, words: Iterable[Word]): Stream[Ana] = {
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
