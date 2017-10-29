@@ -13,20 +13,20 @@ object CreateDataAndTrainGrammarMain extends App {
   createAndTrainPlain()
   createAndTrainGrammar()
 
+  def createAndTrainPlain(): Unit = {
+    val id = "enPlain11"
+    log.info(s"STARTED plain $id")
+    CreateLearningDataPlain.createData(id, BookCollections.collectionEn2)
+    TrainPlain.train(id)
+    log.info(s"FINISHED plain $id")
+  }
+
   def createAndTrainGrammar(): Unit = {
     val id = "enGrm11"
     log.info(s"STARTED grammar $id")
     CreateLearningDataGrammar.createData(id, BookCollections.collectionEn2)
     TrainGrammar.train(id)
     log.info(s"FINISHED grammar $id")
-  }
-
-  def createAndTrainPlain(): Unit = {
-    val id = "enPlain11"
-    log.info(s"STARTED plain $id")
-    CreateLearningDataGrammar.createData(id, BookCollections.collectionEn2)
-    TrainGrammar.train(id)
-    log.info(s"FINISHED plain $id")
   }
 
 }
@@ -93,7 +93,7 @@ object TrainGrammar {
   }
 }
 
-object TrainingPlain {
+object TrainPlain {
 
   def train(id: String): Unit = {
     val cfg = TrainingConfig(
