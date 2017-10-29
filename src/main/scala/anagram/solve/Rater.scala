@@ -3,6 +3,7 @@ package anagram.solve
 import java.nio.file.Path
 
 import anagram.common.IoUtil
+import anagram.ml.data.{BookCollections, BookSplitterTxt}
 import anagram.words.WordMapper
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
@@ -35,6 +36,8 @@ class RaterAi(dataId: String, wordmap: WordMapper, logInterval: Option[Int] = So
 
   private val log = LoggerFactory.getLogger("RaterAi")
 
+  private lazy val _commonWords = commonWords
+
   require(logInterval.forall(n => n > 0), "If loginterval is defined it must be greater 0")
 
   var cnt = 0
@@ -59,17 +62,50 @@ class RaterAi(dataId: String, wordmap: WordMapper, logInterval: Option[Int] = So
     logInterval.foreach{interv =>
       if (cnt % interv == 0 && cnt > 0) log.info(s"Rated $cnt sentences")
     }
-    cnt += 1
-    val input: Array[Double] = sent
-      .map(wordmap.group)
-      .map(wordmap.toNum(_).toDouble)
-      .toArray
-    val out = nn.output(Nd4j.create(input))
-    out.getDouble(0)
+
+    def rateNN = {
+      val input: Array[Double] = sent
+        .map(wordmap.group)
+        .map(wordmap.toNum(_).toDouble)
+        .toArray
+      val out = nn.output(Nd4j.create(input))
+      out.getDouble(0)
+    }
+
+
+    val _ratingNN = rateNN
+    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.01)
+
+    _ratingNN + _ratingCommoWords
   }
+
 
   private def deserializeNn(path: Path): MultiLayerNetwork = {
     ModelSerializer.restoreMultiLayerNetwork(path.toFile)
   }
 
+  def commonWords: Set[String] = {
+    val coll = BookCollections.collectionEn2
+    val splitter = new BookSplitterTxt
+    coll.books
+      .map(_.filename)
+      .flatMap(resName => splitter.splitSentences(IoUtil.uri(resName)))
+      .flatten
+      .groupBy(identity)
+      .toList
+      .filter(_._1.length > 2)
+      .map { case (w, ws) => (w, ws.size) }
+      .sortBy(-_._2)
+      .map(_._1)
+      .take(2000)
+      .toSet
+  }
+
+}
+
+object CommonWordRater {
+
+  def rateCommonWords(sent:Iterable[String], commonWords: Set[String], commonFactor: Double): Double = {
+    sent.map(w => if (commonWords.contains(w)) 1 else 0).sum * commonFactor
+  }
 }
