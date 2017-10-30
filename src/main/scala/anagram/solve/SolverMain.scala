@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 case class CfgAiSolver(
                         id: String,
                         mapper: WordMapper,
+                        adjustOutput: (Int, Double) => Double,
                       )
 
 object SolverMain extends App {
@@ -43,8 +44,23 @@ object SolverMain extends App {
   val srcTextsWs = List(
     "william shakespeare", // -> i am a weakish speller 18 ->
   )
-  val cfgPlain = CfgAiSolver("enPlain11", WordMappers.createWordMapperPlain)
-  val cfgGrm = CfgAiSolver("enGrm11", WordMappers.createWordMapperGrammer)
+
+  def adjustOutputPlain(len: Int, rating: Double): Double = {
+    if (len == 1) rating + 5 // Anagram existing of one word must always be top
+    else if (len == 2) rating + 3.9
+    else if (len == 3) rating + 1.5
+    else if (len == 4) rating + 1.2
+    else rating
+  }
+
+  def adjustOutputGrammar(len: Int, rating: Double): Double = {
+    if (len == 1) rating + 5 // Anagram existing of one word must always be top
+    else if (len == 2) rating + 0.2
+    else rating
+  }
+
+  val cfgPlain = CfgAiSolver("enPlain11", WordMappers.createWordMapperPlain, adjustOutputPlain)
+  val cfgGrm = CfgAiSolver("enGrm11", WordMappers.createWordMapperGrammer, adjustOutputGrammar)
 
   val idSolving: String = "01"
   val srcTexts = srcTextsMedium
@@ -86,6 +102,7 @@ object SolverMain extends App {
     "attn",
     "din",
     "led",
+    "etc",
   ).toSet
   val wordlist = WordMappers.createWordMapperPlain
     .wordList
@@ -95,8 +112,7 @@ object SolverMain extends App {
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
-    //val rater: Rater = new RaterAi(cfg.id, cfg.mapper, None)
-    val rater: Rater = new RaterRandom
+    val rater: Rater = new RaterAi(cfg.id, cfg.mapper, cfg.adjustOutput, None)
     val baseSolver = SolverImpl(maxDepth = 4, parallel = 5)
     val aiSolver = SolverRating(baseSolver, rater)
 

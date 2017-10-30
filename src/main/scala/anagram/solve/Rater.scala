@@ -32,7 +32,7 @@ class RaterNone extends Rater {
 
 }
 
-class RaterAi(dataId: String, wordmap: WordMapper, logInterval: Option[Int] = Some(1000)) extends Rater {
+class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Double) => Double, logInterval: Option[Int] = Some(1000)) extends Rater {
 
   private val log = LoggerFactory.getLogger("RaterAi")
 
@@ -74,9 +74,9 @@ class RaterAi(dataId: String, wordmap: WordMapper, logInterval: Option[Int] = So
 
 
     val _ratingNN = rateNN
-    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.01)
+    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.001)
 
-    _ratingNN + _ratingCommoWords
+    adjustOutputValues(sent.size, _ratingNN + _ratingCommoWords)
   }
 
 
@@ -93,7 +93,7 @@ class RaterAi(dataId: String, wordmap: WordMapper, logInterval: Option[Int] = So
       .flatten
       .groupBy(identity)
       .toList
-      .filter(_._1.length > 2)
+      .filter(_._1.length > 3)
       .map { case (w, ws) => (w, ws.size) }
       .sortBy(-_._2)
       .map(_._1)

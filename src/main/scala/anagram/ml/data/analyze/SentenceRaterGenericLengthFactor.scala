@@ -14,25 +14,23 @@ object SentenceRaterGenericLengthFactor extends App {
 
   val ref = 10.0
   val fileNames = Seq(
-    "en04_clint_eastwood.txt",
-    "en04_william_shakespeare.txt",
+    "anagrams_enGrm11_01_clint_eastwood.txt",
+//    "anagrams_enGrm11_01_noah_the_great.txt",
+//    "anagrams_enGrm11_01_ditschi_wolfi.txt",
+//    "anagrams_enGrm11_01_ditschi.txt",
+//    "anagrams_enGrm11_01_ingrid_bernd.txt",
+//    "anagrams_enGrm11_01_wolfgang.txt",
   )
 
-
-  for (fn <- fileNames) {
-    val maxRatings: Seq[(Int, Double, Double)] = read(fn)
-      .map(adjust)
+    val maxRatings: Seq[(Int, Double)] = fileNames.flatMap(read)
       .groupBy(x => x.sentLen)
       .toList
       .map { case (k, v) => (k, v.map(_.rating).max) }
       .sortBy { case (k, _) => k }
-      .map { case (k, v) => (k, v, ref / v ) }
 
-    println(s"Max ratings for $fn")
-    for ((len, maxRating, fact) <- maxRatings) {
-      println(f"$len%10d - $maxRating%6.4f - $fact%6.4f")
+    for ((len, maxRating) <- maxRatings) {
+      println(f"$len%10d - $maxRating%6.4f")
     }
-  }
 
   def read(fileName: String): Iterable[GenRating] = {
     IoUtil.loadTxtFromWorkdir(fileName, (iter) => {
@@ -40,15 +38,14 @@ object SentenceRaterGenericLengthFactor extends App {
     })
   }
 
-  def adjust(genRating: GenRating): GenRating = {
-    val newRating = genRating.rating / lengthFactor(genRating.sentLen)
-    genRating.copy(rating = newRating)
-  }
+
+  // example line
+  //   10 - 0.20908 - 'cd hi i fit lows'
 
   def mkGenRating(s: String): GenRating = {
     val idx1 = s.indexOf('-', 0)
     require(idx1 >= 0)
-    val idx2 = s.indexOf('-', idx1 + 1)
+    val idx2 = s.indexOf("- ", idx1 + 1)
     require(idx2 >= 0)
     val idx3 = s.indexOf('\'', 0)
     require(idx3 >= 0)
@@ -61,18 +58,6 @@ object SentenceRaterGenericLengthFactor extends App {
 
     if (sent.isEmpty || ratingStr.isEmpty) GenRating(0, 0.0)
     else GenRating(sent.split("\\s").length, ratingStr.toDouble)
-  }
-
-  def lengthFactor(len: Int): Double = {
-    if (len <= 1) 2.0
-    else if (len <= 2) 1.7
-    else if (len <= 3) 1.6
-    else if (len <= 4) 1.5
-    else if (len <= 5) 1.4
-    else if (len <= 6) 1.3
-    else if (len <= 7) 1.2
-    else if (len <= 8) 1.1
-    else 1.0
   }
 
 
