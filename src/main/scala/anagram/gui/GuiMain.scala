@@ -12,13 +12,10 @@ object GuiMain extends App {
   val cntDoc = new PlainDocument()
   val ctrl = new Controller(listModel, textDoc, cntDoc)
 
-
-  new Frame(listModel, textDoc, cntDoc, ctrl).setVisible(true)
-
-
+  new Frame(listModel, textDoc, cntDoc, ctrl.getStartAction, ctrl.getStopAction).setVisible(true)
 }
 
-class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val cntDoc: PlainDocument) extends AbstractAction {
+class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val cntDoc: PlainDocument) {
 
   var cnt = 0
 
@@ -34,17 +31,31 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
     }
   }
 
-  override def actionPerformed(e: ActionEvent): Unit = {
-    println(s"STARTED '$getText' $cnt")
-    cntDoc.remove(0, cntDoc.getLength)
-    cntDoc.insertString(0, "" + cnt, null)
+  def getStartAction: Action = new AbstractAction() {
+    override def actionPerformed(e: ActionEvent): Unit = {
+      println(s"STARTED '$getText' $cnt")
+      cntDoc.remove(0, cntDoc.getLength)
+      cntDoc.insertString(0, "" + cnt, null)
 
-    cnt += 1
+      cnt += 1
 
+    }
   }
+
+  def getStopAction: Action = new AbstractAction() {
+    override def actionPerformed(e: ActionEvent): Unit = {
+      println(s"STOPPED '$getText' $cnt")
+      cntDoc.remove(0, cntDoc.getLength)
+      cntDoc.insertString(0, "" + cnt, null)
+
+      cnt -= 1
+
+    }
+  }
+
 }
 
-class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, startAction: Action) extends JPanel {
+class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, startAction: Action, stopAction: Action) extends JPanel {
 
   //setBackground(Color.GREEN)
   setLayout(new BorderLayout())
@@ -57,7 +68,7 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
     val cont = new JPanel()
     //cont.setBackground(Color.YELLOW)
     cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS))
-    cont.add(createStartButton(startAction))
+    cont.add(createButtonsPanel)
     cont.add(createTextField(txtDoc))
     cont.add(createCountTextField(cntDoc))
     cont.add(createFillPanel())
@@ -69,19 +80,30 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
   def createCountTextField(cntDoc: Document): Component = {
     val re = new JTextField()
     re.setEditable(false)
-    //re.setBorder(new EmptyBorder(5,5,5,5))
     re.setDocument(cntDoc)
     re
   }
 
-  def createStartButton(startAction: Action): Component = {
-    val re1 = new JPanel()
-    re1.setLayout(new FlowLayout(FlowLayout.LEFT))
+  def createButtonsPanel: Component = {
+    val re = new JPanel()
+    re.setLayout(new FlowLayout())
+    re.add(createStartButton)
+    re.add(createStopButton)
+    re
+  }
+
+  def createStartButton: Component = {
     val re = new JButton()
     re.setAction(startAction)
     re.setText("start")
-    re1.add(re)
-    re1
+    re
+  }
+
+  def createStopButton: Component = {
+    val re = new JButton()
+    re.setAction(stopAction)
+    re.setText("stop")
+    re
   }
 
 
@@ -107,10 +129,10 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
 }
 
 
-class Frame(listModel: ListModel[String], textDoc: Document, cntDoc: Document, startAction: Action) extends JFrame {
+class Frame(listModel: ListModel[String], textDoc: Document, cntDoc: Document, startAction: Action, stopAction: Action) extends JFrame {
   setSize(800, 400)
   setTitle("anagram creater")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-  setContentPane(new Content(listModel, textDoc, cntDoc, startAction))
+  setContentPane(new Content(listModel, textDoc, cntDoc, startAction, stopAction))
 }
 
