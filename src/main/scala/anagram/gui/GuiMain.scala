@@ -2,12 +2,13 @@ package anagram.gui
 
 import java.awt._
 import java.awt.event.ActionEvent
+import java.util.concurrent._
 import javax.swing._
 import javax.swing.text._
 
 import anagram.solve._
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 object GuiMain extends App {
 
@@ -23,40 +24,53 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
   fillListModel(Seq("a", "b", "wolfi"))
 
-  var solverIter = Option.empty[SolverIter]
-
+  var service = Option.empty[ExecutorService]
 
   def getStartAction: Action = new AbstractAction() {
 
     override def actionPerformed(e: ActionEvent): Unit = {
       println(s"STARTED '$getText'")
-      if (solverIter.isDefined) {
+      if (service.isDefined) {
         println("Already started")
       } else {
-        solverIter = Some(solve(getText))
+        val es = createDefaultExecutorService
+        implicit val ec: ExecutionContextExecutor = ExecutionContext.fromExecutorService(es)
+        service = Some(es)
+        val future = Future {
+          println(s"STARTED (in future) - '$getText'")
+          setCntDoc("counting not yet implemented")
+          for (anas <- solve(getText).toStream) {
+            val sentences = anas.map(ana => ana.sentence.mkString(" "))
+            SwingUtilities.invokeAndWait(() => fillListModel(sentences))
+            Thread.sleep(200)
+          }
+        }
+        future.onComplete {
+          _ =>
+            service.foreach(s => s.shutdownNow())
+            service = Option.empty[ExecutorService]
+            println(s"FINISHED - '$getText'")
+        }
       }
-      setCntDoc("counting not yet implemented")
     }
   }
 
   def getStopAction: Action = new AbstractAction() {
     override def actionPerformed(e: ActionEvent): Unit = {
       println(s"STOPPED")
-      if(solverIter.isDefined) {
-//        solverIter.get.shutdownNow()
+      if (service.isDefined) {
+        service.get.shutdownNow()
+        service = Option.empty[ExecutorService]
       } else {
         println("not started")
       }
     }
   }
 
-  def solve(srcText: String): SolverIter = {
-
-    implicit val exe: ExecutionContextExecutor = ExecutionContext.global
-
+  def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
     val cfg = CfgSolverAis.cfgGrm
     val anas: Stream[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
-    SolverIter.instance(anas, 10)
+    SolverIter.instance(anas, 500)
   }
 
   def getText: String = textDoc.getText(0, textDoc.getLength)
@@ -72,6 +86,11 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
       listModel.add(i, s)
     }
   }
+
+  def createDefaultExecutorService: ExecutorService = {
+    new ForkJoinPool(4)
+  }
+
 
 }
 
@@ -92,8 +111,7 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
     cont.add(createTextField(txtDoc))
     cont.add(createCountTextField(cntDoc))
     cont.add(createFillPanel())
-    cont.setPreferredSize(new Dimension(300, Int.MaxValue))
-    cont.setMinimumSize(new Dimension(200, 0))
+    cont.setPreferredSize(new Dimension(250, Int.MaxValue))
     cont
   }
 
@@ -142,7 +160,6 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
   def createScrollableList: JComponent = {
     val list = new JList[String]()
     list.setModel(listModel)
-    list.setPreferredSize(new Dimension(300, 0))
     val re = new JScrollPane(list)
     re
   }
@@ -150,7 +167,7 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
 
 
 class Frame(listModel: ListModel[String], textDoc: Document, cntDoc: Document, startAction: Action, stopAction: Action) extends JFrame {
-  setSize(800, 400)
+  setSize(500, 400)
   setTitle("anagram creater")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content(listModel, textDoc, cntDoc, startAction, stopAction))
