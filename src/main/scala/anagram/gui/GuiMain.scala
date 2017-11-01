@@ -22,20 +22,10 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
   fillListModel(Seq("a", "b", "wolfi"))
 
 
-  def getText: String = textDoc.getText(0, textDoc.getLength)
-
-  def fillListModel(values: Iterable[String]): Unit = {
-    listModel.removeAllElements()
-    for ((s, i) <- values.zipWithIndex) {
-      listModel.add(i, s)
-    }
-  }
-
   def getStartAction: Action = new AbstractAction() {
     override def actionPerformed(e: ActionEvent): Unit = {
       println(s"STARTED '$getText' $cnt")
-      cntDoc.remove(0, cntDoc.getLength)
-      cntDoc.insertString(0, "" + cnt, null)
+      setCntDoc(s"$cnt")
 
       cnt += 1
 
@@ -50,6 +40,20 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
       cnt -= 1
 
+    }
+  }
+
+  def getText: String = textDoc.getText(0, textDoc.getLength)
+
+  def setCntDoc(text: String): Unit = {
+    cntDoc.remove(0, cntDoc.getLength)
+    cntDoc.insertString(0, "" + cnt, null)
+  }
+
+  def fillListModel(values: Iterable[String]): Unit = {
+    listModel.removeAllElements()
+    for ((s, i) <- values.zipWithIndex) {
+      listModel.add(i, s)
     }
   }
 
