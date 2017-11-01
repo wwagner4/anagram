@@ -62,6 +62,7 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
     logInterval.foreach{interv =>
       if (cnt % interv == 0 && cnt > 0) log.info(s"Rated $cnt sentences")
     }
+    cnt += 1
 
     def rateNN = {
       val input: Array[Double] = sent
@@ -77,6 +78,7 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
     val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.001)
 
     adjustOutputValues(sent.size, _ratingNN + _ratingCommoWords)
+
   }
 
 
