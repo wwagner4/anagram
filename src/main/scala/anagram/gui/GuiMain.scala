@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent
 import javax.swing._
 import javax.swing.text._
 
+import anagram.solve._
+
 object GuiMain extends App {
 
   val listModel = new DefaultListModel[String]
@@ -17,37 +19,46 @@ object GuiMain extends App {
 
 class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val cntDoc: PlainDocument) {
 
-  var cnt = 0
-
   fillListModel(Seq("a", "b", "wolfi"))
+
+  var solverIter = Option.empty[SolverIter]
 
 
   def getStartAction: Action = new AbstractAction() {
+
     override def actionPerformed(e: ActionEvent): Unit = {
-      println(s"STARTED '$getText' $cnt")
-      setCntDoc(s"$cnt")
-
-      cnt += 1
-
+      println(s"STARTED '$getText'")
+      if (solverIter.isDefined) {
+        println("Already started")
+      } else {
+        solverIter = Some(solve(getText))
+      }
+      setCntDoc("counting not yet implemented")
     }
   }
 
   def getStopAction: Action = new AbstractAction() {
     override def actionPerformed(e: ActionEvent): Unit = {
-      println(s"STOPPED '$getText' $cnt")
-      cntDoc.remove(0, cntDoc.getLength)
-      cntDoc.insertString(0, "" + cnt, null)
-
-      cnt -= 1
-
+      println(s"STOPPED")
+      if(solverIter.isDefined) {
+        solverIter.get.shutdownNow()
+      } else {
+        println("not started")
+      }
     }
+  }
+
+  def solve(srcText: String): SolverIter = {
+    val cfg = CfgSolverAis.cfgGrm
+    val anas: Stream[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
+    SolverIter.instance(anas, 10)
   }
 
   def getText: String = textDoc.getText(0, textDoc.getLength)
 
   def setCntDoc(text: String): Unit = {
     cntDoc.remove(0, cntDoc.getLength)
-    cntDoc.insertString(0, "" + cnt, null)
+    cntDoc.insertString(0, text, null)
   }
 
   def fillListModel(values: Iterable[String]): Unit = {
