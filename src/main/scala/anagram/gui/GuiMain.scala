@@ -14,13 +14,13 @@ object GuiMain extends App {
 
   val listModel = new DefaultListModel[String]
   val textDoc = new PlainDocument()
-  val cntDoc = new PlainDocument()
-  val ctrl = new Controller(listModel, textDoc, cntDoc)
+  val stateDoc = new PlainDocument()
+  val ctrl = new Controller(listModel, textDoc, stateDoc)
 
-  new Frame(listModel, textDoc, cntDoc, ctrl.getStartAction, ctrl.getStopAction).setVisible(true)
+  new Frame(listModel, textDoc, stateDoc, ctrl.getStartAction, ctrl.getStopAction).setVisible(true)
 }
 
-class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val cntDoc: PlainDocument) {
+class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val stateDoc: PlainDocument) {
 
   var service = Option.empty[ExecutorService]
 
@@ -36,12 +36,12 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
         service = Some(es)
         val future = Future {
           println(s"STARTED (in future) - '$getText'")
-          setCntDoc("counting not yet implemented")
+          setStateDoc("state not yet implemented")
           fillListModel(Seq.empty[String])
           for (anas <- solve(getText).toStream) {
             val sentences = anas.map(ana => ana.sentence.mkString(" "))
             SwingUtilities.invokeAndWait(() => fillListModel(sentences))
-            Thread.sleep(200)
+            Thread.sleep(500)
           }
         }
         future.onComplete {
@@ -74,9 +74,9 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
   def getText: String = textDoc.getText(0, textDoc.getLength)
 
-  def setCntDoc(text: String): Unit = {
-    cntDoc.remove(0, cntDoc.getLength)
-    cntDoc.insertString(0, text, null)
+  def setStateDoc(text: String): Unit = {
+    stateDoc.remove(0, stateDoc.getLength)
+    stateDoc.insertString(0, text, null)
   }
 
   def fillListModel(values: Iterable[String]): Unit = {
@@ -93,7 +93,7 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
 }
 
-class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, startAction: Action, stopAction: Action) extends JPanel {
+class Content(listModel: ListModel[String], txtDoc: Document, stateDoc: Document, startAction: Action, stopAction: Action) extends JPanel {
 
   //setBackground(Color.GREEN)
   setLayout(new BorderLayout())
@@ -108,16 +108,16 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
     cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS))
     cont.add(createButtonsPanel)
     cont.add(createTextField(txtDoc))
-    cont.add(createCountTextField(cntDoc))
+    cont.add(createCountTextField(stateDoc))
     cont.add(createFillPanel())
     cont.setPreferredSize(new Dimension(250, Int.MaxValue))
     cont
   }
 
-  def createCountTextField(cntDoc: Document): Component = {
+  def createCountTextField(stateDoc: Document): Component = {
     val re = new JTextField()
     re.setEditable(false)
-    re.setDocument(cntDoc)
+    re.setDocument(stateDoc)
     re
   }
 
@@ -165,10 +165,10 @@ class Content(listModel: ListModel[String], txtDoc: Document, cntDoc: Document, 
 }
 
 
-class Frame(listModel: ListModel[String], textDoc: Document, cntDoc: Document, startAction: Action, stopAction: Action) extends JFrame {
+class Frame(listModel: ListModel[String], textDoc: Document, stateDoc: Document, startAction: Action, stopAction: Action) extends JFrame {
   setSize(500, 400)
   setTitle("anagram creater")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-  setContentPane(new Content(listModel, textDoc, cntDoc, startAction, stopAction))
+  setContentPane(new Content(listModel, textDoc, stateDoc, startAction, stopAction))
 }
 
