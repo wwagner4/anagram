@@ -3,8 +3,10 @@ package anagram.solve
 import anagram.words.Word
 
 import scala.collection.GenIterable
+import scala.collection.parallel.ExecutionContextTaskSupport
+import scala.concurrent.ExecutionContext
 
-case class SolverImpl(maxDepth: Int, parallel: Int) extends Solver {
+case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContext) extends Solver {
 
   def solve(sourceText: String, words: Iterable[Word]): Stream[Ana] = {
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
@@ -28,7 +30,10 @@ case class SolverImpl(maxDepth: Int, parallel: Int) extends Solver {
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
-              mws1.grouped(grpSize).toSeq.par
+              val mwsp = mws1.grouped(grpSize).toSeq.par
+              val ts = new ExecutionContextTaskSupport(ec)
+              mwsp.tasksupport = ts
+              mwsp
             }
           //println(s"-- $depth :$txtSorted: - ${mws.mkString(" ")}")
           mws.flatMap(_.flatMap { mw =>

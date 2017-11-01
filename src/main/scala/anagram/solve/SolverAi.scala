@@ -1,6 +1,8 @@
 package anagram.solve
 import anagram.words.{Word, WordMapper, WordMappers}
 
+import scala.concurrent.ExecutionContext
+
 case class CfgSolverAi(
                         id: String,
                         mapper: WordMapper,
@@ -79,7 +81,7 @@ object WordLists {
 }
 
 
-class SolverAi(cfg: CfgSolverAi) extends Solver {
+class SolverAi(cfg: CfgSolverAi)(implicit ec: ExecutionContext) extends Solver {
 
   override def solve(srcText: String, wordlist: Iterable[Word]): Stream[Ana] = {
     val rater: Rater = new RaterAi(cfg.id, cfg.mapper, cfg.adjustOutput, None)

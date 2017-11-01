@@ -7,7 +7,11 @@ import scala.concurrent.{ExecutionContextExecutor, Future}
 sealed trait SolveResult
 
 
-trait SolverIter extends Iterator[Seq[Ana]]
+trait SolverIter extends Iterator[Seq[Ana]] {
+
+  def solvedAnagrams: Int
+
+}
 
 object SolverIter {
 
@@ -30,6 +34,8 @@ object SolverIter {
         if (future.isCompleted) deliveredLast = true
         re
       }
+
+      override def solvedAnagrams: Int = sl.size
     }
   }
 

@@ -6,6 +6,8 @@ trait SortedList[T] {
 
   def take(n: Int): Seq[T]
 
+  def size: Int
+
 }
 
 object SortedList {
@@ -15,11 +17,13 @@ object SortedList {
 
       private var elems = Seq.empty[T]
 
-      def add(elem: T): Unit = synchronized {
+      override def add(elem: T): Unit = synchronized {
         elems = (elems :+ elem).sorted
       }
 
-      def take(n: Int): Seq[T] = elems.take(n)
+      override def take(n: Int): Seq[T] = elems.take(n)
+
+      override def size: Int = elems.size
 
     }
   }

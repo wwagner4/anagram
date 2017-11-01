@@ -3,7 +3,11 @@ package anagram.solve
 import anagram.words.{Word, WordMappers}
 import org.scalatest.{FunSuite, MustMatchers}
 
+import scala.concurrent.ExecutionContext
+
 class SolverImplSuite extends FunSuite with MustMatchers {
+
+  implicit val ec: ExecutionContext = ExecutionContext.global
 
   test("anagramm Oast ogr") {
 

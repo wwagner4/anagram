@@ -2,7 +2,11 @@ package anagram.solve
 
 import anagram.words.WordMappers
 
+import scala.concurrent.ExecutionContext
+
 object SSolverTryout extends App {
+
+  implicit val ec: ExecutionContext = ExecutionContext.global
 
   val wl =  WordMappers.createWordMapperGrammer.wordList
 
