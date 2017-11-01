@@ -7,6 +7,8 @@ import javax.swing.text._
 
 import anagram.solve._
 
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+
 object GuiMain extends App {
 
   val listModel = new DefaultListModel[String]
@@ -41,7 +43,7 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
     override def actionPerformed(e: ActionEvent): Unit = {
       println(s"STOPPED")
       if(solverIter.isDefined) {
-        solverIter.get.shutdownNow()
+//        solverIter.get.shutdownNow()
       } else {
         println("not started")
       }
@@ -49,6 +51,9 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
   }
 
   def solve(srcText: String): SolverIter = {
+
+    implicit val exe: ExecutionContextExecutor = ExecutionContext.global
+
     val cfg = CfgSolverAis.cfgGrm
     val anas: Stream[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
     SolverIter.instance(anas, 10)

@@ -1,27 +1,17 @@
 package anagram.solve
 
-import java.util.concurrent.ExecutorService
-
 import anagram.common.SortedList
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 sealed trait SolveResult
 
 
-trait SolverIter extends Iterator[Seq[Ana]]{
-
-  def shutdownNow(): Unit
-
-}
+trait SolverIter extends Iterator[Seq[Ana]]
 
 object SolverIter {
 
-  def instance(anas: Stream[Ana], resultLength: Int): SolverIter = {
-
-    implicit val ec: ExecutionContextExecutor = ExecutionContext.fromExecutor(null)
-
-    lazy val shutdownable = ec.asInstanceOf[ExecutorService]
+  def instance(anas: Stream[Ana], resultLength: Int)(implicit executor: ExecutionContextExecutor): SolverIter = {
 
     val sl = SortedList.instance(new OrderingAnaRatingDesc)
 
@@ -40,9 +30,6 @@ object SolverIter {
         if (future.isCompleted) deliveredLast = true
         re
       }
-
-      override def shutdownNow(): Unit = shutdownable.shutdownNow()
-
     }
   }
 

@@ -4,6 +4,8 @@ import anagram.common.IoUtil
 import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
 
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+
 case class CfgAiSolver(
                         id: String,
                         mapper: WordMapper,
@@ -11,6 +13,8 @@ case class CfgAiSolver(
                       )
 
 object SolverMain extends App {
+
+  implicit val exe: ExecutionContextExecutor = ExecutionContext.global
 
   val log = LoggerFactory.getLogger("anagram.solve.SolverMain")
 
@@ -47,7 +51,7 @@ object SolverMain extends App {
 
   val idSolving: String = "01"
   val srcTexts = srcTextsMedium
-  val cfg = CfgSolverAis.cfgGrm
+  val cfg = CfgSolverAis.cfgPlain
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
@@ -60,19 +64,17 @@ object SolverMain extends App {
 
   def outIter(anas: Stream[Ana], srcText: String): Unit = {
     val solverIter = SolverIter.instance(anas, 10)
-    while (solverIter.hasNext) {
-      for (anas <- solverIter.toStream) {
-        if (anas.isEmpty) {
-          log.info("-- NO RESULT SO LONG --")
-        } else {
-          val re = anas
-            .map(ana => ana.sentence.mkString(" "))
-            .map(anaStr => "%20s".format(anaStr))
-            .mkString(", ")
-          log.info(s"$srcText -> $re")
-        }
-        Thread.sleep(1000)
+    for (anas <- solverIter.toStream) {
+      if (anas.isEmpty) {
+        log.info("-- NO RESULT SO LONG --")
+      } else {
+        val re = anas
+          .map(ana => ana.sentence.mkString(" "))
+          .map(anaStr => "%20s".format(anaStr))
+          .mkString(", ")
+        log.info(s"$srcText -> $re")
       }
+      Thread.sleep(500)
     }
   }
 
