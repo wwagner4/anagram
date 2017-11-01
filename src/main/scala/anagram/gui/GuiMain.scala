@@ -22,8 +22,6 @@ object GuiMain extends App {
 
 class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val cntDoc: PlainDocument) {
 
-  fillListModel(Seq("a", "b", "wolfi"))
-
   var service = Option.empty[ExecutorService]
 
   def getStartAction: Action = new AbstractAction() {
@@ -39,6 +37,7 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
         val future = Future {
           println(s"STARTED (in future) - '$getText'")
           setCntDoc("counting not yet implemented")
+          fillListModel(Seq.empty[String])
           for (anas <- solve(getText).toStream) {
             val sentences = anas.map(ana => ana.sentence.mkString(" "))
             SwingUtilities.invokeAndWait(() => fillListModel(sentences))
