@@ -24,10 +24,11 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
   var service = Option.empty[ExecutorService]
 
+  var cnt = 0
+
   def getStartAction: Action = new AbstractAction() {
 
     override def actionPerformed(e: ActionEvent): Unit = {
-      println(s"STARTED '$getText'")
       if (service.isDefined) {
         println("Already started")
       } else {
@@ -35,35 +36,47 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
         implicit val ec: ExecutionContextExecutor = ExecutionContext.fromExecutorService(es)
         service = Some(es)
         val future = Future {
-          println(s"STARTED (in future) - '$getText'")
-          setStateDoc("state not yet implemented")
+          cnt = 0
+          setStateDoc(s"solving $getText")
           fillListModel(Seq.empty[String])
-          for (anas <- solve(getText).toStream) {
-            val sentences = anas.map(ana => ana.sentence.mkString(" "))
-            SwingUtilities.invokeAndWait(() => fillListModel(sentences))
+          val siter = solve(getText)
+          for (anas <- siter.toStream) {
+            SwingUtilities.invokeAndWait { () =>
+              val sentences = anas.map(ana => ana.sentence.mkString(" "))
+              fillListModel(sentences)
+              cnt = siter.solvedAnagrams
+              setStateDoc(s"solving. found $cnt anagrams  ")
+            }
             Thread.sleep(500)
           }
         }
         future.onComplete {
           _ =>
-            service.foreach(s => s.shutdownNow())
-            service = Option.empty[ExecutorService]
-            println(s"FINISHED - '$getText'")
+            shutdown()
+            setStateDoc(s"solved $getText. $cnt anagrams")
         }
       }
     }
   }
 
   def getStopAction: Action = new AbstractAction() {
+
     override def actionPerformed(e: ActionEvent): Unit = {
-      println(s"STOPPED")
       if (service.isDefined) {
-        service.get.shutdownNow()
-        service = Option.empty[ExecutorService]
+        shutdown()
+        setStateDoc(s"canceled $getText. $cnt anagrams")
       } else {
         println("not started")
       }
     }
+  }
+
+  def shutdown(): Unit = {
+    service.foreach(s => while (!s.isShutdown) {
+      s.shutdownNow()
+      println("... shutdown ...")
+    })
+    service = Option.empty[ExecutorService]
   }
 
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
@@ -166,7 +179,7 @@ class Content(listModel: ListModel[String], txtDoc: Document, stateDoc: Document
 
 
 class Frame(listModel: ListModel[String], textDoc: Document, stateDoc: Document, startAction: Action, stopAction: Action) extends JFrame {
-  setSize(500, 400)
+  setSize(500, 600)
   setTitle("anagram creater")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content(listModel, textDoc, stateDoc, startAction, stopAction))
