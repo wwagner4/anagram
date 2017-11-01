@@ -1,7 +1,7 @@
 package anagram.solve
 
 import anagram.common.IoUtil
-import anagram.words.{WordMapper, WordMappers}
+import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
 
 case class CfgAiSolver(
@@ -45,78 +45,14 @@ object SolverMain extends App {
     "william shakespeare", // -> i am a weakish speller 18 ->
   )
 
-  def adjustOutputPlain(len: Int, rating: Double): Double = {
-    if (len == 1) rating + 5 // Anagram existing of one word must always be top
-    else if (len == 2) rating + 3.9
-    else if (len == 3) rating + 1.5
-    else if (len == 4) rating + 1.2
-    else rating
-  }
-
-  def adjustOutputGrammar(len: Int, rating: Double): Double = {
-    if (len == 1) rating + 5 // Anagram existing of one word must always be top
-    else if (len == 2) rating + 0.2
-    else rating
-  }
-
-  val cfgPlain = CfgAiSolver("enPlain11", WordMappers.createWordMapperPlain, adjustOutputPlain)
-  val cfgGrm = CfgAiSolver("enGrm11", WordMappers.createWordMapperGrammer, adjustOutputGrammar)
-
   val idSolving: String = "01"
   val srcTexts = srcTextsMedium
-  val cfg = cfgGrm
-
-  val ignoreWords = Seq(
-    "ere",
-    "nth",
-    "id",
-    "dreg",
-    "cal",
-    "inc",
-    "nevi",
-    "von",
-    "cit",
-    "esc",
-    "alt",
-    "brin",
-    "veer",
-    "brin",
-    "bin",
-    "nil",
-    "chi",
-    "cd",
-    "ohs",
-    "lith",
-    "noir",
-    "veda",
-    "vade",
-    "vinal",
-    "dict",
-    "wonts",
-    "wots",
-    "odic",
-    "orth",
-    "dows",
-    "thor",
-    "ghee",
-    "attn",
-    "din",
-    "led",
-    "etc",
-  ).toSet
-  val wordlist = WordMappers.createWordMapperPlain
-    .wordList
-    .filter(w => !ignoreWords.contains(w.word))
-
+  val cfg = CfgSolverAis.cfgGrm
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
-    val rater: Rater = new RaterAi(cfg.id, cfg.mapper, cfg.adjustOutput, None)
-    val baseSolver = SolverImpl(maxDepth = 4, parallel = 5)
-    val aiSolver = SolverRating(baseSolver, rater)
-
-    val anagrams: Stream[Ana] = aiSolver.solve(srcText, wordlist)
+    val anagrams: Stream[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
     //outWriteToFile(anagrams, srcText)
     outIter(anagrams, srcText)
   }
@@ -159,6 +95,3 @@ object SolverMain extends App {
     })
   }
 }
-
-
-
