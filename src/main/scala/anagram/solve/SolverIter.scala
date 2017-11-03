@@ -35,9 +35,7 @@ object SolverIter {
       }
 
       override def hasNext: Boolean = {
-        val re = (!future.isCompleted || !deliveredLast) && !_canceled
-        log.info(s"[hasNext] $re")
-        re
+        (!future.isCompleted || !deliveredLast) && !_canceled
       }
 
       override def next(): Seq[Ana] = {

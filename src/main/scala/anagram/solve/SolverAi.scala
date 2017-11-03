@@ -83,16 +83,11 @@ object WordLists {
 
 class SolverAi(cfg: CfgSolverAi)(implicit ec: ExecutionContext) extends Solver {
 
-  println("SolverAi (1)")
   val rater: Rater = new RaterAi(cfg.id, cfg.mapper, cfg.adjustOutput, None)
-  println("SolverAi (2)")
   val baseSolver = SolverImpl(maxDepth = 4, parallel = 5)
-  println("SolverAi (3)")
   val aiSolver = SolverRating(baseSolver, rater)
-  println("SolverAi (4)")
 
   override def solve(srcText: String, wordlist: Iterable[Word]): Iterator[Ana] = {
-    println("SolverAi (5)")
     aiSolver.solve(srcText, wordlist)
   }
 

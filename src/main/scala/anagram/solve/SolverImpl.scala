@@ -14,7 +14,6 @@ case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContex
   private var _cancelled = false
 
   override def solve(sourceText: String, words: Iterable[Word]): Iterator[Ana] = {
-    log.info("[solve] >>>")
     _cancelled = false
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
       .map(sent => Ana(1.0, sent))
@@ -24,13 +23,11 @@ case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContex
   override def cancel(): Unit = _cancelled = true
 
   def solve1(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
-    log.info("[solve1] >>>")
     if (_cancelled) Iterable.empty[List[String]]
     else anaCache.ana(txt).getOrElse(solve2(txt, depth, words, anaCache))
   }
 
   def solve2(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
-    log.info("[solve2] >>>")
     val re: GenIterable[List[String]] =
       if (txt.isEmpty) Iterable.empty[List[String]]
       else {
@@ -38,11 +35,9 @@ case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContex
         else {
           val mws =
             if (depth >= 1) {
-              log.info("[solve2] mws (1)")
               Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
             }
             else {
-              log.info("[solve2] mws (2)")
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
@@ -53,7 +48,6 @@ case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContex
             }
           //println(s"-- $depth :$txtSorted: - ${mws.mkString(" ")}")
           mws.flatMap(_.flatMap { mw =>
-            log.info("[solve2] mw")
             val restText = removeChars(txt, mw.toList)
             val subAnas = solve1(restText, depth + 1, words, anaCache)
             if (restText.isEmpty && subAnas.isEmpty) {
