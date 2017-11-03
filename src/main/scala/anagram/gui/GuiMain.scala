@@ -6,6 +6,7 @@ import java.util.concurrent._
 import javax.swing._
 import javax.swing.text._
 
+import anagram.common.Cancelable
 import anagram.solve._
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
@@ -26,12 +27,15 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
   var cnt = 0
 
+  var _cancelable = Seq.empty[Cancelable]
+
   def getStartAction: Action = new AbstractAction() {
 
     override def actionPerformed(e: ActionEvent): Unit = {
       if (service.isDefined) {
         println("Already started")
       } else {
+        _cancelable = Seq.empty[Cancelable]
         val es = createDefaultExecutorService
         implicit val ec: ExecutionContextExecutor = ExecutionContext.fromExecutorService(es)
         service = Some(es)
@@ -72,6 +76,8 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
   }
 
   def shutdown(): Unit = {
+    _cancelable.foreach(_.cancel())
+    println("... cancelled ...")
     service.foreach(s => while (!s.isShutdown) {
       s.shutdownNow()
       println("... shutdown ...")
@@ -81,8 +87,12 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
     val cfg = CfgSolverAis.cfgGrm
-    val anas: Stream[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
-    SolverIter.instance(anas, 500)
+    val solver = new SolverAi(cfg)
+    _cancelable :+= solver
+    val anas: Stream[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
+    val  inst = SolverIter.instance(anas, 500)
+    _cancelable :+= inst
+    inst
   }
 
   def getText: String = textDoc.getText(0, textDoc.getLength)

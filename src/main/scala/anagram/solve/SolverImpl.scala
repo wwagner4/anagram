@@ -1,6 +1,7 @@
 package anagram.solve
 
 import anagram.words.Word
+import org.slf4j.LoggerFactory
 
 import scala.collection.GenIterable
 import scala.collection.parallel.ExecutionContextTaskSupport
@@ -8,25 +9,39 @@ import scala.concurrent.ExecutionContext
 
 case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContext) extends Solver {
 
-  def solve(sourceText: String, words: Iterable[Word]): Stream[Ana] = {
+  private val log = LoggerFactory.getLogger("SolverImpl")
+
+  private var _cancelled = false
+
+  override def solve(sourceText: String, words: Iterable[Word]): Stream[Ana] = {
+    _cancelled = false
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
       .map(sent => Ana(1.0, sent))
       .toStream
   }
 
+  override def cancel(): Unit = _cancelled = true
+
   def solve1(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
-    anaCache.ana(txt).getOrElse(solve2(txt, depth, words, anaCache))
+    log.info("[solve1] >>>")
+    if (_cancelled) Iterable.empty[List[String]]
+    else anaCache.ana(txt).getOrElse(solve2(txt, depth, words, anaCache))
   }
 
   def solve2(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
+    log.info("[solve2] >>>")
     val re: GenIterable[List[String]] =
       if (txt.isEmpty) Iterable.empty[List[String]]
       else {
         if (depth >= maxDepth) Iterable.empty[List[String]]
         else {
           val mws =
-            if (depth >= 1) Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
+            if (depth >= 1) {
+              log.info("[solve2] mws (1)")
+              Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
+            }
             else {
+              log.info("[solve2] mws (2)")
               val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
               val mws1Size = mws1.size
               val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
@@ -37,6 +52,7 @@ case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContex
             }
           //println(s"-- $depth :$txtSorted: - ${mws.mkString(" ")}")
           mws.flatMap(_.flatMap { mw =>
+            log.info("[solve2] mw")
             val restText = removeChars(txt, mw.toList)
             val subAnas = solve1(restText, depth + 1, words, anaCache)
             if (restText.isEmpty && subAnas.isEmpty) {
