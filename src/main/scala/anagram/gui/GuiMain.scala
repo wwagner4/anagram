@@ -8,8 +8,10 @@ import javax.swing.text._
 
 import anagram.common.Cancelable
 import anagram.solve._
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.util.{Failure, Success}
 
 object GuiMain extends App {
 
@@ -23,6 +25,8 @@ object GuiMain extends App {
 
 class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val stateDoc: PlainDocument) {
 
+  private val log = LoggerFactory.getLogger("Controller")
+
   var service = Option.empty[ExecutorService]
 
   var cnt = 0
@@ -32,6 +36,7 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
   def getStartAction: Action = new AbstractAction() {
 
     override def actionPerformed(e: ActionEvent): Unit = {
+      log.info("[actionPerformed] start")
       if (service.isDefined) {
         println("Already started")
       } else {
@@ -40,6 +45,7 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
         implicit val ec: ExecutionContextExecutor = ExecutionContext.fromExecutorService(es)
         service = Some(es)
         val future = Future {
+          log.info("[actionPerformed] in the future")
           cnt = 0
           setStateDoc(s"solving $getText")
           fillListModel(Seq.empty[String])
@@ -55,9 +61,14 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
           }
         }
         future.onComplete {
-          _ =>
+          case Success(_) =>
             shutdown()
             setStateDoc(s"solved $getText. $cnt anagrams")
+          case Failure(ex) =>
+            shutdown()
+            setStateDoc(s"solved $getText. $cnt anagrams")
+            val msg = ex.getMessage
+            log.error(s"Error: $msg", e)
         }
       }
     }
@@ -86,10 +97,15 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
   }
 
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
+    log.info("[solve]")
     val cfg = CfgSolverAis.cfgGrm
+    log.info(s"[solve] cfg $cfg")
     val solver = new SolverAi(cfg)
+    log.info(s"[solve] solver $solver")
     _cancelable :+= solver
-    val anas: Stream[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
+    log.info(s"[solve] before solver.solve")
+    val anas: Iterator[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
+    log.info(s"[solve] after solver.solve")
     val  inst = SolverIter.instance(anas, 500)
     _cancelable :+= inst
     inst

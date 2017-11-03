@@ -18,19 +18,21 @@ object SolverIter {
 
   private val log = LoggerFactory.getLogger("SolverIter")
 
-  def instance(anas: Stream[Ana], resultLength: Int)(implicit executor: ExecutionContextExecutor): SolverIter = {
+  def instance(anas: Iterator[Ana], resultLength: Int)(implicit executor: ExecutionContextExecutor): SolverIter = {
 
     val sl = SortedList.instance(new OrderingAnaRatingDesc)
 
     var deliveredLast = false
 
-    val future = Future {
-      anas.foreach(ana => sl.add(ana))
-    }
-
     new SolverIter {
 
       private var _canceled = false
+
+      val future = Future {
+        while(anas.hasNext && !_canceled) {
+          sl.add(anas.next())
+        }
+      }
 
       override def hasNext: Boolean = {
         val re = (!future.isCompleted || !deliveredLast) && !_canceled

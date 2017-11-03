@@ -13,11 +13,12 @@ case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContex
 
   private var _cancelled = false
 
-  override def solve(sourceText: String, words: Iterable[Word]): Stream[Ana] = {
+  override def solve(sourceText: String, words: Iterable[Word]): Iterator[Ana] = {
+    log.info("[solve] >>>")
     _cancelled = false
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
       .map(sent => Ana(1.0, sent))
-      .toStream
+      .toIterator
   }
 
   override def cancel(): Unit = _cancelled = true

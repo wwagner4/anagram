@@ -56,13 +56,13 @@ object SolverMain extends App {
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
-    val anagrams: Stream[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
+    val anagrams: Iterator[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
     //outWriteToFile(anagrams, srcText)
     outIter(anagrams, srcText)
   }
   log.info("Finished")
 
-  def outIter(anas: Stream[Ana], srcText: String): Unit = {
+  def outIter(anas: Iterator[Ana], srcText: String): Unit = {
     val solverIter = SolverIter.instance(anas, 10)
     for (anas <- solverIter.toStream) {
       if (anas.isEmpty) {
