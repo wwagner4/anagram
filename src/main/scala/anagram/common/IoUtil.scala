@@ -65,7 +65,7 @@ object IoUtil {
     url.toURI
   }
 
-  private def getCreateWorkDir: Path = {
+  def getCreateWorkDir: Path = {
     val dirWork: Path = Paths.get(System.getProperty("user.home"), "anagram", "work")
     if (!Files.exists(dirWork)) {
       Files.createDirectories(dirWork)

@@ -2,11 +2,12 @@ package anagram.gui
 
 import java.awt._
 import java.awt.event.ActionEvent
+import java.nio.file.{Files, Path}
 import java.util.concurrent._
 import javax.swing._
 import javax.swing.text._
 
-import anagram.common.Cancelable
+import anagram.common.{Cancelable, IoUtil}
 import anagram.solve._
 import org.slf4j.LoggerFactory
 
@@ -16,14 +17,24 @@ import scala.util.{Failure, Success}
 object GuiMain extends App {
 
   val listModel = new DefaultListModel[String]
+  val listSelectionModel = {
+    val lsm = new DefaultListSelectionModel
+    lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+    lsm
+  }
   val textDoc = new PlainDocument()
   val stateDoc = new PlainDocument()
-  val ctrl = new Controller(listModel, textDoc, stateDoc)
 
-  new Frame(listModel, textDoc, stateDoc, ctrl.getStartAction, ctrl.getStopAction, ctrl.getMorphAction).setVisible(true)
+  val ctrl = new Controller(listModel, listSelectionModel, textDoc, stateDoc)
+
+  new Frame(listModel, listSelectionModel, textDoc, stateDoc, ctrl.getStartAction, ctrl.getStopAction, ctrl.getMorphAction).setVisible(true)
 }
 
-class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val stateDoc: PlainDocument) {
+class Controller(
+                  val listModel: DefaultListModel[String],
+                  val listSelectionModel: DefaultListSelectionModel,
+                  val textDoc: PlainDocument,
+                  val stateDoc: PlainDocument) {
 
   private val log = LoggerFactory.getLogger("Controller")
 
@@ -90,8 +101,35 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
       if (service.isDefined) {
         log.info("cannot create a morph image while solving.")
       } else {
-        setStateDoc(s"morphing")
+        if (selectedAnagram.isDefined) {
+          val src = getText
+          val  ana = selectedAnagram.get
+          setStateDoc(s"morphing $ana")
+          val _outFile = outFile(src, ana)
+          log.info(s"writing morph image to ${_outFile}")
+        } else {
+          setStateDoc(s"no anagram selected")
+        }
       }
+    }
+  }
+
+  def outFile(src: String, ana: String): Path = {
+    val workDir = IoUtil.getCreateWorkDir
+    val imageDir = workDir.resolve("morph")
+    if (!Files.exists(imageDir)) Files.createDirectories(imageDir)
+    val src1 = src.replaceAll("\\s", "_")
+    val ana1 = ana.replaceAll("\\s", "_")
+    val filename = s"anamorph_${src1}_$ana1.png"
+    imageDir.resolve(filename)
+  }
+
+  def selectedAnagram: Option[String] = {
+    if (listSelectionModel.isSelectionEmpty) None
+    else {
+      val idx = listSelectionModel.getAnchorSelectionIndex
+      val ana = listModel.get(idx)
+      Some(ana)
     }
   }
 
@@ -135,90 +173,10 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
 }
 
-class Content(
-               listModel: ListModel[String],
-               txtDoc: Document, stateDoc: Document,
-               startAction: Action, stopAction: Action, morphAction: Action) extends JPanel {
-
-  //setBackground(Color.GREEN)
-  setLayout(new BorderLayout())
-
-  add(createCommandColumn, BorderLayout.EAST)
-  add(createScrollableList, BorderLayout.CENTER)
-
-
-  def createCommandColumn: JComponent = {
-    val cont = new JPanel()
-    cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS))
-    cont.add(createButtonsPanel)
-    cont.add(createTextField(txtDoc))
-    cont.add(createCountTextField(stateDoc))
-    cont.add(createFillPanel())
-    cont.setPreferredSize(new Dimension(300, Int.MaxValue))
-    cont
-  }
-
-  def createCountTextField(stateDoc: Document): Component = {
-    val re = new JTextField()
-    re.setEditable(false)
-    re.setDocument(stateDoc)
-    re
-  }
-
-  def createButtonsPanel: Component = {
-    val re = new JPanel()
-    re.setLayout(new FlowLayout())
-    re.add(createStartButton)
-    re.add(createStopButton)
-    re.add(createMorphButton)
-    re
-  }
-
-  def createMorphButton: Component = {
-    val re = new JButton()
-    re.setAction(morphAction)
-    re.setText("morph")
-    re
-  }
-
-  def createStartButton: Component = {
-    val re = new JButton()
-    re.setAction(startAction)
-    re.setText("start")
-    re
-  }
-
-  def createStopButton: Component = {
-    val re = new JButton()
-    re.setAction(stopAction)
-    re.setText("stop")
-    re
-  }
-
-
-  def createTextField(doc: Document): Component = {
-    val re = new JTextField()
-    re.setDocument(doc)
-    re
-  }
-
-  def createFillPanel(): Component = {
-    val re = new JPanel()
-    re.setPreferredSize(new Dimension(1, Int.MaxValue))
-    re
-  }
-
-  def createScrollableList: JComponent = {
-    val list = new JList[String]()
-    list.setModel(listModel)
-    val re = new JScrollPane(list)
-    re
-  }
-}
-
 
 class Frame(
              listModel: ListModel[String],
+             listSelectionModel: ListSelectionModel,
              textDoc: Document,
              stateDoc: Document,
              startAction: Action,
@@ -228,6 +186,86 @@ class Frame(
   setSize(500, 600)
   setTitle("anagram creater")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-  setContentPane(new Content(listModel, textDoc, stateDoc, startAction, stopAction, morphAction))
+  setContentPane(new Content)
+
+
+  class Content extends JPanel {
+
+    setLayout(new BorderLayout())
+
+    add(createCommandColumn, BorderLayout.EAST)
+    add(createScrollableList, BorderLayout.CENTER)
+
+
+    def createCommandColumn: JComponent = {
+      val cont = new JPanel()
+      cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS))
+      cont.add(createButtonsPanel)
+      cont.add(createTextField(textDoc))
+      cont.add(createCountTextField(stateDoc))
+      cont.add(createFillPanel())
+      cont.setPreferredSize(new Dimension(300, Int.MaxValue))
+      cont
+    }
+
+    def createCountTextField(stateDoc: Document): Component = {
+      val re = new JTextField()
+      re.setEditable(false)
+      re.setDocument(stateDoc)
+      re
+    }
+
+    def createButtonsPanel: Component = {
+      val re = new JPanel()
+      re.setLayout(new FlowLayout())
+      re.add(createStartButton)
+      re.add(createStopButton)
+      re.add(createMorphButton)
+      re
+    }
+
+    def createMorphButton: Component = {
+      val re = new JButton()
+      re.setAction(morphAction)
+      re.setText("morph")
+      re
+    }
+
+    def createStartButton: Component = {
+      val re = new JButton()
+      re.setAction(startAction)
+      re.setText("start")
+      re
+    }
+
+    def createStopButton: Component = {
+      val re = new JButton()
+      re.setAction(stopAction)
+      re.setText("stop")
+      re
+    }
+
+
+    def createTextField(doc: Document): Component = {
+      val re = new JTextField()
+      re.setDocument(doc)
+      re
+    }
+
+    def createFillPanel(): Component = {
+      val re = new JPanel()
+      re.setPreferredSize(new Dimension(1, Int.MaxValue))
+      re
+    }
+
+    def createScrollableList: JComponent = {
+      val list = new JList[String]()
+      list.setModel(listModel)
+      list.setSelectionModel(listSelectionModel)
+      val re = new JScrollPane(list)
+      re
+    }
+  }
+
 }
 
