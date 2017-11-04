@@ -1,15 +1,12 @@
 package anagram.solve
 
 import anagram.words.Word
-import org.slf4j.LoggerFactory
 
 import scala.collection.GenIterable
 import scala.collection.parallel.ExecutionContextTaskSupport
 import scala.concurrent.ExecutionContext
 
 case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContext) extends Solver {
-
-  private val log = LoggerFactory.getLogger("SolverImpl")
 
   private var _cancelled = false
 

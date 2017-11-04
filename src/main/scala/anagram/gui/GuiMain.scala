@@ -36,9 +36,8 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
   def getStartAction: Action = new AbstractAction() {
 
     override def actionPerformed(e: ActionEvent): Unit = {
-      log.info("[actionPerformed] start")
       if (service.isDefined) {
-        println("[actionPerformed] already started")
+        log.info("[actionPerformed] already started")
       } else {
         _cancelable = Seq.empty[Cancelable]
         val es = createDefaultExecutorService
@@ -78,9 +77,9 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
     override def actionPerformed(e: ActionEvent): Unit = {
       if (service.isDefined) {
         shutdown()
-        setStateDoc(s"canceled $getText. $cnt anagrams")
+        setStateDoc(s"canceled. $cnt anagrams")
       } else {
-        println("not started")
+        log.info("not started")
       }
     }
   }
@@ -136,13 +135,12 @@ class Content(listModel: ListModel[String], txtDoc: Document, stateDoc: Document
 
   def createCommandColumn: JComponent = {
     val cont = new JPanel()
-    //cont.setBackground(Color.YELLOW)
     cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS))
     cont.add(createButtonsPanel)
     cont.add(createTextField(txtDoc))
     cont.add(createCountTextField(stateDoc))
     cont.add(createFillPanel())
-    cont.setPreferredSize(new Dimension(250, Int.MaxValue))
+    cont.setPreferredSize(new Dimension(300, Int.MaxValue))
     cont
   }
 
@@ -158,6 +156,14 @@ class Content(listModel: ListModel[String], txtDoc: Document, stateDoc: Document
     re.setLayout(new FlowLayout())
     re.add(createStartButton)
     re.add(createStopButton)
+    re.add(createMorphButton)
+    re
+  }
+
+  def createMorphButton: Component = {
+    val re = new JButton()
+//    re.setAction(startAction)
+    re.setText("morph")
     re
   }
 

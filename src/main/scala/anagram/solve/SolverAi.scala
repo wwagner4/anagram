@@ -84,6 +84,7 @@ object WordLists {
 class SolverAi(cfg: CfgSolverAi)(implicit ec: ExecutionContext) extends Solver {
 
   val rater: Rater = new RaterAi(cfg.id, cfg.mapper, cfg.adjustOutput, None)
+  //val rater: Rater = new RaterRandom
   val baseSolver = SolverImpl(maxDepth = 4, parallel = 5)
   val aiSolver = SolverRating(baseSolver, rater)
 

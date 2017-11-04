@@ -75,7 +75,7 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
 
 
     val _ratingNN = rateNN
-    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.001)
+    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.005)
 
     adjustOutputValues(sent.size, _ratingNN + _ratingCommoWords)
 
