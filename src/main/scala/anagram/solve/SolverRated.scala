@@ -2,7 +2,7 @@ package anagram.solve
 
 import anagram.words.Word
 
-case class SolverRating(parentSolver: Solver, rater: Rater) extends Solver {
+case class SolverRated(parentSolver: Solver, rater: Rater) extends Solver {
 
   override def solve(srcText: String, wordlist: Iterable[Word]): Iterator[Ana] = {
     parentSolver.solve(srcText, wordlist)

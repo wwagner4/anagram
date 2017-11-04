@@ -1,6 +1,7 @@
 package anagram.solve
 
 import anagram.common.IoUtil
+import anagram.gui.SolverFactoryPlain
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
@@ -44,12 +45,14 @@ object SolverMain extends App {
 
   val idSolving: String = "01"
   val srcTexts = srcTextsMedium
-  val cfg = SolverAiCfgs.cfgPlain
+  val cfg = RaterAiCfgs.cfgPlain
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
-    val anagrams: Iterator[Ana] = new SolverAi(cfg).solve(srcText, WordLists.wordListIgnoring)
+    val rater = new RaterAi(cfg)
+    val baseSolver = SolverFactoryPlain().createSolver
+    val anagrams: Iterator[Ana] = SolverRated(baseSolver, rater).solve(srcText, WordLists.wordListIgnoring)
     //outWriteToFile(anagrams, srcText)
     outIter(anagrams, srcText)
   }

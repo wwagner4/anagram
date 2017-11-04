@@ -32,7 +32,7 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
       else {
         if (depth >= maxDepth) Iterable.empty[List[String]]
         else {
-          val mws =
+          val matchingWords =
             if (depth >= 1) {
               Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
             }
@@ -45,8 +45,8 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
               mwsp.tasksupport = ts
               mwsp
             }
-          //println(s"-- $depth :$txtSorted: - ${mws.mkString(" ")}")
-          mws.flatMap(_.flatMap { mw =>
+          //println(s"-- $depth :$txtSorted: - ${matchingWords.mkString(" ")}")
+          matchingWords.flatMap(_.flatMap { mw =>
             val restText = removeChars(txt, mw.toList)
             val subAnas = solve1(restText, depth + 1, words, anaCache)
             if (restText.isEmpty && subAnas.isEmpty) {

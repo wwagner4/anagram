@@ -4,7 +4,7 @@ import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.data.{BookCollections, BookSplitterTxt}
-import anagram.words.WordMapper
+import anagram.words.{WordMapper, WordMappers}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -22,6 +22,38 @@ class RaterRandom extends Rater {
     Random.nextDouble() * 10
   }
 
+  override def toString: String = "Rater random"
+}
+
+case class RaterAiCfg(
+                       id: String,
+                       mapper: WordMapper,
+                       adjustOutput: (Int, Double) => Double,
+                     ) {
+  def description: String = s"$id"
+}
+
+
+object RaterAiCfgs {
+
+  private def adjustOutputPlain(len: Int, rating: Double): Double = {
+    if (len == 1) rating + 5 // Anagram existing of one word must always be top
+    else if (len == 2) rating + 3.9
+    else if (len == 3) rating + 1.5
+    else if (len == 4) rating + 1.2
+    else rating
+  }
+
+  private def adjustOutputGrammar(len: Int, rating: Double): Double = {
+    if (len == 1) rating + 5 // Anagram existing of one word must always be top
+    else if (len == 2) rating + 0.2
+    else rating
+  }
+
+  val cfgPlain = RaterAiCfg("enPlain11", WordMappers.createWordMapperPlain, adjustOutputPlain)
+  val cfgGrm = RaterAiCfg("enGrm11", WordMappers.createWordMapperGrammer, adjustOutputGrammar)
+
+
 }
 
 class RaterNone extends Rater {
@@ -30,9 +62,10 @@ class RaterNone extends Rater {
     1.0
   }
 
+  override def toString: String = "Rater none"
 }
 
-class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Double) => Double, logInterval: Option[Int] = Some(1000)) extends Rater {
+class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Rater {
 
   private val log = LoggerFactory.getLogger("RaterAi")
 
@@ -42,13 +75,13 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
 
   var cnt = 0
 
-  override def toString: String = s"Rater AI data:$dataId"
+  override def toString: String = s"Rater AI data:${cfg.id}"
 
-  private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(dataId)
+  private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(cfg.id)
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
 
-  require(nnMap.nonEmpty, s"Found no NNs for dataId: '$dataId'")
+  require(nnMap.nonEmpty, s"Found no NNs for dataId: '${cfg.id}'")
 
   def rate(sent: Iterable[String]): Double = {
     if (sent.size <= 1) 1.0
@@ -56,7 +89,7 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
     else {
       nnMap.get(sent.size)
         .map(rate(_, sent))
-        .getOrElse(throw new IllegalStateException(s"Found no NN for dataId $dataId and sentence size ${sent.size}"))
+        .getOrElse(throw new IllegalStateException(s"Found no NN for dataId ${cfg.id} and sentence size ${sent.size}"))
     }
   }
 
@@ -68,8 +101,8 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
 
     def rateNN = {
       val input: Array[Double] = sent
-        .map(wordmap.group)
-        .map(wordmap.toNum(_).toDouble)
+        .map(cfg.mapper.group)
+        .map(cfg.mapper.toNum(_).toDouble)
         .toArray
       val out = nn.output(Nd4j.create(input))
       out.getDouble(0)
@@ -79,7 +112,7 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
     val _ratingNN = rateNN
     val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.005)
 
-    adjustOutputValues(sent.size, _ratingNN + _ratingCommoWords)
+    cfg.adjustOutput(sent.size, _ratingNN + _ratingCommoWords)
 
   }
 

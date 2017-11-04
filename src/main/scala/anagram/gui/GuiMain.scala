@@ -20,12 +20,23 @@ import scala.util.{Failure, Success}
 object GuiMain extends App {
 
   val solverFactoryPlain = SolverFactoryPlain()
-  val solverFactoryAiPlain = SolverFactoryAi(SolverAiCfgs.cfgPlain)
-  val solverFactoryAiGrm = SolverFactoryAi(SolverAiCfgs.cfgGrm)
 
-  val solverFactory: SolverFactory = solverFactoryAiGrm
+  val solverFactoryRatedAiPlain = {
+    val rater = new RaterAi(RaterAiCfgs.cfgPlain)
+    SolverFactoryRated(SolverFactoryPlain(), rater)
+  }
 
+  val solverFactoryRatedRandom = {
+    val rater = new RaterRandom
+    SolverFactoryRated(SolverFactoryPlain(), rater)
+  }
 
+  val solverFactoryRatedAiGrm = {
+    val rater = new RaterAi(RaterAiCfgs.cfgGrm)
+    SolverFactoryRated(SolverFactoryPlain(), rater)
+  }
+
+  val solverFactory: SolverFactory = solverFactoryRatedAiGrm
 
 
   val listModel = new DefaultListModel[String]
@@ -50,13 +61,13 @@ object GuiMain extends App {
 }
 
 case class Controller(
-                  solverFactory: SolverFactory,
-                  listModel: DefaultListModel[String],
-                  listSelectionModel: DefaultListSelectionModel,
-                  textDoc: PlainDocument,
-                  stateDoc: PlainDocument,
-                  infoDoc: PlainDocument,
-                ) {
+                       solverFactory: SolverFactory,
+                       listModel: DefaultListModel[String],
+                       listSelectionModel: DefaultListSelectionModel,
+                       textDoc: PlainDocument,
+                       stateDoc: PlainDocument,
+                       infoDoc: PlainDocument,
+                     ) {
 
   case class Services(
                        executorService: ExecutorService,
@@ -189,7 +200,6 @@ case class Controller(
   }
 
   def shutdown(): Unit = {
-    _cancelable.foreach(_.cancel())
     service.foreach(s => while (!s.executorService.isShutdown) {
       s.executorService.shutdownNow()
     })
@@ -359,10 +369,12 @@ case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends Solv
 
 }
 
-case class SolverFactoryAi(cfgAiSolver: SolverAiCfg) extends SolverFactory {
+case class SolverFactoryRated(solverFactory: SolverFactory, rater: Rater) extends SolverFactory {
 
-  def createSolver(implicit ec: ExecutionContextExecutor): Solver = new SolverAi(cfgAiSolver)
+  def createSolver(implicit ec: ExecutionContextExecutor): Solver = {
+    SolverRated(solverFactory.createSolver, rater)
+  }
 
-  def solverDescription: String = s"Solver AI with configurtaion ${cfgAiSolver.description}"
+  def solverDescription: String = s"Solver rated with: $rater. Base solver: ${solverFactory.solverDescription}"
 
 }
