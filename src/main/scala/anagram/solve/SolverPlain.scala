@@ -6,7 +6,7 @@ import scala.collection.GenIterable
 import scala.collection.parallel.ExecutionContextTaskSupport
 import scala.concurrent.ExecutionContext
 
-case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContext) extends Solver {
+case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContext) extends Solver {
 
   private var _cancelled = false
 
@@ -18,6 +18,8 @@ case class SolverImpl(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContex
   }
 
   override def cancel(): Unit = _cancelled = true
+
+  override def toString: String = "Plain (no rating of results)"
 
   def solve1(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
     if (_cancelled) Iterable.empty[List[String]]

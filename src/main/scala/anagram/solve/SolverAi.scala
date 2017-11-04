@@ -85,8 +85,10 @@ class SolverAi(cfg: CfgSolverAi)(implicit ec: ExecutionContext) extends Solver {
 
   val rater: Rater = new RaterAi(cfg.id, cfg.mapper, cfg.adjustOutput, None)
   //val rater: Rater = new RaterRandom
-  val baseSolver = SolverImpl(maxDepth = 4, parallel = 5)
+  val baseSolver = SolverPlain(maxDepth = 4, parallel = 5)
   val aiSolver = SolverRating(baseSolver, rater)
+  override def toString: String = s"Rated with $rater"
+
 
   override def solve(srcText: String, wordlist: Iterable[Word]): Iterator[Ana] = {
     aiSolver.solve(srcText, wordlist)

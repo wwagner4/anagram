@@ -42,6 +42,8 @@ class RaterAi(dataId: String, wordmap: WordMapper, adjustOutputValues: (Int, Dou
 
   var cnt = 0
 
+  override def toString: String = s"Rater AI data:$dataId"
+
   private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(dataId)
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
