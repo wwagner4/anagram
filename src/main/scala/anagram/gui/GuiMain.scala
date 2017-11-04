@@ -6,7 +6,6 @@ import java.nio.file.{Files, Path}
 import java.util.concurrent._
 import javax.swing._
 import javax.swing.border.Border
-import javax.swing.plaf.FontUIResource
 import javax.swing.text._
 
 import anagram.common.{Cancelable, IoUtil}
@@ -20,6 +19,15 @@ import scala.util.{Failure, Success}
 
 object GuiMain extends App {
 
+  val solverFactoryPlain = SolverFactoryPlain()
+  val solverFactoryAiPlain = SolverFactoryAi(SolverAiCfgs.cfgPlain)
+  val solverFactoryAiGrm = SolverFactoryAi(SolverAiCfgs.cfgGrm)
+
+  val solverFactory: SolverFactory = solverFactoryAiGrm
+
+
+
+
   val listModel = new DefaultListModel[String]
   val listSelectionModel = {
     val lsm = new DefaultListSelectionModel
@@ -27,38 +35,28 @@ object GuiMain extends App {
     lsm
   }
   val textDoc = new PlainDocument()
-  val stateDoc = {
-    val doc = new PlainDocument()
-    doc
-  }
+  val infoDoc = new PlainDocument()
+  val stateDoc = new PlainDocument()
 
-  val ctrl = new Controller(listModel, listSelectionModel, textDoc, stateDoc)
+  val ctrl = Controller(solverFactory, listModel, listSelectionModel, textDoc, stateDoc, infoDoc)
 
   //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel")
-  //setUiFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, 10))
-  new Frame(listModel, listSelectionModel, textDoc, stateDoc, ctrl.getStartAction, ctrl.getStopAction, ctrl.getMorphAction).setVisible(true)
+  new Frame(
+    listModel, listSelectionModel,
+    textDoc, stateDoc, infoDoc,
+    ctrl.getStartAction, ctrl.getStopAction, ctrl.getMorphAction
+  ).setVisible(true)
 
-  import collection.JavaConverters._
-
-  def setUiFont(fontResource: FontUIResource): Unit = {
-    println("setUoFont")
-    val d: Iterator[AnyRef] = UIManager.getDefaults.keys().asScala
-    println(s"setUoFont $d")
-    for (key <- d.toStream) {
-      println(s"has $key")
-      val value = UIManager.get(key)
-      if (value.isInstanceOf[javax.swing.plaf.FontUIResource])
-        println(s"changed $key")
-        UIManager.put(key, fontResource)
-    }
-  }
 }
 
-class Controller(
-                  val listModel: DefaultListModel[String],
-                  val listSelectionModel: DefaultListSelectionModel,
-                  val textDoc: PlainDocument,
-                  val stateDoc: PlainDocument) {
+case class Controller(
+                  solverFactory: SolverFactory,
+                  listModel: DefaultListModel[String],
+                  listSelectionModel: DefaultListSelectionModel,
+                  textDoc: PlainDocument,
+                  stateDoc: PlainDocument,
+                  infoDoc: PlainDocument,
+                ) {
 
   case class Services(
                        executorService: ExecutorService,
@@ -67,11 +65,14 @@ class Controller(
 
   private val log = LoggerFactory.getLogger("Controller")
 
+  setInfoDoc(solverFactory.solverDescription)
+
   var service = Option.empty[Services]
 
   var cnt = 0
 
   var _cancelable = Seq.empty[Cancelable]
+
 
   def getStartAction: Action = new AbstractAction() {
 
@@ -123,7 +124,7 @@ class Controller(
           val ana = selectedAnagram.get
           setStateDoc(s"morphing $ana")
           val _outFile = outFile(src, ana)
-          background((ec: ExecutionContextExecutor) => {
+          background((_: ExecutionContextExecutor) => {
             val morpher = AnagramMorph.anagramMorphLinear
             val justifier = Justify.justifyDefault
             val lines = morpher.morph(src, ana, calcLines(src))
@@ -196,8 +197,7 @@ class Controller(
   }
 
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
-    val cfg = CfgSolverAis.cfgGrm
-    val solver = new SolverAi(cfg)
+    val solver = solverFactory.createSolver(ec)
     _cancelable :+= solver
     val anas: Iterator[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
     log.info(s"[solve] after solver.solve")
@@ -211,6 +211,11 @@ class Controller(
   def setStateDoc(text: String): Unit = {
     stateDoc.remove(0, stateDoc.getLength)
     stateDoc.insertString(0, text, null)
+  }
+
+  def setInfoDoc(text: String): Unit = {
+    infoDoc.remove(0, stateDoc.getLength)
+    infoDoc.insertString(0, text, null)
   }
 
   def fillListModel(values: Iterable[String]): Unit = {
@@ -233,6 +238,7 @@ class Frame(
              listSelectionModel: ListSelectionModel,
              textDoc: Document,
              stateDoc: Document,
+             infoDoc: Document,
              startAction: Action,
              stopAction: Action,
              morphAction: Action,
@@ -258,6 +264,7 @@ class Frame(
       cont.add(createMorphButton, "grow, wrap")
       cont.add(createTextField(textDoc), "span 3, grow, wrap")
       cont.add(createStatText(stateDoc), "height 150!, span 3, grow, wrap")
+      cont.add(createInfoText(infoDoc), "height 150!, span 3, grow, wrap")
       cont
     }
 
@@ -269,6 +276,16 @@ class Frame(
     }
 
     def createStatText(stateDoc: Document): Component = {
+      val txt = new JTextArea()
+      txt.setDocument(stateDoc)
+      txt.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3))
+      txt.setEditable(false)
+      txt.setLineWrap(true)
+      txt.setBackground(new Color(240, 240, 240))
+      txt
+    }
+
+    def createInfoText(stateDoc: Document): Component = {
       val txt = new JTextArea()
       txt.setDocument(stateDoc)
       txt.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3))
@@ -325,3 +342,27 @@ class Frame(
 
 }
 
+trait SolverFactory {
+
+  def createSolver(implicit ec: ExecutionContextExecutor): Solver
+
+  def solverDescription: String
+
+}
+
+
+case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends SolverFactory {
+
+  def createSolver(implicit ec: ExecutionContextExecutor): Solver = SolverPlain(maxDepth, parallel)
+
+  def solverDescription: String = s"Solver plain maxDepth:$maxDepth parallel:$parallel"
+
+}
+
+case class SolverFactoryAi(cfgAiSolver: SolverAiCfg) extends SolverFactory {
+
+  def createSolver(implicit ec: ExecutionContextExecutor): Solver = new SolverAi(cfgAiSolver)
+
+  def solverDescription: String = s"Solver AI with configurtaion ${cfgAiSolver.description}"
+
+}

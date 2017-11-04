@@ -19,7 +19,7 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
 
   override def cancel(): Unit = _cancelled = true
 
-  override def toString: String = "Plain (no rating of results)"
+  override def toString: String = s"Plain MaxDepth:$maxDepth paralell:$parallel"
 
   def solve1(txt: String, depth: Int, words: List[Word], anaCache: AnaCache): GenIterable[List[String]] = {
     if (_cancelled) Iterable.empty[List[String]]

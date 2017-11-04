@@ -1,16 +1,9 @@
 package anagram.solve
 
 import anagram.common.IoUtil
-import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
-
-case class CfgAiSolver(
-                        id: String,
-                        mapper: WordMapper,
-                        adjustOutput: (Int, Double) => Double,
-                      )
 
 object SolverMain extends App {
 
@@ -51,7 +44,7 @@ object SolverMain extends App {
 
   val idSolving: String = "01"
   val srcTexts = srcTextsMedium
-  val cfg = CfgSolverAis.cfgPlain
+  val cfg = SolverAiCfgs.cfgPlain
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")

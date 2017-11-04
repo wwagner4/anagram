@@ -3,13 +3,16 @@ import anagram.words.{Word, WordMapper, WordMappers}
 
 import scala.concurrent.ExecutionContext
 
-case class CfgSolverAi(
+case class SolverAiCfg(
                         id: String,
                         mapper: WordMapper,
                         adjustOutput: (Int, Double) => Double,
-                      )
+                      ) {
+  def description: String = s"$id"
+}
 
-object CfgSolverAis {
+
+object SolverAiCfgs {
 
   private def adjustOutputPlain(len: Int, rating: Double): Double = {
     if (len == 1) rating + 5 // Anagram existing of one word must always be top
@@ -25,8 +28,8 @@ object CfgSolverAis {
     else rating
   }
 
-  val cfgPlain = CfgSolverAi("enPlain11", WordMappers.createWordMapperPlain, adjustOutputPlain)
-  val cfgGrm = CfgSolverAi("enGrm11", WordMappers.createWordMapperGrammer, adjustOutputGrammar)
+  val cfgPlain = SolverAiCfg("enPlain11", WordMappers.createWordMapperPlain, adjustOutputPlain)
+  val cfgGrm = SolverAiCfg("enGrm11", WordMappers.createWordMapperGrammer, adjustOutputGrammar)
 
 
 }
@@ -71,6 +74,7 @@ object WordLists {
       "din",
       "led",
       "etc",
+      "cia",
     ).toSet
 
     WordMappers.createWordMapperPlain
@@ -81,7 +85,7 @@ object WordLists {
 }
 
 
-class SolverAi(cfg: CfgSolverAi)(implicit ec: ExecutionContext) extends Solver {
+class SolverAi(cfg: SolverAiCfg)(implicit ec: ExecutionContext) extends Solver {
 
   val rater: Rater = new RaterAi(cfg.id, cfg.mapper, cfg.adjustOutput, None)
   //val rater: Rater = new RaterRandom
