@@ -5,11 +5,14 @@ import java.awt.event.ActionEvent
 import java.nio.file.{Files, Path}
 import java.util.concurrent._
 import javax.swing._
+import javax.swing.border.Border
+import javax.swing.plaf.FontUIResource
 import javax.swing.text._
 
 import anagram.common.{Cancelable, IoUtil}
 import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
+import net.miginfocom.swing.MigLayout
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
@@ -31,7 +34,24 @@ object GuiMain extends App {
 
   val ctrl = new Controller(listModel, listSelectionModel, textDoc, stateDoc)
 
+  //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel")
+  //setUiFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, 10))
   new Frame(listModel, listSelectionModel, textDoc, stateDoc, ctrl.getStartAction, ctrl.getStopAction, ctrl.getMorphAction).setVisible(true)
+
+  import collection.JavaConverters._
+
+  def setUiFont(fontResource: FontUIResource): Unit = {
+    println("setUoFont")
+    val d: Iterator[AnyRef] = UIManager.getDefaults.keys().asScala
+    println(s"setUoFont $d")
+    for (key <- d.toStream) {
+      println(s"has $key")
+      val value = UIManager.get(key)
+      if (value.isInstanceOf[javax.swing.plaf.FontUIResource])
+        println(s"changed $key")
+        UIManager.put(key, fontResource)
+    }
+  }
 }
 
 class Controller(
@@ -59,7 +79,7 @@ class Controller(
       if (service.isDefined) {
         log.info("[actionPerformed] already started")
       } else {
-        background( (ec: ExecutionContextExecutor) => {
+        background((ec: ExecutionContextExecutor) => {
           cnt = 0
           setStateDoc(s"solving $getText")
           fillListModel(Seq.empty[String])
@@ -98,28 +118,28 @@ class Controller(
       if (service.isDefined) {
         log.info("cannot create a morph image while solving.")
       } else {
-          if (selectedAnagram.isDefined) {
-            val src = getText
-            val ana = selectedAnagram.get
-            setStateDoc(s"morphing $ana")
-            val _outFile = outFile(src, ana)
-            background( (ec: ExecutionContextExecutor) => {
-              val morpher = AnagramMorph.anagramMorphLinear
-              val justifier = Justify.justifyDefault
-              val lines = morpher.morph(src, ana, calcLines(src))
-              justifier.writePng(lines, _outFile.toFile, 400)
-              setStateDoc(s"morphed $ana")
-              log.info(s"writing morph image to ${_outFile}")
-            }, () => {
-              setStateDoc(s"wrote morph image to ${_outFile}")
-            })
-          } else {
-            setStateDoc(s"no anagram selected")
-          }
+        if (selectedAnagram.isDefined) {
+          val src = getText
+          val ana = selectedAnagram.get
+          setStateDoc(s"morphing $ana")
+          val _outFile = outFile(src, ana)
+          background((ec: ExecutionContextExecutor) => {
+            val morpher = AnagramMorph.anagramMorphLinear
+            val justifier = Justify.justifyDefault
+            val lines = morpher.morph(src, ana, calcLines(src))
+            justifier.writePng(lines, _outFile.toFile, 400)
+            setStateDoc(s"morphed $ana")
+            log.info(s"writing morph image to ${_outFile}")
+          }, () => {
+            setStateDoc(s"wrote morph image to ${_outFile}")
+          })
+        } else {
+          setStateDoc(s"no anagram selected")
+        }
       }
     }
 
-    def calcLines(txt: String): Int = txt.length
+    def calcLines(txt: String): Int = (txt.length * 0.7).toInt
 
     def outFile(src: String, ana: String): Path = {
       val workDir = IoUtil.getCreateWorkDir
@@ -181,7 +201,7 @@ class Controller(
     _cancelable :+= solver
     val anas: Iterator[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
     log.info(s"[solve] after solver.solve")
-    val  inst = SolverIter.instance(anas, 500)
+    val inst = SolverIter.instance(anas, 500)
     _cancelable :+= inst
     inst
   }
@@ -218,7 +238,7 @@ class Frame(
              morphAction: Action,
            ) extends JFrame {
   setSize(500, 600)
-  setTitle("anagram creater")
+  setTitle("anagram creator")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content)
 
@@ -232,21 +252,36 @@ class Frame(
 
 
     def createCommandColumn: JComponent = {
-      val cont = new JPanel()
-      cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS))
-      cont.add(createButtonsPanel)
-      cont.add(createTextField(textDoc))
-      cont.add(createStatText(stateDoc))
-      cont.add(createFillPanel())
-      cont.setPreferredSize(new Dimension(300, Int.MaxValue))
+      val cont = new JPanel(new MigLayout("width 300!", "5[grow]5[grow]5[grow]5"))
+      cont.add(createStartButton, "grow")
+      cont.add(createStopButton, "grow")
+      cont.add(createMorphButton, "grow, wrap")
+      cont.add(createTextField(textDoc), "span 3, grow, wrap")
+      cont.add(createStatText(stateDoc), "height 150!, span 3, grow, wrap")
       cont
+    }
+
+    def createTextField(doc: Document): Component = {
+      val txt = new JTextField()
+      txt.setBorder(createTxtBorder)
+      txt.setDocument(doc)
+      txt
     }
 
     def createStatText(stateDoc: Document): Component = {
       val txt = new JTextArea()
       txt.setDocument(stateDoc)
+      txt.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3))
       txt.setEditable(false)
+      txt.setLineWrap(true)
+      txt.setBackground(new Color(240, 240, 240))
       txt
+    }
+
+    def createTxtBorder: Border = {
+      val out = BorderFactory.createEtchedBorder()
+      val inner = BorderFactory.createEmptyBorder(3, 3, 3, 3)
+      BorderFactory.createCompoundBorder(out, inner)
     }
 
     def createButtonsPanel: Component = {
@@ -276,19 +311,6 @@ class Frame(
       val re = new JButton()
       re.setAction(stopAction)
       re.setText("stop")
-      re
-    }
-
-
-    def createTextField(doc: Document): Component = {
-      val re = new JTextField()
-      re.setDocument(doc)
-      re
-    }
-
-    def createFillPanel(): Component = {
-      val re = new JPanel()
-      re.setPreferredSize(new Dimension(1, Int.MaxValue))
       re
     }
 

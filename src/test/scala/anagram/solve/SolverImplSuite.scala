@@ -15,7 +15,7 @@ class SolverImplSuite extends FunSuite with MustMatchers {
       "as",
       "togo",
       "go",
-      "r",
+      "fontResource",
     ).map(toWord)
 
     val anas = SolverImpl(4, 2).solve("Oast ogr", wordlist).toStream
@@ -24,12 +24,12 @@ class SolverImplSuite extends FunSuite with MustMatchers {
 
     val strAnas = anas.map(sent => sent.sentence.mkString(" "))
 
-    strAnas must contain("as togo r")
-    strAnas must contain("as r togo")
-    strAnas must contain("togo as r")
-    strAnas must contain("togo r as")
-    strAnas must contain("r as togo")
-    strAnas must contain("r togo as")
+    strAnas must contain("as togo fontResource")
+    strAnas must contain("as fontResource togo")
+    strAnas must contain("togo as fontResource")
+    strAnas must contain("togo fontResource as")
+    strAnas must contain("fontResource as togo")
+    strAnas must contain("fontResource togo as")
 
   }
 
