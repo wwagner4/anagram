@@ -20,7 +20,7 @@ object GuiMain extends App {
   val stateDoc = new PlainDocument()
   val ctrl = new Controller(listModel, textDoc, stateDoc)
 
-  new Frame(listModel, textDoc, stateDoc, ctrl.getStartAction, ctrl.getStopAction).setVisible(true)
+  new Frame(listModel, textDoc, stateDoc, ctrl.getStartAction, ctrl.getStopAction, ctrl.getMorphAction).setVisible(true)
 }
 
 class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocument, val stateDoc: PlainDocument) {
@@ -84,6 +84,17 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
     }
   }
 
+  def getMorphAction: Action = new AbstractAction() {
+
+    override def actionPerformed(e: ActionEvent): Unit = {
+      if (service.isDefined) {
+        log.info("cannot create a morph image while solving.")
+      } else {
+        setStateDoc(s"morphing")
+      }
+    }
+  }
+
   def shutdown(): Unit = {
     _cancelable.foreach(_.cancel())
     service.foreach(s => while (!s.isShutdown) {
@@ -124,7 +135,10 @@ class Controller(val listModel: DefaultListModel[String], val textDoc: PlainDocu
 
 }
 
-class Content(listModel: ListModel[String], txtDoc: Document, stateDoc: Document, startAction: Action, stopAction: Action) extends JPanel {
+class Content(
+               listModel: ListModel[String],
+               txtDoc: Document, stateDoc: Document,
+               startAction: Action, stopAction: Action, morphAction: Action) extends JPanel {
 
   //setBackground(Color.GREEN)
   setLayout(new BorderLayout())
@@ -162,7 +176,7 @@ class Content(listModel: ListModel[String], txtDoc: Document, stateDoc: Document
 
   def createMorphButton: Component = {
     val re = new JButton()
-//    re.setAction(startAction)
+    re.setAction(morphAction)
     re.setText("morph")
     re
   }
@@ -203,10 +217,17 @@ class Content(listModel: ListModel[String], txtDoc: Document, stateDoc: Document
 }
 
 
-class Frame(listModel: ListModel[String], textDoc: Document, stateDoc: Document, startAction: Action, stopAction: Action) extends JFrame {
+class Frame(
+             listModel: ListModel[String],
+             textDoc: Document,
+             stateDoc: Document,
+             startAction: Action,
+             stopAction: Action,
+             morphAction: Action,
+           ) extends JFrame {
   setSize(500, 600)
   setTitle("anagram creater")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-  setContentPane(new Content(listModel, textDoc, stateDoc, startAction, stopAction))
+  setContentPane(new Content(listModel, textDoc, stateDoc, startAction, stopAction, morphAction))
 }
 
