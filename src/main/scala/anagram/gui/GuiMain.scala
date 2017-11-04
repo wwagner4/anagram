@@ -8,6 +8,7 @@ import javax.swing._
 import javax.swing.text._
 
 import anagram.common.{Cancelable, IoUtil}
+import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
 import org.slf4j.LoggerFactory
 
@@ -23,7 +24,10 @@ object GuiMain extends App {
     lsm
   }
   val textDoc = new PlainDocument()
-  val stateDoc = new PlainDocument()
+  val stateDoc = {
+    val doc = new PlainDocument()
+    doc
+  }
 
   val ctrl = new Controller(listModel, listSelectionModel, textDoc, stateDoc)
 
@@ -36,9 +40,14 @@ class Controller(
                   val textDoc: PlainDocument,
                   val stateDoc: PlainDocument) {
 
+  case class Services(
+                       executorService: ExecutorService,
+                       executionContextExecutor: ExecutionContextExecutor,
+                     )
+
   private val log = LoggerFactory.getLogger("Controller")
 
-  var service = Option.empty[ExecutorService]
+  var service = Option.empty[Services]
 
   var cnt = 0
 
@@ -50,15 +59,11 @@ class Controller(
       if (service.isDefined) {
         log.info("[actionPerformed] already started")
       } else {
-        _cancelable = Seq.empty[Cancelable]
-        val es = createDefaultExecutorService
-        implicit val ec: ExecutionContextExecutor = ExecutionContext.fromExecutorService(es)
-        service = Some(es)
-        val future = Future {
+        background( (ec: ExecutionContextExecutor) => {
           cnt = 0
           setStateDoc(s"solving $getText")
           fillListModel(Seq.empty[String])
-          val siter = solve(getText)
+          val siter = solve(getText)(ec)
           for (anas <- siter.toStream) {
             SwingUtilities.invokeAndWait { () =>
               val sentences = anas.map(ana => ana.sentence.mkString(" "))
@@ -68,17 +73,9 @@ class Controller(
             }
             Thread.sleep(500)
           }
-        }
-        future.onComplete {
-          case Success(_) =>
-            shutdown()
-            setStateDoc(s"solved. $cnt anagrams")
-          case Failure(ex) =>
-            shutdown()
-            val msg = ex.getMessage
-            setStateDoc(msg)
-            log.error(s"Error: $msg", e)
-        }
+        }, () => {
+          setStateDoc(s"solved. $cnt anagrams")
+        })
       }
     }
   }
@@ -101,27 +98,45 @@ class Controller(
       if (service.isDefined) {
         log.info("cannot create a morph image while solving.")
       } else {
-        if (selectedAnagram.isDefined) {
-          val src = getText
-          val  ana = selectedAnagram.get
-          setStateDoc(s"morphing $ana")
-          val _outFile = outFile(src, ana)
-          log.info(s"writing morph image to ${_outFile}")
-        } else {
-          setStateDoc(s"no anagram selected")
-        }
+          if (selectedAnagram.isDefined) {
+            val src = getText
+            val ana = selectedAnagram.get
+            setStateDoc(s"morphing $ana")
+            val _outFile = outFile(src, ana)
+            background( (ec: ExecutionContextExecutor) => {
+              val morpher = AnagramMorph.anagramMorphLinear
+              val justifier = Justify.justifyDefault
+              val lines = morpher.morph(src, ana, calcLines(src))
+              justifier.writePng(lines, _outFile.toFile, 400)
+              setStateDoc(s"morphed $ana")
+              log.info(s"writing morph image to ${_outFile}")
+            }, () => {
+              setStateDoc(s"wrote morph image to ${_outFile}")
+            })
+          } else {
+            setStateDoc(s"no anagram selected")
+          }
       }
     }
+
+    def calcLines(txt: String): Int = txt.length
+
+    def outFile(src: String, ana: String): Path = {
+      val workDir = IoUtil.getCreateWorkDir
+      val imageDir = workDir.resolve("morph")
+      if (!Files.exists(imageDir)) Files.createDirectories(imageDir)
+      val src1 = src.replaceAll("\\s", "_")
+      val ana1 = ana.replaceAll("\\s", "_")
+      val filename = s"anamorph_${src1}_$ana1.png"
+      imageDir.resolve(filename)
+    }
+
   }
 
-  def outFile(src: String, ana: String): Path = {
-    val workDir = IoUtil.getCreateWorkDir
-    val imageDir = workDir.resolve("morph")
-    if (!Files.exists(imageDir)) Files.createDirectories(imageDir)
-    val src1 = src.replaceAll("\\s", "_")
-    val ana1 = ana.replaceAll("\\s", "_")
-    val filename = s"anamorph_${src1}_$ana1.png"
-    imageDir.resolve(filename)
+  def createServices: Some[Services] = {
+    val es: ExecutorService = createDefaultExecutorService
+    val ec: ExecutionContextExecutor = ExecutionContext.fromExecutorService(es)
+    Some(Services(es, ec))
   }
 
   def selectedAnagram: Option[String] = {
@@ -133,12 +148,31 @@ class Controller(
     }
   }
 
+  def background(main: (ExecutionContextExecutor) => Unit, onSuccess: () => Unit): Unit = {
+    _cancelable = Seq.empty[Cancelable]
+    service = createServices
+    implicit val ec: ExecutionContextExecutor = service.get.executionContextExecutor
+    val future = Future {
+      main(ec)
+    }
+    future.onComplete {
+      case Success(_) =>
+        shutdown()
+        onSuccess()
+      case Failure(ex) =>
+        shutdown()
+        val msg = ex.getMessage
+        setStateDoc(msg)
+        log.error(s"Error: $msg", ex)
+    }
+  }
+
   def shutdown(): Unit = {
     _cancelable.foreach(_.cancel())
-    service.foreach(s => while (!s.isShutdown) {
-      s.shutdownNow()
+    service.foreach(s => while (!s.executorService.isShutdown) {
+      s.executorService.shutdownNow()
     })
-    service = Option.empty[ExecutorService]
+    service = Option.empty[Services]
   }
 
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
@@ -202,17 +236,17 @@ class Frame(
       cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS))
       cont.add(createButtonsPanel)
       cont.add(createTextField(textDoc))
-      cont.add(createCountTextField(stateDoc))
+      cont.add(createStatText(stateDoc))
       cont.add(createFillPanel())
       cont.setPreferredSize(new Dimension(300, Int.MaxValue))
       cont
     }
 
-    def createCountTextField(stateDoc: Document): Component = {
-      val re = new JTextField()
-      re.setEditable(false)
-      re.setDocument(stateDoc)
-      re
+    def createStatText(stateDoc: Document): Component = {
+      val txt = new JTextArea()
+      txt.setDocument(stateDoc)
+      txt.setEditable(false)
+      txt
     }
 
     def createButtonsPanel: Component = {
