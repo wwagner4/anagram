@@ -39,8 +39,14 @@ object GuiMain extends App {
   val solverFactory: SolverFactory = solverFactoryRatedAiGrm
 
 
-  val listModel = new DefaultListModel[String]
-  val listSelectionModel = {
+  val outListModel = new DefaultListModel[String]
+  val outListSelectionModel = {
+    val lsm = new DefaultListSelectionModel
+    lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+    lsm
+  }
+  val solverListModel = new DefaultListModel[SolverFactory]
+  val solverListSelectionModel = {
     val lsm = new DefaultListSelectionModel
     lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     lsm
@@ -49,11 +55,12 @@ object GuiMain extends App {
   val infoDoc = new PlainDocument()
   val stateDoc = new PlainDocument()
 
-  val ctrl = Controller(solverFactory, listModel, listSelectionModel, textDoc, stateDoc, infoDoc)
+  val ctrl = Controller(solverFactory, outListModel, outListSelectionModel, textDoc, stateDoc, infoDoc)
 
   //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel")
   new Frame(
-    listModel, listSelectionModel,
+    outListModel, outListSelectionModel,
+    solverListModel, solverListSelectionModel,
     textDoc, stateDoc, infoDoc,
     ctrl.getStartAction, ctrl.getStopAction, ctrl.getMorphAction
   ).setVisible(true)
@@ -245,8 +252,10 @@ case class Controller(
 
 
 class Frame(
-             listModel: ListModel[String],
-             listSelectionModel: ListSelectionModel,
+             outListModel: ListModel[String],
+             outListSelectionModel: ListSelectionModel,
+             solverListModel: ListModel[SolverFactory],
+             solverListSelectionModel: ListSelectionModel,
              textDoc: Document,
              stateDoc: Document,
              infoDoc: Document,
@@ -281,7 +290,9 @@ class Frame(
     }
 
     def createSolverFactoryList: Component = {
-      val list = new JList()
+      val list: JList[SolverFactory] = new JList[SolverFactory]()
+      list.setModel(solverListModel)
+      list.setSelectionModel(solverListSelectionModel)
       list
     }
 
@@ -342,8 +353,8 @@ class Frame(
 
     def createScrollableList: JComponent = {
       val list = new JList[String]()
-      list.setModel(listModel)
-      list.setSelectionModel(listSelectionModel)
+      list.setModel(outListModel)
+      list.setSelectionModel(outListSelectionModel)
       val re = new JScrollPane(list)
       re
     }
