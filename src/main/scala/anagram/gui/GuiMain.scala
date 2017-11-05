@@ -297,8 +297,8 @@ class Frame(
       cont.add(createMorphButton, "grow, wrap")
       cont.add(createTextField, "span 3, grow, wrap")
       cont.add(createStatText, "height 150!, span 3, grow, wrap")
+      cont.add(createSolverFactoryList, "height 130!, span 3, grow, wrap")
       cont.add(createInfoText, "height 150!, span 3, grow, wrap")
-      cont.add(createSolverFactoryList, "height 150!, span 3, grow, wrap")
       cont
     }
 
