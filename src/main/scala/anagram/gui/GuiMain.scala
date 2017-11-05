@@ -68,19 +68,22 @@ case class Controller(
 
   private val log = LoggerFactory.getLogger("Controller")
 
+  val maxDepth = 5
+  val parallel = 4
+
   Seq(
-    SolverFactoryPlain(),
+    SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel),
     {
       val rater = new RaterRandom
-      SolverFactoryRated(SolverFactoryPlain(), rater)
+      SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
     },
     {
-      val rater = new RaterAi(RaterAiCfgs.cfgPlain)
-      SolverFactoryRated(SolverFactoryPlain(), rater)
+      val rater = new RaterAi(RaterAiCfgs.cfgPlain, None)
+      SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
     },
     {
-      val rater = new RaterAi(RaterAiCfgs.cfgGrm)
-      SolverFactoryRated(SolverFactoryPlain(), rater)
+      val rater = new RaterAi(RaterAiCfgs.cfgGrm, None)
+      SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
     },
   ).foreach(solverListModel.addElement)
   solverListSelectionModel.setSelectionInterval(2, 2)
@@ -285,7 +288,7 @@ class Frame(
   class Content extends JPanel {
 
     private val fontSize = 25f
-    private val fontSizeSmall = fontSize * 0.6f
+    private val fontSizeSmall = fontSize * 0.8f
     private val listCellSize = (fontSize * 1.2).toInt
 
     setLayout(new BorderLayout())
@@ -301,14 +304,14 @@ class Frame(
       cont.add(createMorphButton, "grow, wrap")
       cont.add(createTextField, "span 3, grow, wrap")
       cont.add(createStatText, "height 150!, span 3, grow, wrap")
-      cont.add(createSolverFactoryList, "height 130!, span 3, grow, wrap")
+      cont.add(createSolverFactoryList, "height 180!, span 3, grow, wrap")
       cont.add(createInfoText, "height 150!, span 3, grow, wrap")
       cont
     }
 
     def createTextField: Component = {
       val txt = new JTextField()
-      txt.setBorder(createTxtBorder)
+      txt.setBorder(createBorder)
       txt.setDocument(textDoc)
       txt.setFont(txt.getFont.deriveFont(fontSize))
       txt
@@ -336,7 +339,7 @@ class Frame(
       txt
     }
 
-    def createTxtBorder: Border = {
+    def createBorder: Border = {
       val out = BorderFactory.createEtchedBorder()
       val inner = BorderFactory.createEmptyBorder(3, 3, 3, 3)
       BorderFactory.createCompoundBorder(out, inner)
@@ -374,12 +377,14 @@ class Frame(
       list.setFixedCellHeight(listCellSize)
       new JScrollPane(list)
     }
+
     def createSolverFactoryList: Component = {
       val list: JList[SolverFactory] = new JList[SolverFactory]()
       list.setModel(solverListModel)
       list.setSelectionModel(solverListSelectionModel)
       list.setFont(list.getFont.deriveFont(fontSize))
       list.setFixedCellHeight(listCellSize)
+      list.setBorder(createBorder)
       list
     }
   }
