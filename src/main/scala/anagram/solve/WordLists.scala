@@ -42,6 +42,11 @@ object WordLists {
       "led",
       "etc",
       "cia",
+      "lbs",
+      "blvd",
+      "bldg",
+      "dibs",
+      "dib",
     ).toSet
 
     WordMappers.createWordMapperPlain
