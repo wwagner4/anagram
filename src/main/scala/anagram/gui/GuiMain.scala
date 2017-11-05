@@ -287,7 +287,7 @@ class Frame(
     setLayout(new BorderLayout())
 
     add(createCommandColumn, BorderLayout.EAST)
-    add(createScrollableList, BorderLayout.CENTER)
+    add(createOutList, BorderLayout.CENTER)
 
 
     def createCommandColumn: JComponent = {
@@ -364,7 +364,7 @@ class Frame(
       re
     }
 
-    def createScrollableList: JComponent = {
+    def createOutList: JComponent = {
       val list = new JList[String]()
       list.setModel(outListModel)
       list.setSelectionModel(outListSelectionModel)
