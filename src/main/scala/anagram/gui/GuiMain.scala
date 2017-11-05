@@ -62,7 +62,6 @@ object GuiMain extends App {
     textDoc, stateDoc, infoDoc
   )
 
-  //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel")
   new Frame(
     outListModel, outListSelectionModel,
     solverListModel, solverListSelectionModel,
