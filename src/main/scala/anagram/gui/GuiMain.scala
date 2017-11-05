@@ -6,6 +6,7 @@ import java.nio.file.{Files, Path}
 import java.util.concurrent._
 import javax.swing._
 import javax.swing.border.Border
+import javax.swing.event.ListSelectionEvent
 import javax.swing.text._
 
 import anagram.common.{Cancelable, IoUtil}
@@ -18,26 +19,6 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success}
 
 object GuiMain extends App {
-
-  val solverFactoryPlain = SolverFactoryPlain()
-
-  val solverFactoryRatedAiPlain = {
-    val rater = new RaterAi(RaterAiCfgs.cfgPlain)
-    SolverFactoryRated(SolverFactoryPlain(), rater)
-  }
-
-  val solverFactoryRatedRandom = {
-    val rater = new RaterRandom
-    SolverFactoryRated(SolverFactoryPlain(), rater)
-  }
-
-  val solverFactoryRatedAiGrm = {
-    val rater = new RaterAi(RaterAiCfgs.cfgGrm)
-    SolverFactoryRated(SolverFactoryPlain(), rater)
-  }
-
-  val solverFactory: SolverFactory = solverFactoryRatedAiGrm
-
 
   val outListModel = new DefaultListModel[String]
   val outListSelectionModel = {
@@ -56,7 +37,6 @@ object GuiMain extends App {
   val stateDoc = new PlainDocument()
 
   val ctrl = Controller(
-    solverFactory,
     outListModel, outListSelectionModel,
     solverListModel, solverListSelectionModel,
     textDoc, stateDoc, infoDoc
@@ -72,7 +52,6 @@ object GuiMain extends App {
 }
 
 case class Controller(
-                       solverFactory: SolverFactory,
                        outListModel: DefaultListModel[String],
                        outListSelectionModel: DefaultListSelectionModel,
                        solverListModel: DefaultListModel[SolverFactory],
@@ -106,7 +85,7 @@ case class Controller(
   ).foreach(solverListModel.addElement)
   solverListSelectionModel.setSelectionInterval(2, 2)
 
-  setInfoDoc(solverFactory.solverDescription)
+  setInfoDoc(selectedSolverFactory.solverDescription)
 
   var service = Option.empty[Services]
 
@@ -114,6 +93,12 @@ case class Controller(
 
   var _cancelable = Seq.empty[Cancelable]
 
+  solverListSelectionModel.addListSelectionListener(
+    (_: ListSelectionEvent) => {
+      val idx = solverListSelectionModel.getAnchorSelectionIndex
+      val desc = solverListModel.getElementAt(idx).solverDescription
+      setInfoDoc(desc)
+    })
 
   def getStartAction: Action = new AbstractAction() {
 
@@ -238,7 +223,7 @@ case class Controller(
   }
 
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
-    val solver = solverFactory.createSolver(ec)
+    val solver = selectedSolverFactory.createSolver(ec)
     _cancelable :+= solver
     val anas: Iterator[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
     log.info(s"[solve] after solver.solve")
@@ -255,7 +240,7 @@ case class Controller(
   }
 
   def setInfoDoc(text: String): Unit = {
-    infoDoc.remove(0, stateDoc.getLength)
+    infoDoc.remove(0, infoDoc.getLength)
     infoDoc.insertString(0, text, null)
   }
 
@@ -270,6 +255,11 @@ case class Controller(
     new ForkJoinPool(4)
   }
 
+  def selectedSolverFactory: SolverFactory = {
+    require(!solverListSelectionModel.isSelectionEmpty)
+    val idx = solverListSelectionModel.getAnchorSelectionIndex
+    solverListModel.elementAt(idx)
+  }
 
 }
 
