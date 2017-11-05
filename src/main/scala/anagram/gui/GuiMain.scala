@@ -312,15 +312,6 @@ class Frame(
       BorderFactory.createCompoundBorder(out, inner)
     }
 
-    def createButtonsPanel: Component = {
-      val re = new JPanel()
-      re.setLayout(new FlowLayout())
-      re.add(createStartButton)
-      re.add(createStopButton)
-      re.add(createMorphButton)
-      re
-    }
-
     def createMorphButton: Component = {
       val re = new JButton()
       re.setAction(morphAction)
