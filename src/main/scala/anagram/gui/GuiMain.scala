@@ -92,11 +92,11 @@ case class Controller(
   Seq(
     SolverFactoryPlain(),
     {
-      val rater = new RaterAi(RaterAiCfgs.cfgPlain)
+      val rater = new RaterRandom
       SolverFactoryRated(SolverFactoryPlain(), rater)
     },
     {
-      val rater = new RaterRandom
+      val rater = new RaterAi(RaterAiCfgs.cfgPlain)
       SolverFactoryRated(SolverFactoryPlain(), rater)
     },
     {
@@ -104,7 +104,7 @@ case class Controller(
       SolverFactoryRated(SolverFactoryPlain(), rater)
     },
   ).foreach(solverListModel.addElement)
-  solverListSelectionModel.setSelectionInterval(1, 1)
+  solverListSelectionModel.setSelectionInterval(2, 2)
 
   setInfoDoc(solverFactory.solverDescription)
 
@@ -323,7 +323,7 @@ class Frame(
     def createTextField: Component = {
       val txt = new JTextField()
       txt.setBorder(createTxtBorder)
-      txt.setDocument(infoDoc)
+      txt.setDocument(textDoc)
       txt
     }
 
@@ -391,6 +391,10 @@ trait SolverFactory {
 
   def solverDescription: String
 
+  def solverShortDescription: String
+
+  override def toString: String = solverShortDescription
+
 }
 
 
@@ -399,6 +403,8 @@ case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends Solv
   def createSolver(implicit ec: ExecutionContextExecutor): Solver = SolverPlain(maxDepth, parallel)
 
   def solverDescription: String = s"Solver plain maxDepth:$maxDepth parallel:$parallel"
+
+  def solverShortDescription: String = s"PLAIN"
 
 }
 
@@ -410,4 +416,5 @@ case class SolverFactoryRated(solverFactory: SolverFactory, rater: Rater) extend
 
   def solverDescription: String = s"Solver rated with: $rater. Base solver: ${solverFactory.solverDescription}"
 
+  def solverShortDescription: String = s"RATED ${rater.shortDescription}"
 }

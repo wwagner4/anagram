@@ -14,6 +14,7 @@ import scala.util.Random
 
 trait Rater {
   def rate(sent: Iterable[String]): Double
+  def shortDescription: String
 }
 
 class RaterRandom extends Rater {
@@ -23,14 +24,17 @@ class RaterRandom extends Rater {
   }
 
   override def toString: String = "Rater random"
+
+  override def shortDescription: String = "RANDOM"
 }
 
 case class RaterAiCfg(
                        id: String,
                        mapper: WordMapper,
                        adjustOutput: (Int, Double) => Double,
-                     ) {
+                     )  {
   def description: String = s"$id"
+
 }
 
 
@@ -63,6 +67,8 @@ class RaterNone extends Rater {
   }
 
   override def toString: String = "Rater none"
+
+  override def shortDescription: String = "NONE"
 }
 
 class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Rater {
@@ -76,6 +82,8 @@ class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Ra
   var cnt = 0
 
   override def toString: String = s"Rater AI data:${cfg.id}"
+
+  override def shortDescription: String = s"AI ${cfg.id}"
 
   private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(cfg.id)
     .map(df => (df.wordLen, deserializeNn(df.path)))
