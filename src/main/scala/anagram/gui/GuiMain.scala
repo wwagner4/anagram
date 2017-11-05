@@ -276,7 +276,7 @@ class Frame(
              stopAction: Action,
              morphAction: Action,
            ) extends JFrame {
-  setSize(600, 600)
+  setSize(800, 800)
   setTitle("anagram creator")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content)
@@ -285,6 +285,7 @@ class Frame(
   class Content extends JPanel {
 
     private val fontSize = 25f
+    private val fontSizeSmall = fontSize * 0.6f
     private val listCellSize = (fontSize * 1.2).toInt
 
     setLayout(new BorderLayout())
@@ -294,7 +295,7 @@ class Frame(
 
 
     def createCommandColumn: JComponent = {
-      val cont = new JPanel(new MigLayout("width 300!", "5[grow]5[grow]5[grow]5"))
+      val cont = new JPanel(new MigLayout("width 400!", "5[grow]5[grow]5[grow]5"))
       cont.add(createStartButton, "grow")
       cont.add(createStopButton, "grow")
       cont.add(createMorphButton, "grow, wrap")
@@ -305,11 +306,11 @@ class Frame(
       cont
     }
 
-
     def createTextField: Component = {
       val txt = new JTextField()
       txt.setBorder(createTxtBorder)
       txt.setDocument(textDoc)
+      txt.setFont(txt.getFont.deriveFont(fontSize))
       txt
     }
 
@@ -320,6 +321,7 @@ class Frame(
       txt.setEditable(false)
       txt.setLineWrap(true)
       txt.setBackground(new Color(240, 240, 240))
+      txt.setFont(txt.getFont.deriveFont(fontSizeSmall))
       txt
     }
 
@@ -330,6 +332,7 @@ class Frame(
       txt.setEditable(false)
       txt.setLineWrap(true)
       txt.setBackground(new Color(240, 240, 240))
+      txt.setFont(txt.getFont.deriveFont(fontSizeSmall))
       txt
     }
 
@@ -343,6 +346,7 @@ class Frame(
       val re = new JButton()
       re.setAction(morphAction)
       re.setText("morph")
+      re.setFont(re.getFont.deriveFont(fontSize))
       re
     }
 
@@ -350,6 +354,7 @@ class Frame(
       val re = new JButton()
       re.setAction(startAction)
       re.setText("start")
+      re.setFont(re.getFont.deriveFont(fontSize))
       re
     }
 
@@ -357,6 +362,7 @@ class Frame(
       val re = new JButton()
       re.setAction(stopAction)
       re.setText("stop")
+      re.setFont(re.getFont.deriveFont(fontSize))
       re
     }
 
