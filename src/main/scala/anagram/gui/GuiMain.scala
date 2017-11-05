@@ -203,6 +203,7 @@ case class Controller(
     service.foreach(s => while (!s.executorService.isShutdown) {
       s.executorService.shutdownNow()
     })
+    _cancelable.foreach(_.cancel())
     service = Option.empty[Services]
   }
 
