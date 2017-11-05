@@ -276,13 +276,16 @@ class Frame(
              stopAction: Action,
              morphAction: Action,
            ) extends JFrame {
-  setSize(500, 600)
+  setSize(600, 600)
   setTitle("anagram creator")
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content)
 
 
   class Content extends JPanel {
+
+    private val fontSize = 25f
+    private val listCellSize = (fontSize * 1.2).toInt
 
     setLayout(new BorderLayout())
 
@@ -300,13 +303,6 @@ class Frame(
       cont.add(createSolverFactoryList, "height 130!, span 3, grow, wrap")
       cont.add(createInfoText, "height 150!, span 3, grow, wrap")
       cont
-    }
-
-    def createSolverFactoryList: Component = {
-      val list: JList[SolverFactory] = new JList[SolverFactory]()
-      list.setModel(solverListModel)
-      list.setSelectionModel(solverListSelectionModel)
-      list
     }
 
 
@@ -364,12 +360,21 @@ class Frame(
       re
     }
 
-    def createOutList: JComponent = {
+    def createOutList: Component = {
       val list = new JList[String]()
       list.setModel(outListModel)
       list.setSelectionModel(outListSelectionModel)
-      val re = new JScrollPane(list)
-      re
+      list.setFont(list.getFont.deriveFont(fontSize))
+      list.setFixedCellHeight(listCellSize)
+      new JScrollPane(list)
+    }
+    def createSolverFactoryList: Component = {
+      val list: JList[SolverFactory] = new JList[SolverFactory]()
+      list.setModel(solverListModel)
+      list.setSelectionModel(solverListSelectionModel)
+      list.setFont(list.getFont.deriveFont(fontSize))
+      list.setFixedCellHeight(listCellSize)
+      list
     }
   }
 
