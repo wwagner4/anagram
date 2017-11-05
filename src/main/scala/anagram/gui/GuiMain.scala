@@ -55,7 +55,12 @@ object GuiMain extends App {
   val infoDoc = new PlainDocument()
   val stateDoc = new PlainDocument()
 
-  val ctrl = Controller(solverFactory, outListModel, outListSelectionModel, textDoc, stateDoc, infoDoc)
+  val ctrl = Controller(
+    solverFactory,
+    outListModel, outListSelectionModel,
+    solverListModel, solverListSelectionModel,
+    textDoc, stateDoc, infoDoc
+  )
 
   //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel")
   new Frame(
@@ -69,8 +74,10 @@ object GuiMain extends App {
 
 case class Controller(
                        solverFactory: SolverFactory,
-                       listModel: DefaultListModel[String],
-                       listSelectionModel: DefaultListSelectionModel,
+                       outListModel: DefaultListModel[String],
+                       outListSelectionModel: DefaultListSelectionModel,
+                       solverListModel: DefaultListModel[SolverFactory],
+                       solverListSelectionModel: DefaultListSelectionModel,
                        textDoc: PlainDocument,
                        stateDoc: PlainDocument,
                        infoDoc: PlainDocument,
@@ -82,6 +89,23 @@ case class Controller(
                      )
 
   private val log = LoggerFactory.getLogger("Controller")
+
+  Seq(
+    SolverFactoryPlain(),
+    {
+      val rater = new RaterAi(RaterAiCfgs.cfgPlain)
+      SolverFactoryRated(SolverFactoryPlain(), rater)
+    },
+    {
+      val rater = new RaterRandom
+      SolverFactoryRated(SolverFactoryPlain(), rater)
+    },
+    {
+      val rater = new RaterAi(RaterAiCfgs.cfgGrm)
+      SolverFactoryRated(SolverFactoryPlain(), rater)
+    },
+  ).foreach(solverListModel.addElement)
+  solverListSelectionModel.setSelectionInterval(1, 1)
 
   setInfoDoc(solverFactory.solverDescription)
 
@@ -179,10 +203,10 @@ case class Controller(
   }
 
   def selectedAnagram: Option[String] = {
-    if (listSelectionModel.isSelectionEmpty) None
+    if (outListSelectionModel.isSelectionEmpty) None
     else {
-      val idx = listSelectionModel.getAnchorSelectionIndex
-      val ana = listModel.get(idx)
+      val idx = outListSelectionModel.getAnchorSelectionIndex
+      val ana = outListModel.get(idx)
       Some(ana)
     }
   }
@@ -237,9 +261,9 @@ case class Controller(
   }
 
   def fillListModel(values: Iterable[String]): Unit = {
-    listModel.removeAllElements()
+    outListModel.removeAllElements()
     for ((s, i) <- values.zipWithIndex) {
-      listModel.add(i, s)
+      outListModel.add(i, s)
     }
   }
 
