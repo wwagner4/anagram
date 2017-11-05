@@ -273,20 +273,27 @@ class Frame(
       cont.add(createStartButton, "grow")
       cont.add(createStopButton, "grow")
       cont.add(createMorphButton, "grow, wrap")
-      cont.add(createTextField(textDoc), "span 3, grow, wrap")
-      cont.add(createStatText(stateDoc), "height 150!, span 3, grow, wrap")
-      cont.add(createInfoText(infoDoc), "height 150!, span 3, grow, wrap")
+      cont.add(createTextField, "span 3, grow, wrap")
+      cont.add(createStatText, "height 150!, span 3, grow, wrap")
+      cont.add(createInfoText, "height 150!, span 3, grow, wrap")
+      cont.add(createSolverFactoryList, "height 150!, span 3, grow, wrap")
       cont
     }
 
-    def createTextField(doc: Document): Component = {
+    def createSolverFactoryList: Component = {
+      val list = new JList()
+      list
+    }
+
+
+    def createTextField: Component = {
       val txt = new JTextField()
       txt.setBorder(createTxtBorder)
-      txt.setDocument(doc)
+      txt.setDocument(infoDoc)
       txt
     }
 
-    def createStatText(stateDoc: Document): Component = {
+    def createStatText: Component = {
       val txt = new JTextArea()
       txt.setDocument(stateDoc)
       txt.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3))
@@ -296,9 +303,9 @@ class Frame(
       txt
     }
 
-    def createInfoText(stateDoc: Document): Component = {
+    def createInfoText: Component = {
       val txt = new JTextArea()
-      txt.setDocument(stateDoc)
+      txt.setDocument(infoDoc)
       txt.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3))
       txt.setEditable(false)
       txt.setLineWrap(true)
