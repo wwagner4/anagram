@@ -5,6 +5,7 @@ import anagram.words.Word
 import scala.collection.GenIterable
 import scala.collection.parallel.ExecutionContextTaskSupport
 import scala.concurrent.ExecutionContext
+import scala.util.Random
 
 case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContext) extends Solver {
 
@@ -101,7 +102,8 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
   }
 
   def findMatchingWords(txt: String, words: List[Word]): Iterable[String] = {
-    words.flatMap(w => validWordFromSorted(w, txt))
+    val mws: Seq[String] = words.flatMap(w => validWordFromSorted(w, txt))
+    Random.shuffle(mws)
   }
 
   def removeChars(txt: String, mw: List[Char]): String = {
