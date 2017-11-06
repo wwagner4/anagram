@@ -73,10 +73,10 @@ case class Controller(
 
   Seq(
     SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel),
-    {
-      val rater = new RaterRandom
-      SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
-    },
+    //    {
+    //      val rater = new RaterRandom
+    //          SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
+    //    },
     {
       val rater = new RaterAi(RaterAiCfgs.cfgPlain, None)
       SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
@@ -375,6 +375,7 @@ class Frame(
       list.setSelectionModel(outListSelectionModel)
       list.setFont(list.getFont.deriveFont(fontSize))
       list.setFixedCellHeight(listCellSize)
+      list.setBorder(createBorder)
       new JScrollPane(list)
     }
 
