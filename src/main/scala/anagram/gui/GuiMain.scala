@@ -70,7 +70,7 @@ case class Controller(
   private val log = LoggerFactory.getLogger("Controller")
 
   val maxDepth = 5
-  val parallel = 3
+  val parallel = 10
 
   Seq(
     SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel),
