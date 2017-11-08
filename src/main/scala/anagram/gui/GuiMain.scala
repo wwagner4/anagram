@@ -12,6 +12,7 @@ import javax.swing.text._
 import anagram.common.{Cancelable, IoUtil}
 import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
+import anagram.solve.concurrent.AnaExecutionContextImpl
 import net.miginfocom.swing.MigLayout
 import org.slf4j.LoggerFactory
 
@@ -255,7 +256,7 @@ case class Controller(
   }
 
   def createDefaultExecutorService: ExecutorService = {
-    new ForkJoinPool(4)
+    AnaExecutionContextImpl.createDefaultExecutorService((exe: Throwable) => log.error(exe.getMessage, exe))
   }
 
   def selectedSolverFactory: SolverFactory = {
