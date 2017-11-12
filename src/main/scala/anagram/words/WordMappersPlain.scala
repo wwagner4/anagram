@@ -36,7 +36,7 @@ object WordMappersPlain extends WordMappersAbstract {
 
       override def randomWord: String = isMap(ran.nextInt(size))
 
-      override def group(value: String): Seq[String] = Seq(value)
+      override def transform(value: String): Seq[String] = Seq(value)
 
       override def wordList: Iterable[Word] = wordlist
     }

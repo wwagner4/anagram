@@ -47,7 +47,7 @@ object WordMappersGrammer extends WordMappersAbstract {
 
       override def containsWord(str: String): Boolean = grpList.contains(str)
 
-      override def group(value: String): Seq[String] =
+      override def transform(value: String): Seq[String] =
         Seq(wordMap.get(value).map(_.grp).getOrElse(unknown))
 
       override def wordList: Iterable[Word] = wl

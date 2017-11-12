@@ -6,23 +6,23 @@ class WordMappersGrammerSuite extends FunSuite with MustMatchers {
 
   private lazy val m = WordMappersGrammer.createWordMapperGrammer
 
-  test("group house") {
-    m.group("house") mustBe "n&vt&vi"
+  test("transform house") {
+    m.transform("house") mustBe Seq("n&vt&vi")
   }
 
-  test("group table") {
-    m.group("table") mustBe "n&vt&vi"
+  test("transform table") {
+    m.transform("table") mustBe Seq("n&vt&vi")
   }
 
-  test("group eat") {
-    m.group("eat") mustBe "vt&vi"
+  test("transform eat") {
+    m.transform("eat") mustBe Seq("vt&vi")
   }
 
-  test("group i") {
-    m.group("i") mustBe "pron"
+  test("transform i") {
+    m.transform("i") mustBe Seq("pron")
   }
 
-  test("group yammiyammi") {
-    m.group("yammiyammi") mustBe "?"
+  test("transform yammiyammi") {
+    m.transform("yammiyammi") mustBe Seq("?")
   }
 }
