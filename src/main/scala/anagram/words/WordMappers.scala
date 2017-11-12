@@ -1,6 +1,6 @@
 package anagram.words
 
-import anagram.ml.data.engrmred.WordMappersGrammerReduced
+import anagram.ml.data.grmred.WordMappersGrammerReduced
 
 object WordMappers {
 

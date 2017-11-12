@@ -3,7 +3,7 @@ package anagram.ml.data.analyze
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
-import anagram.ml.data.engrmred.WordMappersGrammerReduced.GroupedWord
+import anagram.ml.data.grmred.WordMappersGrammerReduced.GroupedWord
 
 object WordTypesAnalyze extends App {
 
