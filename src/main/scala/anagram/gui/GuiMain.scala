@@ -1,9 +1,10 @@
 package anagram.gui
 
-import java.awt._
 import java.awt.event.ActionEvent
+import java.awt.{BorderLayout, Color, Component, Image}
 import java.nio.file.{Files, Path}
 import java.util.concurrent._
+import javax.imageio.ImageIO
 import javax.swing._
 import javax.swing.border.Border
 import javax.swing.event.ListSelectionEvent
@@ -16,6 +17,7 @@ import anagram.solve.concurrent.AnaExecutionContextImpl
 import net.miginfocom.swing.MigLayout
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success}
 
@@ -70,23 +72,28 @@ case class Controller(
   private val log = LoggerFactory.getLogger("Controller")
 
   val maxDepth = 5
-  val parallel = 10
+  val parallel = 3
+  val raterNr = "12"
 
+  val solverFactoryBase = SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel)
+
+  // Fill the solverListModel
   Seq(
-    SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel),
-    //    {
-    //      val rater = new RaterRandom
-    //          SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
-    //    },
+    solverFactoryBase,
     {
-      val rater = new RaterAi(RaterAiCfgs.cfgPlain, None)
-      SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
+      val rater = RaterFactoryRandom()
+      SolverFactoryRated(solverFactoryBase, rater)
     },
     {
-      val rater = new RaterAi(RaterAiCfgs.cfgGrm, None)
-      SolverFactoryRated(SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel), rater)
+      val rater = RaterFactoryAi(RaterAiCfgs.cfgPlain(raterNr))
+      SolverFactoryRated(solverFactoryBase, rater)
+    },
+    {
+      val rater = RaterFactoryAi(RaterAiCfgs.cfgGrm(raterNr))
+      SolverFactoryRated(solverFactoryBase, rater)
     },
   ).foreach(solverListModel.addElement)
+
   solverListSelectionModel.setSelectionInterval(2, 2)
 
   setInfoDoc(selectedSolverFactory.solverDescription)
@@ -122,7 +129,7 @@ case class Controller(
               cnt = siter.solvedAnagrams
               setStateDoc(s"solving. found $cnt anagrams  ")
             }
-            Thread.sleep(500)
+            pause(400)
           }
         }, () => {
           setStateDoc(s"solved. $cnt anagrams")
@@ -130,6 +137,10 @@ case class Controller(
       }
     }
   }
+
+  def pause(milis: Int): Unit = try Thread.sleep(milis) catch {
+    case _: InterruptedException =>
+  } // Nothing to do}
 
   def getStopAction: Action = new AbstractAction() {
 
@@ -280,8 +291,12 @@ class Frame(
              stopAction: Action,
              morphAction: Action,
            ) extends JFrame {
+
   setSize(800, 800)
   setTitle("anagram creator")
+  setIconImages(images.asJava)
+  // remove the following line if you are not on mac OS
+  com.apple.eawt.Application.getApplication.setDockIconImage(toImage("images/scala-logo-square-orig.png"))
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content)
 
@@ -391,6 +406,18 @@ class Frame(
     }
   }
 
+  def images: List[Image] = {
+    List("128", "64", "32", "16")
+      .map(nr => s"images/scala-logo-square-$nr.jpg")
+      .map(res => toImage(res))
+  }
+
+  def toImage(res: String): Image = {
+    val url = getClass.getClassLoader.getResource(res)
+    if (url == null) throw new IllegalArgumentException(s"not a resource '$res'")
+    ImageIO.read(url)
+  }
+
 }
 
 trait SolverFactory {
@@ -405,6 +432,37 @@ trait SolverFactory {
 
 }
 
+trait RaterFactory {
+
+  def createRater: Rater
+
+  def description: String
+
+  def shortDescription: String
+
+  override def toString: String = shortDescription
+
+}
+
+case class RaterFactoryAi(raterAiCfg: RaterAiCfg) extends RaterFactory {
+
+  override def createRater = new RaterAi(raterAiCfg, None)
+
+  override def description = "AI id:'%s' commonWordRating: %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
+
+  override def shortDescription = "AI %s %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
+}
+
+case class RaterFactoryRandom() extends RaterFactory {
+
+  override def createRater = new RaterRandom
+
+  override def description = "Random rating"
+
+  override def shortDescription = "RANDOM"
+
+}
+
 
 case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends SolverFactory {
 
@@ -416,13 +474,13 @@ case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends Solv
 
 }
 
-case class SolverFactoryRated(solverFactory: SolverFactory, rater: Rater) extends SolverFactory {
+case class SolverFactoryRated(solverFactory: SolverFactory, rater: RaterFactory) extends SolverFactory {
 
   def createSolver(implicit ec: ExecutionContextExecutor): Solver = {
-    SolverRated(solverFactory.createSolver, rater)
+    SolverRated(solverFactory.createSolver, rater.createRater)
   }
 
-  def solverDescription: String = s"Solver rated with: $rater. Base solver: ${solverFactory.solverDescription}"
+  def solverDescription: String = s"Solver rated with: ${rater.description}. Base solver: ${solverFactory.solverDescription}"
 
   def solverShortDescription: String = s"RATED ${rater.shortDescription}"
 }

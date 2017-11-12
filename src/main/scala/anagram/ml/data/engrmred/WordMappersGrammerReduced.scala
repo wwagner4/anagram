@@ -1,12 +1,13 @@
-package anagram.words
+package anagram.ml.data.engrmred
 
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
+import anagram.words.{Word, WordMapper, WordMappersAbstract, WordMappersPlain}
 
 import scala.util.Random
 
-object WordMappersGrammer extends WordMappersAbstract {
+object WordMappersGrammerReduced extends WordMappersAbstract {
 
   case class GrpoupedWord(grp: String, value: String)
 

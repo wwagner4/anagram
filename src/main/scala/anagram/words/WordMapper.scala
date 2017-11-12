@@ -2,7 +2,7 @@ package anagram.words
 
 trait WordMapper {
 
-  def group(value: String): String
+  def group(value: String): Seq[String]
 
   def toNum(word: String): Int
 

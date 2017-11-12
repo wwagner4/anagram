@@ -14,7 +14,6 @@ import scala.util.Random
 
 trait Rater {
   def rate(sent: Iterable[String]): Double
-  def shortDescription: String
 }
 
 class RaterRandom extends Rater {
@@ -23,18 +22,14 @@ class RaterRandom extends Rater {
     Random.nextDouble() * 10
   }
 
-  override def toString: String = "Rater random"
-
-  override def shortDescription: String = "RANDOM"
 }
 
 case class RaterAiCfg(
                        id: String,
+                       comonWordRating: Double, // 0.0 means no common word rating. Values should be around 0.005
                        mapper: WordMapper,
                        adjustOutput: (Int, Double) => Double,
                      )  {
-  def description: String = s"$id"
-
 }
 
 
@@ -54,8 +49,8 @@ object RaterAiCfgs {
     else rating
   }
 
-  val cfgPlain = RaterAiCfg("enPlain11", WordMappers.createWordMapperPlain, adjustOutputPlain)
-  val cfgGrm = RaterAiCfg("enGrm11", WordMappers.createWordMapperGrammer, adjustOutputGrammar)
+  def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", 0.01, WordMappers.createWordMapperPlain, adjustOutputPlain)
+  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", 0.01, WordMappers.createWordMapperGrammer, adjustOutputGrammar)
 
 
 }
@@ -66,9 +61,6 @@ class RaterNone extends Rater {
     1.0
   }
 
-  override def toString: String = "Rater none"
-
-  override def shortDescription: String = "NONE"
 }
 
 class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Rater {
@@ -80,10 +72,6 @@ class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Ra
   require(logInterval.forall(n => n > 0), "If loginterval is defined it must be greater 0")
 
   var cnt = 0
-
-  override def toString: String = s"Rater AI data:${cfg.id}"
-
-  override def shortDescription: String = s"AI ${cfg.id}"
 
   private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(cfg.id)
     .map(df => (df.wordLen, deserializeNn(df.path)))
@@ -110,7 +98,7 @@ class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Ra
     def rateNN = {
       val input: Array[Double] = sent
         .map(cfg.mapper.group)
-        .map(cfg.mapper.toNum(_).toDouble)
+        .flatMap(_.map(cfg.mapper.toNum(_).toDouble))
         .toArray
       val out = nn.output(Nd4j.create(input))
       out.getDouble(0)
@@ -118,7 +106,7 @@ class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Ra
 
 
     val _ratingNN = rateNN
-    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, 0.005)
+    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, cfg.comonWordRating)
 
     cfg.adjustOutput(sent.size, _ratingNN + _ratingCommoWords)
 

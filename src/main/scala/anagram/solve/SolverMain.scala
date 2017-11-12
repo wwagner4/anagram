@@ -45,7 +45,7 @@ object SolverMain extends App {
 
   val idSolving: String = "01"
   val srcTexts = srcTextsMedium
-  val cfg = RaterAiCfgs.cfgPlain
+  val cfg = RaterAiCfgs.cfgPlain("12")
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")

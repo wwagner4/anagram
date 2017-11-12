@@ -10,11 +10,13 @@ object CreateDataAndTrainGrammarMain extends App {
 
   private val log = LoggerFactory.getLogger("CreateDataAndTrainGrammarMain")
 
+  val nr = "12"
+
   createAndTrainPlain()
   createAndTrainGrammar()
 
   def createAndTrainPlain(): Unit = {
-    val id = "enPlain11"
+    val id = s"enPlain$nr"
     log.info(s"STARTED plain $id")
     CreateLearningDataPlain.createData(id, BookCollections.collectionEn2)
     TrainPlain.train(id)
@@ -22,7 +24,7 @@ object CreateDataAndTrainGrammarMain extends App {
   }
 
   def createAndTrainGrammar(): Unit = {
-    val id = "enGrm11"
+    val id = s"enGrm$nr"
     log.info(s"STARTED grammar $id")
     CreateLearningDataGrammar.createData(id, BookCollections.collectionEn2)
     TrainGrammar.train(id)

@@ -46,7 +46,6 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
               mwsp.tasksupport = ts
               mwsp
             }
-          //println(s"-- $depth :$txtSorted: - ${matchingWords.mkString(" ")}")
           matchingWords.flatMap(_.flatMap { mw =>
             val restText = removeChars(txt, mw.toList)
             val subAnas = solve1(restText, depth + 1, words, anaCache)

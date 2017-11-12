@@ -12,7 +12,7 @@ class SentenceCreatorConditionalSliding extends SentenceCreator {
   def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
     sentences
       .filter(_.size >= len)
-      .map(words => words.map(wordMapper.group))
+      .map(words => words.flatMap(wordMapper.group))
       .flatMap(slideSentences(_, len, wordMapper))
   }
 
