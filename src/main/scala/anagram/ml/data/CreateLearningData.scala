@@ -15,7 +15,12 @@ case class CreateDataConfig(
                            )
 
 
-class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCreator: SentenceCreator, sentenceRater: SentenceRater, mapWordsToNumbers: Boolean = true) {
+class CreateLearningData(
+                          wm: WordMapper,
+                          bookSplitter: BookSplitter,
+                          sentenceCreator: SentenceCreator,
+                          sentenceRater: SentenceRater,
+                          mapWordsToNumbers: Boolean = true) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
@@ -27,10 +32,19 @@ class CreateLearningData(wm: WordMapper, bookSplitter: BookSplitter, sentenceCre
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
       val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
       log.info(s"Created ${sent.size} sentences of length $len")
-      val ldPath = IoUtil.saveDataToWorkDir(config.id, len, writeSentences(len, sent, config.adjustRating)(_))
+      val ldPath = IoUtil.saveDataToWorkDir(
+        filePrefix(config.id, mapWordsToNumbers),
+        len,
+        writeSentences(len, sent, config.adjustRating)(_),
+      )
       log.info("Created learning data in " + ldPath)
     }
     log.info("Created learning data for book collection:\n" + asString(config.id, config.bookCollection))
+  }
+
+  def filePrefix(id: String, mapWordsToNumber: Boolean): String = {
+    if (mapWordsToNumber) id
+    else s"${id}_unmapped"
   }
 
   def writeSentences(sentLength: Int, sentences: Seq[Sentence], adjRating: (Double, Int) => Double)(wr: BufferedWriter): Unit = {

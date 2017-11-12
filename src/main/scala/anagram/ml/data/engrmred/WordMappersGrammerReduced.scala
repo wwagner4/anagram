@@ -9,29 +9,64 @@ import scala.util.Random
 
 object WordMappersGrammerReduced extends WordMappersAbstract {
 
-  case class GrpoupedWord(grp: String, value: String)
+  case class GroupedWord(grp: String, value: String)
 
   val resName = "wordlist/wordtypelist_small.txt"
 
-  def createWordMapperGrammer: WordMapper = {
+  def createWordMapper: WordMapper = {
     val ran = Random
-
-    def readLine(line: String): GrpoupedWord = {
-      val split = line.split(";")
-      GrpoupedWord(split(0), split(1))
-    }
 
     lazy val wl = WordMappersPlain.createWordMapperPlain.wordList
 
     val unknown = "?"
 
-    val words: Seq[GrpoupedWord] = IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (iter) => iter.toSeq.map(readLine))
-    val wordMap: Map[String, GrpoupedWord] = words.map(gword => (gword.value, gword)).toMap
+    val popularGrps = Set(
+      "n",
+      "a",
+      "vt",
+      "adv",
+      "adj",
+      "npl",
+      "vi",
+      "propn",
+    )
 
-    val grpList = words.map(groupedWord =>  groupedWord.grp).distinct.sorted :+ unknown
+    def readLine(line: String): GroupedWord = {
+      val split = line.split(";")
+      GroupedWord(split(0), split(1))
+    }
+
+    def reduceGroups(grp: String): String = {
+      // treatment for 'do' which is usually not a noun
+      if (grp == "n&vt,auxiliary&vi") "vi"
+      else {
+        val i1 = grp.indexOf('&')
+        val g1 = if (i1 >= 0) grp.substring(0, i1)
+        else grp
+
+        val i2 = g1.indexOf(',')
+        val g2 = if (i2 >= 0) g1.substring(0, i2)
+        else g1
+
+        if (!popularGrps.contains(g1)) unknown
+        else g2
+      }
+    }
+
+    val words: Seq[GroupedWord] = IoUtil.loadTxtFromPath(
+      Paths.get(IoUtil.uri(resName)),
+      (iter) => iter.toSeq.map(readLine)).map(gw => GroupedWord(reduceGroups(gw.grp), gw.value))
+
+    val wordMap: Map[String, GroupedWord] = words.map(gword => (gword.value, gword)).toMap
+
+    val grpList = words
+      .map(groupedWord => groupedWord.grp)
+      .distinct.sorted
+
     val grpListIdx = grpList.zipWithIndex
     val grpListWordMap: Map[String, Int] = grpListIdx.toMap
-    val grpListIntMap: Map[Int, String] = grpListIdx.map{case (w, i) => (i, w)}.toMap
+    val grpListIntMap: Map[Int, String] = grpListIdx.map { case (w, i) => (i, w) }.toMap
+
 
     new WordMapper {
 
