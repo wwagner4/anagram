@@ -49,8 +49,13 @@ object RaterAiCfgs {
     else rating
   }
 
+  private def adjustOutputGrammarReduced(len: Int, rating: Double): Double = {
+    rating
+  }
+
   def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", 0.01, WordMappers.createWordMapperPlain, adjustOutputPlain)
   def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", 0.01, WordMappers.createWordMapperGrammer, adjustOutputGrammar)
+  def cfgGrmRed = RaterAiCfg(s"GrmRed01", 0.0, WordMappers.createWordMapperGrammerReduced, adjustOutputGrammarReduced)
 
 
 }

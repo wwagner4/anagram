@@ -14,7 +14,8 @@ object SentenceRaterGenericLengthFactor extends App {
 
   val ref = 10.0
   val fileNames = Seq(
-    "anagrams_enGrm11_01_clint_eastwood.txt",
+    //    "anagrams_enGrm11_01_clint_eastwood.txt"
+    // "anagrams_enGrm11_01_clint_eastwood.txt",
 //    "anagrams_enGrm11_01_noah_the_great.txt",
 //    "anagrams_enGrm11_01_ditschi_wolfi.txt",
 //    "anagrams_enGrm11_01_ditschi.txt",

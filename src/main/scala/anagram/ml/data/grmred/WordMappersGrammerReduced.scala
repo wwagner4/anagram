@@ -29,6 +29,8 @@ object WordMappersGrammerReduced extends WordMappersAbstract {
       "npl",
       "vi",
       "propn",
+      "pron",
+      "prep",
     )
 
     def readLine(line: String): GroupedWord = {

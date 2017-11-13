@@ -13,6 +13,11 @@ object WordTypesAnalyze extends App {
     Paths.get(IoUtil.uri(resName)),
     (iter) => iter.toSeq.map(readLine))
 
+  val words2 = Set("a", "i")
+
+  val inter = words.filter(gw => words2.contains(gw.value)).toList
+  println(inter)
+
   def readLine(line: String): GroupedWord = {
     val split = line.split(";")
     GroupedWord(split(0), split(1))
@@ -27,6 +32,8 @@ object WordTypesAnalyze extends App {
     "npl",
     "vi",
     "propn",
+    "pron",
+    "prep",
   )
 
   def reduceGroups(grp: String): String = {

@@ -92,6 +92,10 @@ case class Controller(
       val rater = RaterFactoryAi(RaterAiCfgs.cfgGrm(raterNr))
       SolverFactoryRated(solverFactoryBase, rater)
     },
+    {
+      val rater = RaterFactoryAi(RaterAiCfgs.cfgGrmRed)
+      SolverFactoryRated(solverFactoryBase, rater)
+    },
   ).foreach(solverListModel.addElement)
 
   solverListSelectionModel.setSelectionInterval(2, 2)
@@ -446,11 +450,11 @@ trait RaterFactory {
 
 case class RaterFactoryAi(raterAiCfg: RaterAiCfg) extends RaterFactory {
 
-  override def createRater = new RaterAi(raterAiCfg, None)
+  override def createRater: Rater = new RaterAi(raterAiCfg, None)
 
-  override def description = "AI id:'%s' commonWordRating: %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
+  override def description: String = "AI id:'%s' commonWordRating: %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
 
-  override def shortDescription = "AI %s %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
+  override def shortDescription: String = "AI %s %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
 }
 
 case class RaterFactoryRandom() extends RaterFactory {

@@ -43,9 +43,9 @@ object SolverMain extends App {
     "william shakespeare", // -> i am a weakish speller 18 ->
   )
 
-  val idSolving: String = "01"
-  val srcTexts = srcTextsMedium
-  val cfg = RaterAiCfgs.cfgPlain("12")
+  val srcTexts = srcTextsFull
+  val cfg = RaterAiCfgs.cfgGrmRed
+  val idSolving = "01"
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
@@ -53,8 +53,8 @@ object SolverMain extends App {
     val rater = new RaterAi(cfg)
     val baseSolver = SolverFactoryPlain().createSolver
     val anagrams: Iterator[Ana] = SolverRated(baseSolver, rater).solve(srcText, WordLists.wordListIgnoring)
-    //outWriteToFile(anagrams, srcText)
-    outIter(anagrams, srcText)
+    outWriteToFile(anagrams, srcText)
+    //outIter(anagrams, srcText)
   }
   log.info("Finished")
 
@@ -74,7 +74,7 @@ object SolverMain extends App {
     }
   }
 
-  def outWriteToFile(anas: Stream[Ana], srcText: String): Unit = {
+  def outWriteToFile(anas: Iterator[Ana], srcText: String): Unit = {
 
     def fileName(idLearning: String, idSolving: String, src: String): String = {
       val s1 = src.replaceAll("\\s", "_")
