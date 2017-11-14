@@ -1,6 +1,6 @@
 package anagram.ml.data
 
-import anagram.ml.data.analyze.SentenceRaterGenericLengthFactor
+import anagram.ml.data.analyze.SentenceLengthRatingDiff
 import org.scalatest.{FunSuite, MustMatchers}
 
 class SentenceRaterSuite extends FunSuite with MustMatchers {
@@ -14,7 +14,7 @@ class SentenceRaterSuite extends FunSuite with MustMatchers {
 
   for ((s, r, l) <- lines) {
     test(s"mkGenRating $s") {
-      val rating = SentenceRaterGenericLengthFactor.mkGenRating(s)
+      val rating = SentenceLengthRatingDiff.mkGenRating(s)
       rating.sentLen mustBe l
       rating.rating mustBe r
     }

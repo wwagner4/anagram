@@ -10,28 +10,26 @@ case class GenRating(sentLen: Int, rating: Double)
   * each sentence length, in order to make the output values
   * for sentences with different lengths comparable.
   */
-object SentenceRaterGenericLengthFactor extends App {
+object SentenceLengthRatingDiff extends App {
 
-  val ref = 10.0
   val fileNames = Seq(
-    //    "anagrams_enGrm11_01_clint_eastwood.txt"
-    // "anagrams_enGrm11_01_clint_eastwood.txt",
-//    "anagrams_enGrm11_01_noah_the_great.txt",
-//    "anagrams_enGrm11_01_ditschi_wolfi.txt",
-//    "anagrams_enGrm11_01_ditschi.txt",
-//    "anagrams_enGrm11_01_ingrid_bernd.txt",
-//    "anagrams_enGrm11_01_wolfgang.txt",
+    "anagrams_GrmRed01_01_clint_eastwood.txt",
   )
 
-    val maxRatings: Seq[(Int, Double)] = fileNames.flatMap(read)
-      .groupBy(x => x.sentLen)
-      .toList
-      .map { case (k, v) => (k, v.map(_.rating).max) }
-      .sortBy { case (k, _) => k }
+  val maxRatings: Seq[(Int, Double)] = fileNames.flatMap(read)
+    .groupBy(x => x.sentLen)
+    .filter(t => t._1 >= 2)
+    .filter(t => t._1 <= 5)
+    .toList
+    .map { case (k, v) => (k, v.map(_.rating).max) }
+    .sortBy { case (k, _) => k }
 
-    for ((len, maxRating) <- maxRatings) {
-      println(f"$len%10d - $maxRating%6.4f")
-    }
+  val max = maxRatings.map(t => t._2).max
+
+  for ((len, maxRating) <- maxRatings) {
+    val diff = max - maxRating
+    println(f"$len%10d - $maxRating%6.4f - $diff%6.4f")
+  }
 
   def read(fileName: String): Iterable[GenRating] = {
     IoUtil.loadTxtFromWorkdir(fileName, (iter) => {

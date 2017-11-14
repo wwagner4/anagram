@@ -219,7 +219,11 @@ case class Controller(
     service = createServices
     implicit val ec: ExecutionContextExecutor = service.get.executionContextExecutor
     val future = Future {
-      main(ec)
+      try {
+        main(ec)
+      } catch {
+        case _: InterruptedException => // Ignore
+      }
     }
     future.onComplete {
       case Success(_) =>
@@ -452,9 +456,15 @@ case class RaterFactoryAi(raterAiCfg: RaterAiCfg) extends RaterFactory {
 
   override def createRater: Rater = new RaterAi(raterAiCfg, None)
 
-  override def description: String = "AI id:'%s' commonWordRating: %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
+  override def description: String = {
+    val cwf = raterAiCfg.comonWordRating.map(r => " CommonWordFactor:%.3f".format(r) ).getOrElse("")
+    "AI id:'%s'%s" format(raterAiCfg.id, cwf)
+  }
 
-  override def shortDescription: String = "AI %s %.4f" format(raterAiCfg.id, raterAiCfg.comonWordRating)
+  override def shortDescription: String = {
+    val cwf = raterAiCfg.comonWordRating.map(r => " CWF" ).getOrElse("")
+    "AI %s%s" format(raterAiCfg.id, cwf)
+  }
 }
 
 case class RaterFactoryRandom() extends RaterFactory {

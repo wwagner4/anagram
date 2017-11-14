@@ -43,9 +43,13 @@ object SolverMain extends App {
     "william shakespeare", // -> i am a weakish speller 18 ->
   )
 
-  val srcTexts = srcTextsFull
+  val srcTextsCe = List(
+    "clint eastwood", // -> old west action             13 -> 700k
+  )
+
+  val srcTexts = srcTextsCe
   val cfg = RaterAiCfgs.cfgGrmRed
-  val idSolving = "01"
+  val idSolving = "02"
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")

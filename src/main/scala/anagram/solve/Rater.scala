@@ -26,7 +26,7 @@ class RaterRandom extends Rater {
 
 case class RaterAiCfg(
                        id: String,
-                       comonWordRating: Double, // 0.0 means no common word rating. Values should be around 0.005
+                       comonWordRating: Option[Double], // None means no common word rating. Values should be around 0.005
                        mapper: WordMapper,
                        adjustOutput: (Int, Double) => Double,
                      )  {
@@ -50,12 +50,19 @@ object RaterAiCfgs {
   }
 
   private def adjustOutputGrammarReduced(len: Int, rating: Double): Double = {
-    rating
+    len match {
+      case 1 => rating + 20
+      case 2 => rating + 0.6
+      case 3 => rating + 0.2
+      case 4 => rating + 0.3
+      case 5 => rating
+      case _ => rating - 20
+    }
   }
 
-  def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", 0.01, WordMappers.createWordMapperPlain, adjustOutputPlain)
-  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", 0.01, WordMappers.createWordMapperGrammer, adjustOutputGrammar)
-  def cfgGrmRed = RaterAiCfg(s"GrmRed01", 0.0, WordMappers.createWordMapperGrammerReduced, adjustOutputGrammarReduced)
+  def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", Some(0.01), WordMappers.createWordMapperPlain, adjustOutputPlain)
+  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", Some(0.01), WordMappers.createWordMapperGrammer, adjustOutputGrammar)
+  def cfgGrmRed = RaterAiCfg(s"GrmRed01", Some(0.005), WordMappers.createWordMapperGrammerReduced, adjustOutputGrammarReduced)
 
 
 }
@@ -143,7 +150,11 @@ class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Ra
 
 object CommonWordRater {
 
-  def rateCommonWords(sent:Iterable[String], commonWords: Set[String], commonFactor: Double): Double = {
-    sent.map(w => if (commonWords.contains(w)) 1 else 0).sum * commonFactor
+  def rateCommonWords(sent:Iterable[String], commonWords: Set[String], commonFactor: Option[Double]): Double = {
+    if (commonFactor.isDefined) {
+      sent.map(w => if (commonWords.contains(w)) 1 else 0).sum * commonFactor.get
+    } else {
+      0.0
+    }
   }
 }
