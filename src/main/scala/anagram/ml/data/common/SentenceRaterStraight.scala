@@ -1,4 +1,4 @@
-package anagram.ml.data
+package anagram.ml.data.common
 
 import anagram.words.WordMapper
 

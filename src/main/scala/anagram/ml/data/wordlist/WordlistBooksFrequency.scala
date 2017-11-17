@@ -1,7 +1,7 @@
 package anagram.ml.data.wordlist
 
 import anagram.common.IoUtil
-import anagram.ml.data.{BookCollections, BookSplitterTxt}
+import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
 
 object WordlistBooksFrequency extends App {
 

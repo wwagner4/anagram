@@ -1,7 +1,7 @@
 package anagram.ml
 
 import anagram.common.{LinearAdjust, LinearAdjustParam}
-import anagram.ml.data._
+import anagram.ml.data.common._
 import anagram.ml.train.{Training, TrainingConfig}
 import anagram.words.WordMappers
 import org.slf4j.LoggerFactory

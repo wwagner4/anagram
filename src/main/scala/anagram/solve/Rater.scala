@@ -3,7 +3,7 @@ package anagram.solve
 import java.nio.file.Path
 
 import anagram.common.IoUtil
-import anagram.ml.data.{BookCollections, BookSplitterTxt}
+import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
 import anagram.words.{WordMapper, WordMappers}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer

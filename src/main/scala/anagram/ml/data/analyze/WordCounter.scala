@@ -1,7 +1,7 @@
 package anagram.ml.data.analyze
 
 import anagram.common.IoUtil
-import anagram.ml.data.{BookCollections, BookSplitterTxt}
+import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
 
 object WordCounter extends App {
 

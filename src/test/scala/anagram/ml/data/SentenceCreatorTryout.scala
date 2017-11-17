@@ -1,6 +1,7 @@
 package anagram.ml.data
 
 import anagram.common.IoUtil
+import anagram.ml.data.common._
 import anagram.words.WordMappers
 
 object SentenceCreatorTryout extends App {

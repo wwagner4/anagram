@@ -1,5 +1,6 @@
 package anagram.ml.data
 
+import anagram.ml.data.common.SentenceRaterExchangeWords
 import org.scalatest.{FunSuite, MustMatchers}
 
 class CreateLearningDataSuite extends FunSuite with MustMatchers {

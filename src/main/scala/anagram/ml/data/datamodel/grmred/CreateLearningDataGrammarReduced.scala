@@ -1,7 +1,7 @@
 package anagram.ml.data.datamodel.grmred
 
 import anagram.common.{LinearAdjust, LinearAdjustParam}
-import anagram.ml.data._
+import anagram.ml.data.common._
 import anagram.words.WordMappers
 
 object CreateLearningDataGrammarReduced {

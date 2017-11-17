@@ -1,4 +1,4 @@
-package anagram.ml.data
+package anagram.ml.data.common
 
 object SentenceRaterCounting extends SentenceRater {
   override def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
