@@ -1,4 +1,4 @@
-package anagram.ml.data.grmred
+package anagram.ml.data.datamodel.grmred
 
 import java.nio.file.Paths
 

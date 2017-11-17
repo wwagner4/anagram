@@ -1,4 +1,4 @@
-package anagram.ml.data.grmred
+package anagram.ml.data.datamodel.grmred
 
 import anagram.common.{LinearAdjust, LinearAdjustParam}
 import anagram.ml.data._

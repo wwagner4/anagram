@@ -1,4 +1,4 @@
-package anagram.ml.data.grmred
+package anagram.ml.data.datamodel.grmred
 
 import anagram.ml.train.{Training, TrainingConfig}
 
