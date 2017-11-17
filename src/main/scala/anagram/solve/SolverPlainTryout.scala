@@ -1,14 +1,14 @@
 package anagram.solve
 
-import anagram.words.WordMappers
+import anagram.ml.data.datamodel.grm.WordMappersGrammer
 
 import scala.concurrent.ExecutionContext
 
-object SSolverTryout extends App {
+object SolverPlainTryout extends App {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
-  val wl =  WordMappers.createWordMapperGrammer.wordList
+  val wl =  WordMappersGrammer.createWordMapper.wordList
 
   val start = System.currentTimeMillis()
 

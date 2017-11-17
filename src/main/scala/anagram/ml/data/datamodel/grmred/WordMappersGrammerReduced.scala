@@ -3,7 +3,8 @@ package anagram.ml.data.datamodel.grmred
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
-import anagram.words.{Word, WordMapper, WordMappersAbstract, WordMappersPlain}
+import anagram.ml.data.datamodel.plain.WordMappersPlain
+import anagram.words.{Word, WordMapper, WordMappersAbstract}
 
 import scala.util.Random
 
@@ -16,7 +17,7 @@ object WordMappersGrammerReduced extends WordMappersAbstract {
   def createWordMapper: WordMapper = {
     val ran = Random
 
-    lazy val wl = WordMappersPlain.createWordMapperPlain.wordList
+    lazy val wl = WordMappersPlain.createWordMapper.wordList
 
     val unknown = "?"
 

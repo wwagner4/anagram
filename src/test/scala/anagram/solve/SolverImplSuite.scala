@@ -1,6 +1,7 @@
 package anagram.solve
 
-import anagram.words.{Word, WordMappers}
+import anagram.ml.data.datamodel.plain.WordMappersPlain
+import anagram.words.Word
 import org.scalatest.{FunSuite, MustMatchers}
 
 import scala.concurrent.ExecutionContext
@@ -34,7 +35,7 @@ class SolverImplSuite extends FunSuite with MustMatchers {
   }
 
   test("anagramm wolfi with wordlist test01") {
-    val wordList = WordMappers.createWordMapperPlain.wordList
+    val wordList = WordMappersPlain.createWordMapper.wordList
     val anas = SolverPlain(4, 2).solve("wolfi", wordList).toStream
     anas.size mustBe 10
 
@@ -48,7 +49,7 @@ class SolverImplSuite extends FunSuite with MustMatchers {
   }
 
   test("anagramm iset with wordlist test01") {
-    val wordList = WordMappers.createWordMapperPlain.wordList
+    val wordList = WordMappersPlain.createWordMapper.wordList
     val anas = SolverPlain(4, 2).solve("iset", wordList).toStream
 
     val strAnas = anas.map(sent => sent.sentence.mkString(" "))

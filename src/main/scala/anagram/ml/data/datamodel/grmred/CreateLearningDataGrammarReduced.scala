@@ -2,7 +2,6 @@ package anagram.ml.data.datamodel.grmred
 
 import anagram.common.{LinearAdjust, LinearAdjustParam}
 import anagram.ml.data.common._
-import anagram.words.WordMappers
 
 object CreateLearningDataGrammarReduced {
 
@@ -19,7 +18,7 @@ object CreateLearningDataGrammarReduced {
       (5, LinearAdjustParam(50.9978,278.8994)),
     ).toMap
 
-    val mapper = WordMappers.createWordMapperGrammerReduced
+    val mapper = WordMappersGrammerReduced.createWordMapper
     val splitter = new BookSplitterTxt()
     val screator = new SentenceCreatorSliding()
     val srater = SentenceRaterCounting

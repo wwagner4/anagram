@@ -1,8 +1,9 @@
-package anagram.words
+package anagram.ml.data.datamodel.plain
 
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
+import anagram.words.{Word, WordMapper, WordMappersAbstract}
 
 import scala.util.Random
 
@@ -10,7 +11,7 @@ object WordMappersPlain extends WordMappersAbstract {
 
   private val ran = Random
 
-  def createWordMapperPlain: WordMapper = {
+  def createWordMapper: WordMapper = {
 
     val wordlist: Iterable[Word] =
       loadWordList("wordlist/wordlist_small.txt")

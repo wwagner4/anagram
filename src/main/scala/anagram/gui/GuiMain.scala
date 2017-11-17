@@ -304,7 +304,7 @@ class Frame(
   setTitle("anagram creator")
   setIconImages(images.asJava)
   // remove the following line if you are not on mac OS
-  com.apple.eawt.Application.getApplication.setDockIconImage(toImage("images/scala-logo-square-orig.png"))
+  //com.apple.eawt.Application.getApplication.setDockIconImage(toImage("images/scala-logo-square-orig.png"))
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content)
 

@@ -1,5 +1,6 @@
 package anagram.solve
-import anagram.words.{Word, WordMappers}
+import anagram.ml.data.datamodel.plain.WordMappersPlain
+import anagram.words.Word
 
 object WordLists {
 
@@ -49,7 +50,7 @@ object WordLists {
       "dib",
     ).toSet
 
-    WordMappers.createWordMapperPlain
+    WordMappersPlain.createWordMapper
       .wordList
       .filter(w => !ignoreWords.contains(w.word))
   }
