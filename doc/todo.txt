@@ -1,3 +1,8 @@
+- Solver uses SortedMap as Parameter. No return
+
+- Plain mapping with common words. E.g. the most common words in the books.
+
+
 
 -    Solver
 --    Parallel processing with Akka
@@ -8,11 +13,11 @@
 ---    Similarity could be learned with ml
 ----    Get a dataset describing the similarity of groups ???
 
-- Solver should not return Ana but Iterable[String]
 
-- Plain mapping with common words. E.g. the most common words in the books.
 
 ----------------------------------------------------------------------------
+
+- OK Solver should not return Ana but Iterable[String]
 
 - OK Connect the mapper from learning with the one used in prediction
 -- OK There could be two mappers WordMapper WordMapperPrediction.
