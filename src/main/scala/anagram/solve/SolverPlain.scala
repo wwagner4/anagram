@@ -11,10 +11,9 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
 
   private var _cancelled = false
 
-  override def solve(sourceText: String, words: Iterable[Word]): Iterator[Ana] = {
+  override def solve(sourceText: String, words: Iterable[Word]): Iterator[Iterable[String]] = {
     _cancelled = false
     solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
-      .map(sent => Ana(1.0, sent))
       .toIterator
   }
 

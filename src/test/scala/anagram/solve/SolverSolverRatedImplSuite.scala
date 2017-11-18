@@ -6,7 +6,7 @@ import org.scalatest.{FunSuite, MustMatchers}
 
 import scala.concurrent.ExecutionContext
 
-class SolverImplSuite extends FunSuite with MustMatchers {
+class SolverSolverRatedImplSuite extends FunSuite with MustMatchers {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
@@ -23,7 +23,7 @@ class SolverImplSuite extends FunSuite with MustMatchers {
 
     anas.size mustBe 6
 
-    val strAnas = anas.map(sent => sent.sentence.mkString(" "))
+    val strAnas = anas.map(sent => sent.mkString(" "))
 
     strAnas must contain("as togo r")
     strAnas must contain("as r togo")
@@ -39,7 +39,7 @@ class SolverImplSuite extends FunSuite with MustMatchers {
     val anas = SolverPlain(4, 2).solve("wolfi", wordList).toStream
     anas.size mustBe 10
 
-    val strAnas = anas.map(sent => sent.sentence.mkString(" "))
+    val strAnas = anas.map(sent => sent.mkString(" "))
 
     strAnas must contain("if low")
     strAnas must contain("owl if")
@@ -52,7 +52,7 @@ class SolverImplSuite extends FunSuite with MustMatchers {
     val wordList = WordMapperFactoryPlain.create.wordList
     val anas = SolverPlain(4, 2).solve("iset", wordList).toStream
 
-    val strAnas = anas.map(sent => sent.sentence.mkString(" "))
+    val strAnas = anas.map(sent => sent.mkString(" "))
 
     strAnas must contain("i set")
     strAnas must contain("set i")

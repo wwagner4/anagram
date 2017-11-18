@@ -16,8 +16,8 @@ object SolverPlainTryout extends App {
   val anas = SolverPlain(maxDepth = 4, parallel = 4).solve(src, wl)
 
   if (anas.isEmpty) println("-- empty --")
-  else for ((ana, i) <- anas.zipWithIndex) {
-    val str = ana.sentence.mkString(" ")
+  else for ((sentence, i) <- anas.zipWithIndex) {
+    val str = sentence.mkString(" ")
     println("%10d - %s".format(i, str))
   }
 

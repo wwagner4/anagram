@@ -56,7 +56,7 @@ object SolverMain extends App {
 
     val rater = new RaterAi(cfg)
     val baseSolver = SolverFactoryPlain().createSolver
-    val anagrams: Iterator[Ana] = SolverRated(baseSolver, rater).solve(srcText, WordLists.wordListIgnoring)
+    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, WordLists.wordListIgnoring)
     outWriteToFile(anagrams, srcText)
     //outIter(anagrams, srcText)
   }

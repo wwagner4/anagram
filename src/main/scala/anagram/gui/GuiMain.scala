@@ -29,7 +29,7 @@ object GuiMain extends App {
     lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     lsm
   }
-  val solverListModel = new DefaultListModel[SolverFactory]
+  val solverListModel = new DefaultListModel[SolverRatedFactory]
   val solverListSelectionModel = {
     val lsm = new DefaultListSelectionModel
     lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
@@ -57,7 +57,7 @@ object GuiMain extends App {
 case class Controller(
                        outListModel: DefaultListModel[String],
                        outListSelectionModel: DefaultListSelectionModel,
-                       solverListModel: DefaultListModel[SolverFactory],
+                       solverListModel: DefaultListModel[SolverRatedFactory],
                        solverListSelectionModel: DefaultListSelectionModel,
                        textDoc: PlainDocument,
                        stateDoc: PlainDocument,
@@ -79,7 +79,10 @@ case class Controller(
 
   // Fill the solverListModel
   Seq(
-    solverFactoryBase,
+    {
+      val rater = RaterFactoryNone()
+      SolverFactoryRated(solverFactoryBase, rater)
+    },
     {
       val rater = RaterFactoryRandom()
       SolverFactoryRated(solverFactoryBase, rater)
@@ -100,7 +103,7 @@ case class Controller(
 
   solverListSelectionModel.setSelectionInterval(2, 2)
 
-  setInfoDoc(selectedSolverFactory.solverDescription)
+  setInfoDoc(selectedSolverFactory.description)
 
   var service = Option.empty[Services]
 
@@ -111,7 +114,7 @@ case class Controller(
   solverListSelectionModel.addListSelectionListener(
     (_: ListSelectionEvent) => {
       val idx = solverListSelectionModel.getAnchorSelectionIndex
-      val desc = solverListModel.getElementAt(idx).solverDescription
+      val desc = solverListModel.getElementAt(idx).description
       setInfoDoc(desc)
     })
 
@@ -278,7 +281,7 @@ case class Controller(
     AnaExecutionContextImpl.createDefaultExecutorService((exe: Throwable) => log.error(exe.getMessage, exe))
   }
 
-  def selectedSolverFactory: SolverFactory = {
+  def selectedSolverFactory: SolverRatedFactory = {
     require(!solverListSelectionModel.isSelectionEmpty)
     val idx = solverListSelectionModel.getAnchorSelectionIndex
     solverListModel.elementAt(idx)
@@ -290,7 +293,7 @@ case class Controller(
 class Frame(
              outListModel: ListModel[String],
              outListSelectionModel: ListSelectionModel,
-             solverListModel: ListModel[SolverFactory],
+             solverListModel: ListModel[SolverRatedFactory],
              solverListSelectionModel: ListSelectionModel,
              textDoc: Document,
              stateDoc: Document,
@@ -404,7 +407,7 @@ class Frame(
     }
 
     def createSolverFactoryList: Component = {
-      val list: JList[SolverFactory] = new JList[SolverFactory]()
+      val list: JList[SolverRatedFactory] = new JList[SolverRatedFactory]()
       list.setModel(solverListModel)
       list.setSelectionModel(solverListSelectionModel)
       list.setFont(list.getFont.deriveFont(fontSize))
@@ -432,11 +435,23 @@ trait SolverFactory {
 
   def createSolver(implicit ec: ExecutionContextExecutor): Solver
 
-  def solverDescription: String
+  def description: String
 
-  def solverShortDescription: String
+  def shortDescription: String
 
-  override def toString: String = solverShortDescription
+  override def toString: String = shortDescription
+
+}
+
+trait SolverRatedFactory {
+
+  def createSolver(implicit ec: ExecutionContextExecutor): SolverRated
+
+  def description: String
+
+  def shortDescription: String
+
+  override def toString: String = shortDescription
 
 }
 
@@ -457,12 +472,12 @@ case class RaterFactoryAi(raterAiCfg: RaterAiCfg) extends RaterFactory {
   override def createRater: Rater = new RaterAi(raterAiCfg, None)
 
   override def description: String = {
-    val cwf = raterAiCfg.comonWordRating.map(r => " CommonWordFactor:%.3f".format(r) ).getOrElse("")
+    val cwf = raterAiCfg.comonWordRating.map(r => " CommonWordFactor:%.3f".format(r)).getOrElse("")
     "AI id:'%s'%s" format(raterAiCfg.id, cwf)
   }
 
   override def shortDescription: String = {
-    val cwf = raterAiCfg.comonWordRating.map(r => " CWF" ).getOrElse("")
+    val cwf = raterAiCfg.comonWordRating.map(r => " CWF").getOrElse("")
     "AI %s%s" format(raterAiCfg.id, cwf)
   }
 }
@@ -477,24 +492,36 @@ case class RaterFactoryRandom() extends RaterFactory {
 
 }
 
+case class RaterFactoryNone() extends RaterFactory {
+
+  override def createRater = (sent: Iterable[String]) => {
+    1.0
+  }
+
+  override def description = "no rating"
+
+  override def shortDescription = "NONE"
+
+}
+
 
 case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends SolverFactory {
 
   def createSolver(implicit ec: ExecutionContextExecutor): Solver = SolverPlain(maxDepth, parallel)
 
-  def solverDescription: String = s"Solver plain maxDepth:$maxDepth parallel:$parallel"
+  def description: String = s"SolverRated plain maxDepth:$maxDepth parallel:$parallel"
 
-  def solverShortDescription: String = s"PLAIN"
+  def shortDescription: String = s"PLAIN"
 
 }
 
-case class SolverFactoryRated(solverFactory: SolverFactory, rater: RaterFactory) extends SolverFactory {
+case class SolverFactoryRated(solverFactory: SolverFactory, rater: RaterFactory) extends SolverRatedFactory {
 
-  def createSolver(implicit ec: ExecutionContextExecutor): Solver = {
-    SolverRated(solverFactory.createSolver, rater.createRater)
+  def createSolver(implicit ec: ExecutionContextExecutor): SolverRated = {
+    SolverRatedImpl(solverFactory.createSolver, rater.createRater)
   }
 
-  def solverDescription: String = s"Solver rated with: ${rater.description}. Base solver: ${solverFactory.solverDescription}"
+  def description: String = s"SolverRated rated with: ${rater.description}. Base solver: ${solverFactory.description}"
 
-  def solverShortDescription: String = s"RATED ${rater.shortDescription}"
+  def shortDescription: String = s"RATED ${rater.shortDescription}"
 }
