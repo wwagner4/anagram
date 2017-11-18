@@ -7,11 +7,11 @@ import anagram.words.{Word, WordMapper, WordMappersAbstract}
 
 import scala.util.Random
 
-object WordMappersPlain extends WordMappersAbstract {
+object WordMapperFactoryPlain extends WordMappersAbstract {
 
   private val ran = Random
 
-  def createWordMapper: WordMapper = {
+  def create: WordMapper = {
 
     val wordlist: Iterable[Word] =
       loadWordList("wordlist/wordlist_small.txt")

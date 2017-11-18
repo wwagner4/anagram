@@ -3,21 +3,21 @@ package anagram.ml.data.datamodel.grmred
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
-import anagram.ml.data.datamodel.plain.WordMappersPlain
-import anagram.words.{Word, WordMapper, WordMappersAbstract}
+import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
+import anagram.words.{Word, WordMapper, WordMapperFactory, WordMappersAbstract}
 
 import scala.util.Random
 
-object WordMappersGrammerReduced extends WordMappersAbstract {
+object WordMapperFactoryGrammerReduced extends WordMappersAbstract with WordMapperFactory {
 
   case class GroupedWord(grp: String, value: String)
 
   val resName = "wordlist/wordtypelist_small.txt"
 
-  def createWordMapper: WordMapper = {
+  def create: WordMapper = {
     val ran = Random
 
-    lazy val wl = WordMappersPlain.createWordMapper.wordList
+    lazy val wl = WordMapperFactoryPlain.create.wordList
 
     val unknown = "?"
 

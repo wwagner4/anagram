@@ -1,5 +1,9 @@
 package anagram.ml.data.datamodel.bookwords
 
-object BookwordsMapper {
+import anagram.words.WordMapperFactory
+
+object BookwordsMapper extends WordMapperFactory {
+
+  override def create = ???
 
 }

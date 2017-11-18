@@ -18,7 +18,7 @@ object CreateLearningDataGrammarReduced {
       (5, LinearAdjustParam(50.9978,278.8994)),
     ).toMap
 
-    val mapper = WordMappersGrammerReduced.createWordMapper
+    val mapper = WordMapperFactoryGrammerReduced.create
     val splitter = new BookSplitterTxt()
     val screator = new SentenceCreatorSliding()
     val srater = SentenceRaterCounting

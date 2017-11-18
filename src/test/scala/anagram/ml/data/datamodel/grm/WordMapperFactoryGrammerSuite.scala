@@ -2,9 +2,9 @@ package anagram.ml.data.datamodel.grm
 
 import org.scalatest.{FunSuite, MustMatchers}
 
-class WordMappersGrammerSuite extends FunSuite with MustMatchers {
+class WordMapperFactoryGrammerSuite extends FunSuite with MustMatchers {
 
-  private lazy val m = WordMappersGrammer.createWordMapper
+  private lazy val m = WordMapperFactoryGrammer.create
 
   test("transform house") {
     m.transform("house") mustBe Seq("n&vt&vi")

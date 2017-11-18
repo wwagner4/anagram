@@ -1,11 +1,11 @@
 package anagram.ml.data.common
 
 import anagram.common.IoUtil
-import anagram.ml.data.datamodel.plain.WordMappersPlain
+import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
 
 object SentenceRaterTryout extends App {
 
-  val mapper = WordMappersPlain.createWordMapper
+  val mapper = WordMapperFactoryPlain.create
   val screa: SentenceCreator = new SentenceCreatorSliding()
   val splitter = new BookSplitterTxt
   val sentenceRater: SentenceRater = new SentenceRaterStraight(mapper)

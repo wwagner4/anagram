@@ -25,7 +25,7 @@ object GrammarMain extends App {
 
 object CreateLearningDataGrammar {
 
-  private val mapper = WordMappersGrammer.createWordMapper
+  private val mapper = WordMapperFactoryGrammer.create
 
   val splitter: BookSplitter = new BookSplitterTxt()
   val screator: SentenceCreator = new SentenceCreatorSliding()

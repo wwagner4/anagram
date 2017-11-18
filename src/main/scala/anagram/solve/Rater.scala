@@ -4,9 +4,9 @@ import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
-import anagram.ml.data.datamodel.grm.WordMappersGrammer
-import anagram.ml.data.datamodel.grmred.WordMappersGrammerReduced
-import anagram.ml.data.datamodel.plain.WordMappersPlain
+import anagram.ml.data.datamodel.grm.WordMapperFactoryGrammer
+import anagram.ml.data.datamodel.grmred.WordMapperFactoryGrammerReduced
+import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
 import anagram.words.WordMapperPrediction
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
@@ -63,9 +63,9 @@ object RaterAiCfgs {
     }
   }
 
-  def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", Some(0.01), WordMappersPlain.createWordMapper, adjustOutputPlain)
-  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", Some(0.01), WordMappersGrammer.createWordMapper, adjustOutputGrammar)
-  def cfgGrmRed = RaterAiCfg(s"GrmRed01", Some(0.005), WordMappersGrammerReduced.createWordMapper, adjustOutputGrammarReduced)
+  def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", Some(0.01), WordMapperFactoryPlain.create, adjustOutputPlain)
+  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", Some(0.01), WordMapperFactoryGrammer.create, adjustOutputGrammar)
+  def cfgGrmRed = RaterAiCfg(s"GrmRed01", Some(0.005), WordMapperFactoryGrammerReduced.create, adjustOutputGrammarReduced)
 
 
 }

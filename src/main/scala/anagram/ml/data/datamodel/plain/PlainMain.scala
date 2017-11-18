@@ -35,7 +35,7 @@ object CreateLearningDataPlain {
       (5, LinearAdjustParam(22.1913, 8.2909)),
     ).toMap
 
-    val mapper = WordMappersPlain.createWordMapper
+    val mapper = WordMapperFactoryPlain.create
     val splitter = new BookSplitterTxt()
     val screator = new SentenceCreatorSliding()
     val srater = new SentenceRaterStraight(mapper)
