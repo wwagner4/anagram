@@ -1,6 +1,5 @@
-package anagram.words
+package anagram.ml.data.datamodel.plain
 
-import anagram.ml.data.datamodel.plain.WordMappersPlain
 import org.scalatest.{FunSuite, MustMatchers}
 
 class WordMappersPlainSuite extends FunSuite with MustMatchers {

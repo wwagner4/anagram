@@ -1,7 +1,6 @@
-package anagram.ml.data
+package anagram.ml.data.common
 
 import anagram.common.IoUtil
-import anagram.ml.data.common.BookSplitterTxt
 
 object BookSplitterTryout extends App {
 

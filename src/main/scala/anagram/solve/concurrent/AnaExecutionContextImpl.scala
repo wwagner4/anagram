@@ -8,7 +8,11 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.annotation.tailrec
 import scala.concurrent.{BlockContext, CanAwait}
 
-
+/**
+  * Copy of the scala global execution context.
+  * Had to extract that code in order to create an Execution context from an existing
+  * ExecutorService.
+  */
 object AnaExecutionContextImpl {
 
   def createDefaultExecutorService(reporter: Throwable => Unit): ExecutorService = {

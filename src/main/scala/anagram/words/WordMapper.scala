@@ -16,5 +16,6 @@ trait WordMapper {
 
   def wordList: Iterable[Word]
 
+
 }
 

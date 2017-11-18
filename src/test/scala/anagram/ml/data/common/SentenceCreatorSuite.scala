@@ -1,6 +1,5 @@
-package anagram.ml.data
+package anagram.ml.data.common
 
-import anagram.ml.data.common.SentenceCreatorSliding
 import anagram.ml.data.datamodel.plain.WordMappersPlain
 import org.scalatest.{FunSuite, MustMatchers}
 
