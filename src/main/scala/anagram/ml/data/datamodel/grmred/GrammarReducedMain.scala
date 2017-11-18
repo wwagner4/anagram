@@ -4,15 +4,15 @@ import anagram.ml.train.{Training, TrainingConfig}
 
 object GrammarReducedMain extends App {
 
-  val id = "GrmRed01"
-  CreateLearningDataGrammarReduced.createData(id)
-  trainDataGrammarReduced(id)
+  val _id = "GrmRed01"
+  CreateLearningDataGrammarReduced.createData(_id)
+  trainDataGrammarReduced
 
-  def trainDataGrammarReduced(id: String) = {
+  def trainDataGrammarReduced = {
 
     val cfg = TrainingConfig(
-      id,
-      (sentLen: Int) => {
+      id = _id,
+      iterations = (sentLen: Int) => {
         if (sentLen == 2) 600
         else if (sentLen == 3) 400
         else if (sentLen == 4) 300
