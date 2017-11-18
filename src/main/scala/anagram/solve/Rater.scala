@@ -7,7 +7,7 @@ import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
 import anagram.ml.data.datamodel.grm.WordMappersGrammer
 import anagram.ml.data.datamodel.grmred.WordMappersGrammerReduced
 import anagram.ml.data.datamodel.plain.WordMappersPlain
-import anagram.words.WordMapper
+import anagram.words.WordMapperPrediction
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -30,7 +30,7 @@ class RaterRandom extends Rater {
 case class RaterAiCfg(
                        id: String,
                        comonWordRating: Option[Double], // None means no common word rating. Values should be around 0.005
-                       mapper: WordMapper,
+                       mapper: WordMapperPrediction,
                        adjustOutput: (Int, Double) => Double,
                      )  {
 }

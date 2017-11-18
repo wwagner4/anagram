@@ -1,10 +1,6 @@
 package anagram.words
 
-trait WordMapper {
-
-  def transform(value: String): Seq[String]
-
-  def toNum(word: String): Int
+trait WordMapper extends WordMapperPrediction {
 
   def toWord(num: Int): String
 

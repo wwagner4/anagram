@@ -1,20 +1,28 @@
 
-- OK Use simple wordlist
--- OK Wordlist loadable
--- OK Wordlist saveable
-
-- OK Create data
--- OK Use only sentances that contain groups from the simple wordlist
-
 -    Solver
--- OK Optimize runtime with cache
---    Parallel processing
+--    Parallel processing with Akka
 
 -    Word mapping
 -- OK Map similar groups to similar numbers
 --- OK E.g. sort by wordlength, alphabetically
 ---    Similarity could be learned with ml
 ----    Get a dataset describing the similarity of groups ???
+
+- Connect the mapper from learning with the one used in prediction
+-- There could be two mappers WordMapper WordMapperPrediction.
+
+- Plain mapping with common words. E.g. the most common words in the books.
+
+----------------------------------------------------------------------------
+
+- OK Use simple wordlist
+-- OK Wordlist loadable
+-- OK Wordlist saveable
+
+- OK Create data
+-- OK Use only sentances that contain groups from the simple wordlist
 -- OK sould not return empty groups. ???
 -- OK sould not return duplicate sentances. ???
 --- OK make testcase 'wolfi' with wordlist
+-- OK Optimize runtime with cache
+
