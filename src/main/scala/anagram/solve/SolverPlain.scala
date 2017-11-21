@@ -14,8 +14,7 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
   override def solve(sourceText: String, words: Iterable[Word]): Iterator[Iterable[String]] = {
     _cancelled = false
     val txtAdj = sourceText.toLowerCase().replaceAll("\\s", "").sorted
-    solve1(txtAdj, 0, words.toList, new AnaCache())
-      .toIterator
+    solve1(txtAdj, 0, words.toList, new AnaCache()).toIterator
   }
 
   override def cancel(): Unit = _cancelled = true
@@ -36,14 +35,11 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
           val matchingWords =
             if (depth >= 1) Seq(findMatchingWords(txt, words))
             else toParallel(findMatchingWords(txt, words))
-          matchingWords.flatMap(_.flatMap { mw =>
-            val restText = removeChars(txt, mw.toList)
-            val subAnas = solve1(restText, depth + 1, words, anaCache)
-            if (restText.isEmpty && subAnas.isEmpty) {
-              List(List(mw))
-            } else {
-              subAnas.map(sent => mw :: sent)
-            }
+          matchingWords.flatMap(_.flatMap { matchingWord =>
+            val restTex = removeChars(txt, matchingWord.toList)
+            val anagrams = solve1(restTex, depth + 1, words, anaCache)
+            if (restTex.isEmpty && anagrams.isEmpty) List(List(matchingWord))
+            else anagrams.map(sent => matchingWord :: sent)
           })
         }
       }
@@ -52,8 +48,8 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
   }
 
   def toParallel[T](in: Iterable[T]): ParIterable[Iterable[T]] = {
-    val mws1Size = in.size
-    val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
+    val _size = in.size
+    val grpSize = if (_size <= parallel) 1 else _size / parallel
     val mwsp = in.grouped(grpSize).toSeq.par
     mwsp.tasksupport = new ExecutionContextTaskSupport(ec)
     mwsp
