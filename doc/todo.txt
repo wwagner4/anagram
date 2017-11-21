@@ -1,11 +1,21 @@
-- Solver uses SortedMap as Parameter. No return
+- Refactoring remove SolverIter
 
 - Plain mapping with common words. E.g. the most common words in the books.
 
+- Plain mapping using word frequency
+
+- Grammar mapping using word frequency
+
+- Adding new books
 
 
--    Solver
---    Parallel processing with Akka
+
+
+----------------------------------------------------------------------------
+- Solver uses SortedMap as Parameter. No return
+
+-  Solver
+--  Parallel processing with Akka
 
 -    Word mapping
 -- OK Map similar groups to similar numbers
