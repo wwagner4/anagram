@@ -58,25 +58,8 @@ object SolverMain extends App {
     val baseSolver = SolverFactoryPlain().createSolver
     val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, WordLists.wordListIgnoring)
     outWriteToFile(anagrams, srcText)
-    //outIter(anagrams, srcText)
   }
   log.info("Finished")
-
-  def outIter(anas: Iterator[Ana], srcText: String): Unit = {
-    val solverIter = SolverIter.instance(anas, 10)
-    for (anas <- solverIter.toStream) {
-      if (anas.isEmpty) {
-        log.info("-- NO RESULT SO LONG --")
-      } else {
-        val re = anas
-          .map(ana => ana.sentence.mkString(" "))
-          .map(anaStr => "%20s".format(anaStr))
-          .mkString(", ")
-        log.info(s"$srcText -> $re")
-      }
-      Thread.sleep(500)
-    }
-  }
 
   def outWriteToFile(anas: Iterator[Ana], srcText: String): Unit = {
 

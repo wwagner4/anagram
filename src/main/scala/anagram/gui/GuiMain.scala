@@ -10,7 +10,7 @@ import javax.swing.border.Border
 import javax.swing.event.ListSelectionEvent
 import javax.swing.text._
 
-import anagram.common.{Cancelable, IoUtil}
+import anagram.common.{Cancelable, IoUtil, SortedList}
 import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
 import anagram.solve.concurrent.AnaExecutionContextImpl
@@ -18,7 +18,8 @@ import net.miginfocom.swing.MigLayout
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success}
 
 object GuiMain extends App {
@@ -128,16 +129,7 @@ case class Controller(
           cnt = 0
           setStateDoc(s"solving $getText")
           fillListModel(Seq.empty[String])
-          val siter = solve(getText)(ec)
-          for (anas <- siter.toStream) {
-            SwingUtilities.invokeAndWait { () =>
-              val sentences = anas.map(ana => ana.sentence.mkString(" "))
-              fillListModel(sentences)
-              cnt = siter.solvedAnagrams
-              setStateDoc(s"solving. found $cnt anagrams  ")
-            }
-            pause(400)
-          }
+          solve(getText)(ec)
         }, () => {
           setStateDoc(s"solved. $cnt anagrams")
         })
@@ -248,14 +240,37 @@ case class Controller(
     service = Option.empty[Services]
   }
 
-  def solve(srcText: String)(implicit ec: ExecutionContextExecutor): SolverIter = {
+  def running: Boolean = service.isDefined
+
+  implicit val ordering: OrderingAnaRatingDesc = new OrderingAnaRatingDesc
+
+  def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Unit = {
     val solver = selectedSolverFactory.createSolver(ec)
     _cancelable :+= solver
     val anas: Iterator[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
     log.info(s"[solve] after solver.solve")
-    val inst = SolverIter.instance(anas, 500)
-    _cancelable :+= inst
-    inst
+    val sl = SortedList.instance[Ana]
+    val future = Future {
+      while (running && anas.hasNext) {
+        var cnt = 0
+        while (cnt < 100 && anas.hasNext) {
+          sl.add(anas.next())
+          cnt += 1
+        }
+        SwingUtilities.invokeAndWait { () =>
+          if (running) {
+            val n = sl.size
+            setStateDoc(s"found $n anagrams")
+          }
+          val line = sl.take(500)
+            .map(_.sentence)
+            .map(_.mkString(" "))
+          fillListModel(line)
+        }
+        pause(100)
+      }
+    }
+    Await.ready(future, Duration(10, TimeUnit.HOURS))
   }
 
   def getText: String = textDoc.getText(0, textDoc.getLength)
