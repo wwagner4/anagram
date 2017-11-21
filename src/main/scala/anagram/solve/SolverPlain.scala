@@ -3,7 +3,7 @@ package anagram.solve
 import anagram.words.Word
 
 import scala.collection.GenIterable
-import scala.collection.parallel.ExecutionContextTaskSupport
+import scala.collection.parallel.{ExecutionContextTaskSupport, ParIterable}
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
@@ -13,7 +13,8 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
 
   override def solve(sourceText: String, words: Iterable[Word]): Iterator[Iterable[String]] = {
     _cancelled = false
-    solve1(sourceText.toLowerCase().replaceAll("\\s", "").sorted, 0, words.toList, new AnaCache())
+    val txtAdj = sourceText.toLowerCase().replaceAll("\\s", "").sorted
+    solve1(txtAdj, 0, words.toList, new AnaCache())
       .toIterator
   }
 
@@ -33,18 +34,8 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
         if (depth >= maxDepth) Iterable.empty[List[String]]
         else {
           val matchingWords =
-            if (depth >= 1) {
-              Seq(findMatchingWords(txt, words).filter(!_.isEmpty))
-            }
-            else {
-              val mws1 = findMatchingWords(txt, words).filter(!_.isEmpty)
-              val mws1Size = mws1.size
-              val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
-              val mwsp = mws1.grouped(grpSize).toSeq.par
-              val ts = new ExecutionContextTaskSupport(ec)
-              mwsp.tasksupport = ts
-              mwsp
-            }
+            if (depth >= 1) Seq(findMatchingWords(txt, words))
+            else toParallel(findMatchingWords(txt, words))
           matchingWords.flatMap(_.flatMap { mw =>
             val restText = removeChars(txt, mw.toList)
             val subAnas = solve1(restText, depth + 1, words, anaCache)
@@ -60,6 +51,14 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
     re
   }
 
+  def toParallel[T](in: Iterable[T]): ParIterable[Iterable[T]] = {
+    val mws1Size = in.size
+    val grpSize = if (mws1Size <= parallel) 1 else mws1Size / parallel
+    val mwsp = in.grouped(grpSize).toSeq.par
+    mwsp.tasksupport = new ExecutionContextTaskSupport(ec)
+    mwsp
+  }
+
   def validWordFromSorted(word: Word, txtSorted: String): Option[String] = {
     val lw = word.wordSorted.length
     val lt = txtSorted.length
@@ -73,10 +72,11 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
           None
         }
         else {
-          if (word.wordSorted(iw) == txtSorted(it)) v(iw+1, it+1)
-          else v(iw, it+1)
+          if (word.wordSorted(iw) == txtSorted(it)) v(iw + 1, it + 1)
+          else v(iw, it + 1)
         }
       }
+
       v(0, 0)
     }
   }
@@ -102,6 +102,7 @@ case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionConte
   def findMatchingWords(txt: String, words: List[Word]): Iterable[String] = {
     val mws: Seq[String] = words.flatMap(w => validWordFromSorted(w, txt))
     Random.shuffle(mws)
+    mws.filter(!_.isEmpty)
   }
 
   def removeChars(txt: String, mw: List[Char]): String = {
