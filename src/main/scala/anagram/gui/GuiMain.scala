@@ -108,8 +108,6 @@ case class Controller(
 
   var service = Option.empty[Services]
 
-  var cnt = 0
-
   var _cancelable = Seq.empty[Cancelable]
 
   solverListSelectionModel.addListSelectionListener(
@@ -126,12 +124,11 @@ case class Controller(
         log.info("[actionPerformed] already started")
       } else {
         background((ec: ExecutionContextExecutor) => {
-          cnt = 0
           setStateDoc(s"solving $getText")
           fillListModel(Seq.empty[String])
-          solve(getText)(ec)
+          val cnt = solve(getText)(ec)
+          setStateDoc(s"solved $cnt anagrams")
         }, () => {
-          setStateDoc(s"solved. $cnt anagrams")
         })
       }
     }
@@ -146,7 +143,7 @@ case class Controller(
     override def actionPerformed(e: ActionEvent): Unit = {
       if (service.isDefined) {
         shutdown()
-        setStateDoc(s"canceled. $cnt anagrams")
+        log.info("canceled")
       } else {
         log.info("not started")
       }
@@ -244,13 +241,13 @@ case class Controller(
 
   implicit val ordering: OrderingAnaRatingDesc = new OrderingAnaRatingDesc
 
-  def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Unit = {
+  def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Int = {
     val solver = selectedSolverFactory.createSolver(ec)
     _cancelable :+= solver
     val anas: Iterator[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
     log.info(s"[solve] after solver.solve")
     val sl = SortedList.instance[Ana]
-    val future = Future {
+    val future: Future[Int] = Future {
       while (running && anas.hasNext) {
         var cnt = 0
         while (cnt < 100 && anas.hasNext) {
@@ -269,8 +266,9 @@ case class Controller(
         }
         pause(100)
       }
+      sl.size
     }
-    Await.ready(future, Duration(10, TimeUnit.HOURS))
+    Await.result(future, Duration(10, TimeUnit.HOURS))
   }
 
   def getText: String = textDoc.getText(0, textDoc.getLength)
