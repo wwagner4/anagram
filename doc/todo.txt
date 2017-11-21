@@ -1,6 +1,5 @@
-- Refactoring remove SolverIter
-
 - Plain mapping with common words. E.g. the most common words in the books.
+-- Make Wordlist configurable
 
 - Plain mapping using word frequency
 
@@ -26,6 +25,8 @@
 
 
 ----------------------------------------------------------------------------
+
+- OK Refactoring remove SolverIter
 
 - OK Solver should not return Ana but Iterable[String]
 

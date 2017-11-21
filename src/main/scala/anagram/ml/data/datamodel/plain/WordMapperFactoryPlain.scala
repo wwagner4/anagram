@@ -3,11 +3,11 @@ package anagram.ml.data.datamodel.plain
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
-import anagram.words.{Word, WordMapper, WordMappersAbstract}
+import anagram.words.{Word, WordMapper}
 
 import scala.util.Random
 
-object WordMapperFactoryPlain extends WordMappersAbstract {
+object WordMapperFactoryPlain {
 
   private val ran = Random
 

@@ -1,6 +1,6 @@
 package anagram.solve
 
-import anagram.ml.data.datamodel.grm.WordMapperFactoryGrammer
+import anagram.ml.data.datamodel.grm.WordMapperFactoryGrammar
 
 import scala.concurrent.ExecutionContext
 
@@ -8,7 +8,7 @@ object SolverPlainTryout extends App {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
-  val wl =  WordMapperFactoryGrammer.create.wordList
+  val wl =  WordMapperFactoryGrammar.create.wordList
 
   val start = System.currentTimeMillis()
 

@@ -4,11 +4,11 @@ import java.nio.file.Paths
 
 import anagram.common.IoUtil
 import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
-import anagram.words.{Word, WordMapper, WordMapperFactory, WordMappersAbstract}
+import anagram.words.{Word, WordMapper, WordMapperFactory}
 
 import scala.util.Random
 
-object WordMapperFactoryGrammerReduced extends WordMappersAbstract with WordMapperFactory {
+object WordMapperFactoryGrammerReduced extends WordMapperFactory {
 
   case class GroupedWord(grp: String, value: String)
 

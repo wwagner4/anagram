@@ -1,9 +1,9 @@
-package anagram.ml.data.wordlist
+package anagram.words
 
 import anagram.common.IoUtil
 import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
 
-object WordlistBooksFrequency extends App {
+object WordlistBooksFrequencyCreator extends App {
 
 
   val bc = BookCollections.collectionEn2

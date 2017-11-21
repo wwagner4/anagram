@@ -4,7 +4,7 @@ import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
-import anagram.ml.data.datamodel.grm.WordMapperFactoryGrammer
+import anagram.ml.data.datamodel.grm.WordMapperFactoryGrammar
 import anagram.ml.data.datamodel.grmred.WordMapperFactoryGrammerReduced
 import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
 import anagram.words.WordMapperPrediction
@@ -64,7 +64,7 @@ object RaterAiCfgs {
   }
 
   def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", Some(0.01), WordMapperFactoryPlain.create, adjustOutputPlain)
-  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", Some(0.01), WordMapperFactoryGrammer.create, adjustOutputGrammar)
+  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", Some(0.01), WordMapperFactoryGrammar.create, adjustOutputGrammar)
   def cfgGrmRed = RaterAiCfg(s"GrmRed01", Some(0.005), WordMapperFactoryGrammerReduced.create, adjustOutputGrammarReduced)
 
 

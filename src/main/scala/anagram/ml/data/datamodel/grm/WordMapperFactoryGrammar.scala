@@ -4,32 +4,30 @@ import java.nio.file.Paths
 
 import anagram.common.IoUtil
 import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
-import anagram.words.{Word, WordMapper, WordMapperFactory, WordMappersAbstract}
+import anagram.words.{Word, WordMapper, WordMapperFactory}
 
 import scala.util.Random
 
-object WordMapperFactoryGrammer extends WordMappersAbstract with  WordMapperFactory {
-
-  case class GrpoupedWord(grp: String, value: String)
+object WordMapperFactoryGrammar extends WordMapperFactory {
 
   val resName = "wordlist/wordtypelist_small.txt"
 
   def create: WordMapper = {
     val ran = Random
 
-    def readLine(line: String): GrpoupedWord = {
+    def readLine(line: String): Word = {
       val split = line.split(";")
-      GrpoupedWord(split(0), split(1))
+      Word(split(0), split(0).sorted, Some(split(1)))
     }
 
     lazy val wl = WordMapperFactoryPlain.create.wordList
 
     val unknown = "?"
 
-    val words: Seq[GrpoupedWord] = IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (iter) => iter.toSeq.map(readLine))
-    val wordMap: Map[String, GrpoupedWord] = words.map(gword => (gword.value, gword)).toMap
+    val words: Seq[Word] = IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (iter) => iter.toSeq.map(readLine))
+    val wordMap: Map[String, Word] = words.map(gword => (gword.grp.get, gword)).toMap
 
-    val grpList = words.map(groupedWord =>  groupedWord.grp).distinct.sorted :+ unknown
+    val grpList = words.map(groupedWord => groupedWord.grp.get).distinct.sorted :+ unknown
     val grpListIdx = grpList.zipWithIndex
     val grpListWordMap: Map[String, Int] = grpListIdx.toMap
     val grpListIntMap: Map[Int, String] = grpListIdx.map{case (w, i) => (i, w)}.toMap
@@ -50,7 +48,7 @@ object WordMapperFactoryGrammer extends WordMappersAbstract with  WordMapperFact
       override def containsWord(str: String): Boolean = grpList.contains(str)
 
       override def transform(value: String): Seq[String] =
-        Seq(wordMap.get(value).map(_.grp).getOrElse(unknown))
+        Seq(wordMap.get(value).map(_.word).getOrElse(unknown))
 
       override def wordList: Iterable[Word] = wl
 
