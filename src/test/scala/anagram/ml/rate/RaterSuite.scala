@@ -1,4 +1,4 @@
-package anagram.solve
+package anagram.ml.rate
 
 import org.scalatest.{FunSuite, MustMatchers}
 

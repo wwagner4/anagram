@@ -1,7 +1,7 @@
 package anagram.ml.data.common
 
 import anagram.common.IoUtil
-import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
+import anagram.model.plain.WordMapperFactoryPlain
 
 object SentenceCreatorTryout extends App {
 

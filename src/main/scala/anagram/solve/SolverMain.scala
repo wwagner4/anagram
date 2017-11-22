@@ -2,6 +2,8 @@ package anagram.solve
 
 import anagram.common.IoUtil
 import anagram.gui.SolverFactoryPlain
+import anagram.ml.rate.RaterAi
+import anagram.model.Configurations
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
@@ -48,7 +50,7 @@ object SolverMain extends App {
   )
 
   val srcTexts = srcTextsCe
-  val cfg = RaterAiCfgs.cfgGrmRed
+  val cfg = Configurations.grammarReduced.cfgRaterAi
   val idSolving = "02"
 
   for (srcText <- srcTexts) {

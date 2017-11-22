@@ -1,6 +1,6 @@
 package anagram.ml.data.common
 
-object SentenceRaterCounting extends SentenceRater {
+class SentenceRaterCounting extends SentenceRater {
   override def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
     val rmap: Seq[(Seq[String], Iterable[Sentence])] = sentences.groupBy(sent => sent.words).toSeq
     for ((w, sentences) <- rmap) yield {

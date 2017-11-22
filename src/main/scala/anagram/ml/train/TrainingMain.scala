@@ -2,7 +2,7 @@ package anagram.ml.train
 
 object TrainingMain extends App {
 
-  val cfg = TrainingConfig(
+  val cfg = CfgTrainingImpl(
     "en02",
     (sentLen: Int) => {
       if (sentLen <= 2 ) 180

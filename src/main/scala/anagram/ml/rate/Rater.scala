@@ -1,13 +1,10 @@
-package anagram.solve
+package anagram.ml.rate
 
 import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
-import anagram.ml.data.datamodel.grm.WordMapperFactoryGrammar
-import anagram.ml.data.datamodel.grmred.WordMapperFactoryGrammerReduced
-import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
-import anagram.words.WordMapperPrediction
+import anagram.model.CfgRaterAi
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -27,49 +24,6 @@ class RaterRandom extends Rater {
 
 }
 
-case class RaterAiCfg(
-                       id: String,
-                       comonWordRating: Option[Double], // None means no common word rating. Values should be around 0.005
-                       mapper: WordMapperPrediction,
-                       adjustOutput: (Int, Double) => Double,
-                     )  {
-}
-
-
-object RaterAiCfgs {
-
-  private def adjustOutputPlain(len: Int, rating: Double): Double = {
-    if (len == 1) rating + 5 // Anagram existing of one word must always be top
-    else if (len == 2) rating + 3.9
-    else if (len == 3) rating + 1.5
-    else if (len == 4) rating + 1.2
-    else rating
-  }
-
-  private def adjustOutputGrammar(len: Int, rating: Double): Double = {
-    if (len == 1) rating + 5 // Anagram existing of one word must always be top
-    else if (len == 2) rating + 0.2
-    else rating
-  }
-
-  private def adjustOutputGrammarReduced(len: Int, rating: Double): Double = {
-    len match {
-      case 1 => rating + 20
-      case 2 => rating + 0.6
-      case 3 => rating + 0.2
-      case 4 => rating + 0.3
-      case 5 => rating
-      case _ => rating - 20
-    }
-  }
-
-  def cfgPlain(nr: String) = RaterAiCfg(s"enPlain$nr", Some(0.01), WordMapperFactoryPlain.create, adjustOutputPlain)
-  def cfgGrm(nr: String) = RaterAiCfg(s"enGrm$nr", Some(0.01), WordMapperFactoryGrammar.create, adjustOutputGrammar)
-  def cfgGrmRed = RaterAiCfg(s"GrmRed01", Some(0.005), WordMapperFactoryGrammerReduced.create, adjustOutputGrammarReduced)
-
-
-}
-
 class RaterNone extends Rater {
 
   def rate(sent: Iterable[String]): Double = {
@@ -78,7 +32,7 @@ class RaterNone extends Rater {
 
 }
 
-class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Rater {
+class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Rater {
 
   private val log = LoggerFactory.getLogger("RaterAi")
 
@@ -105,7 +59,7 @@ class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Ra
   }
 
   def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
-    logInterval.foreach{interv =>
+    logInterval.foreach { interv =>
       if (cnt % interv == 0 && cnt > 0) log.info(s"Rated $cnt sentences")
     }
     cnt += 1
@@ -153,7 +107,7 @@ class RaterAi(cfg: RaterAiCfg, logInterval: Option[Int] = Some(1000)) extends Ra
 
 object CommonWordRater {
 
-  def rateCommonWords(sent:Iterable[String], commonWords: Set[String], commonFactor: Option[Double]): Double = {
+  def rateCommonWords(sent: Iterable[String], commonWords: Set[String], commonFactor: Option[Double]): Double = {
     if (commonFactor.isDefined) {
       sent.map(w => if (commonWords.contains(w)) 1 else 0).sum * commonFactor.get
     } else {

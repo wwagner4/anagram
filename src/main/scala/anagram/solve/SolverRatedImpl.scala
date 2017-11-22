@@ -1,5 +1,6 @@
 package anagram.solve
 
+import anagram.ml.rate.Rater
 import anagram.words.Word
 
 case class SolverRatedImpl(parentSolver: Solver, rater: Rater) extends SolverRated {

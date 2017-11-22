@@ -1,4 +1,4 @@
-package anagram.ml.data.datamodel.grm
+package anagram.model.grm
 
 import org.scalatest.{FunSuite, MustMatchers}
 

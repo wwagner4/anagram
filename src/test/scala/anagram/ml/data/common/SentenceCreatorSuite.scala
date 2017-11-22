@@ -1,6 +1,6 @@
 package anagram.ml.data.common
 
-import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
+import anagram.model.plain.WordMapperFactoryPlain
 import org.scalatest.{FunSuite, MustMatchers}
 
 class SentenceCreatorSuite extends FunSuite with MustMatchers {

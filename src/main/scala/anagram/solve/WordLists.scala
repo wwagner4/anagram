@@ -1,7 +1,8 @@
 package anagram.solve
-import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
+import anagram.model.plain.WordMapperFactoryPlain
 import anagram.words.Word
 
+// TODO move to package wordlists
 object WordLists {
 
   lazy val wordListIgnoring: Iterable[Word] = {

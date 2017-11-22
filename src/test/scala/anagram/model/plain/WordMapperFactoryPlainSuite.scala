@@ -1,4 +1,4 @@
-package anagram.ml.data.datamodel.plain
+package anagram.model.plain
 
 import org.scalatest.{FunSuite, MustMatchers}
 

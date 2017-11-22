@@ -1,6 +1,7 @@
 package anagram.ml.train
 
 import anagram.common.{DataFile, IoUtil}
+import anagram.model.CfgTraining
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
@@ -16,16 +17,16 @@ import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
 
 
-case class TrainingConfig(
+case class CfgTrainingImpl(
                          id: String,
                          iterations: Int => Int
-                         )
+                         ) extends CfgTraining
 
 object Training {
 
   private val log = LoggerFactory.getLogger("Training")
 
-  def train(cfg: TrainingConfig): Unit = {
+  def train(cfg: CfgTraining): Unit = {
     log.info(s"Started training for run: '${cfg.id}'")
     IoUtil.getTxtDataFilesFromWorkDir(cfg.id).foreach{dataFile =>
       trainDataFile(dataFile, cfg)
@@ -33,7 +34,7 @@ object Training {
     log.info(s"Finished training for run: '${cfg.id}'")
   }
 
-  def trainDataFile(dataFile: DataFile, cfg: TrainingConfig): Unit = {
+  def trainDataFile(dataFile: DataFile, cfg: CfgTraining): Unit = {
     log.info(s"Started training data file: '${dataFile.path.getFileName}'")
 
     val recordReader = new CSVRecordReader(0, ";")

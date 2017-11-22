@@ -4,38 +4,29 @@ import java.io.BufferedWriter
 import java.util.Locale
 
 import anagram.common.IoUtil
+import anagram.model.CfgCreateData
 import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
 
-case class CreateDataConfig(
-                             id: String,
-                             bookCollection: BookCollection,
-                             sentenceLength: Iterable[Int],
-                             adjustRating: (Double, Int) => Double,
-                           )
 
-
-class CreateLearningData(
-                          wm: WordMapper,
-                          bookSplitter: BookSplitter,
-                          sentenceCreator: SentenceCreator,
-                          sentenceRater: SentenceRater,
-                          mapWordsToNumbers: Boolean = true) {
+case class CreateLearningData(mapWordsToNumbers: Boolean = true) {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
-  def createData(config: CreateDataConfig): Unit = {
+  val bookSplitter: BookSplitter = new BookSplitterTxt
+
+  def createData(config: CfgCreateData): Unit = {
 
     val uris = config.bookCollection.books.map(bc => IoUtil.uri(bc.filename)).toStream
     for (len <- config.sentenceLength) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
-      val sent: Seq[Sentence] = sentenceCreator.create(split, len, wm)
+      val sent: Seq[Sentence] = config.sentenceCreator.create(split, len, config.mapper)
       log.info(s"Created ${sent.size} sentences of length $len")
       val ldPath = IoUtil.saveDataToWorkDir(
         filePrefix(config.id, mapWordsToNumbers),
         len,
-        writeSentences(len, sent, config.adjustRating)(_),
+        writeSentences(len, sent, config)(_),
       )
       log.info("Created learning data in " + ldPath)
     }
@@ -47,13 +38,13 @@ class CreateLearningData(
     else s"${id}_unmapped"
   }
 
-  def writeSentences(sentLength: Int, sentences: Seq[Sentence], adjRating: (Double, Int) => Double)(wr: BufferedWriter): Unit = {
-    for (rated <- sentenceRater.rateSentence(sentences)) {
+  def writeSentences(sentLength: Int, sentences: Seq[Sentence], config: CfgCreateData)(wr: BufferedWriter): Unit = {
+    for (rated <- config.sentenceRater.rateSentence(sentences)) {
       val sentAdjusted = Sentence(
         rated.sentence.sentenceType,
-        rated.sentence.words.map(word => if (mapWordsToNumbers) f(wm.toNum(word)) else word)
+        rated.sentence.words.map(word => if (mapWordsToNumbers) f(config.mapper.toNum(word)) else word)
       )
-      val ratingAdjusted = adjRating(rated.rating, sentLength)
+      val ratingAdjusted = config.adjustRating(rated.rating, sentLength)
       writeSentence(Rated(sentAdjusted, ratingAdjusted))(wr)
     }
   }

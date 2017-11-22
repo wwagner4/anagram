@@ -1,9 +1,9 @@
-package anagram.ml.data.datamodel.grm
+package anagram.model.grm
 
 import java.nio.file.Paths
 
 import anagram.common.IoUtil
-import anagram.ml.data.datamodel.plain.WordMapperFactoryPlain
+import anagram.model.plain.WordMapperFactoryPlain
 import anagram.words.{Word, WordMapper, WordMapperFactory}
 
 import scala.util.Random

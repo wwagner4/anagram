@@ -11,6 +11,8 @@ import javax.swing.event.ListSelectionEvent
 import javax.swing.text._
 
 import anagram.common.{Cancelable, IoUtil, SortedList}
+import anagram.ml.rate.{Rater, RaterAi, RaterRandom}
+import anagram.model.{CfgRaterAi, Configurations}
 import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
 import anagram.solve.concurrent.AnaExecutionContextImpl
@@ -74,7 +76,6 @@ case class Controller(
 
   val maxDepth = 5
   val parallel = 3
-  val raterNr = "12"
 
   val solverFactoryBase = SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel)
 
@@ -89,15 +90,15 @@ case class Controller(
       SolverFactoryRated(solverFactoryBase, rater)
     },
     {
-      val rater = RaterFactoryAi(RaterAiCfgs.cfgPlain(raterNr))
+      val rater = RaterFactoryAi(Configurations.plain.cfgRaterAi)
       SolverFactoryRated(solverFactoryBase, rater)
     },
     {
-      val rater = RaterFactoryAi(RaterAiCfgs.cfgGrm(raterNr))
+      val rater = RaterFactoryAi(Configurations.grammar.cfgRaterAi)
       SolverFactoryRated(solverFactoryBase, rater)
     },
     {
-      val rater = RaterFactoryAi(RaterAiCfgs.cfgGrmRed)
+      val rater = RaterFactoryAi(Configurations.grammarReduced.cfgRaterAi)
       SolverFactoryRated(solverFactoryBase, rater)
     },
   ).foreach(solverListModel.addElement)
@@ -480,7 +481,7 @@ trait RaterFactory {
 
 }
 
-case class RaterFactoryAi(raterAiCfg: RaterAiCfg) extends RaterFactory {
+case class RaterFactoryAi(raterAiCfg: CfgRaterAi) extends RaterFactory {
 
   override def createRater: Rater = new RaterAi(raterAiCfg, None)
 
@@ -528,13 +529,13 @@ case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends Solv
 
 }
 
-case class SolverFactoryRated(solverFactory: SolverFactory, rater: RaterFactory) extends SolverRatedFactory {
+case class SolverFactoryRated(solverFactory: SolverFactory, raterFactory: RaterFactory) extends SolverRatedFactory {
 
   def createSolver(implicit ec: ExecutionContextExecutor): SolverRated = {
-    SolverRatedImpl(solverFactory.createSolver, rater.createRater)
+    SolverRatedImpl(solverFactory.createSolver, raterFactory.createRater)
   }
 
-  def description: String = s"SolverRated rated with: ${rater.description}. Base solver: ${solverFactory.description}"
+  def description: String = s"SolverRated rated with: ${raterFactory.description}. Base solver: ${solverFactory.description}"
 
-  def shortDescription: String = s"RATED ${rater.shortDescription}"
+  def shortDescription: String = s"RATED ${raterFactory.shortDescription}"
 }

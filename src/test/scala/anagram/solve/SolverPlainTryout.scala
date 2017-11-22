@@ -1,6 +1,6 @@
 package anagram.solve
 
-import anagram.ml.data.datamodel.grm.WordMapperFactoryGrammar
+import anagram.model.grm.WordMapperFactoryGrammar
 
 import scala.concurrent.ExecutionContext
 
