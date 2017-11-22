@@ -16,6 +16,7 @@ import anagram.model.{CfgRaterAi, Configurations}
 import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
 import anagram.solve.concurrent.AnaExecutionContextImpl
+import anagram.words.Wordlists
 import net.miginfocom.swing.MigLayout
 import org.slf4j.LoggerFactory
 
@@ -245,7 +246,7 @@ case class Controller(
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Int = {
     val solver = selectedSolverFactory.createSolver(ec)
     _cancelable :+= solver
-    val anas: Iterator[Ana] = solver.solve(srcText, WordLists.wordListIgnoring)
+    val anas: Iterator[Ana] = solver.solve(srcText, Wordlists.plainFreq2k)
     log.info(s"[solve] after solver.solve")
     val sl = SortedList.instance[Ana]
     val future: Future[Int] = Future {

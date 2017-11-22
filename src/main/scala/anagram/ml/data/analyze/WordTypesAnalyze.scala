@@ -1,26 +1,18 @@
 package anagram.ml.data.analyze
 
-import java.nio.file.Paths
-
-import anagram.common.IoUtil
-import anagram.model.grmred.WordMapperFactoryGrammerReduced.GroupedWord
+import anagram.words.{Word, Wordlists}
 
 object WordTypesAnalyze extends App {
 
-  val resName = "wordlist/wordtypelist_small.txt"
-
-  val words: Seq[GroupedWord] = IoUtil.loadTxtFromPath(
-    Paths.get(IoUtil.uri(resName)),
-    (iter) => iter.toSeq.map(readLine))
-
+  val words: Seq[Word] = Wordlists.grammar.toSeq
   val words2 = Set("a", "i")
 
-  val inter = words.filter(gw => words2.contains(gw.value)).toList
+  val inter = words.filter(gw => words2.contains(gw.word)).toList
   println(inter)
 
-  def readLine(line: String): GroupedWord = {
+  def readLine(line: String): Word = {
     val split = line.split(";")
-    GroupedWord(split(0), split(1))
+    Word(split(0), split(0).sorted, Some(split(1)))
   }
 
   val popGrps = Set(
@@ -54,11 +46,11 @@ object WordTypesAnalyze extends App {
   }
 
 
-  val words1: Seq[GroupedWord] = words.map(gw => gw.copy(grp = reduceGroups(gw.grp)))
+  val words1: Seq[Word] = words.map(gw => gw.copy(grp = Some(reduceGroups(gw.grp.get))))
 
-  val trip: Seq[(Int, String, String)] = for ((a, b) <- words1.groupBy(_.grp).toSeq) yield {
+  val trip: Seq[(Int, String, String)] = for ((a, b) <- words1.groupBy(_.grp.get).toSeq) yield {
     val size = b.size
-    val l = b.take(20).map(_.value).mkString(",")
+    val l = b.take(20).map(_.word).mkString(",")
     (size, a, l)
   }
 

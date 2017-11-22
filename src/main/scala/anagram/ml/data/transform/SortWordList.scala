@@ -8,11 +8,11 @@ import anagram.common.IoUtil
 
 object SortWordList extends App {
 
-  val file: URI = IoUtil.uri("wordlist/wordtypelist_small.txt")
+  val file: URI = IoUtil.uri("wordlist/wordlist_grammar_small.txt")
 
   val sorted: Iterable[(String, String)] = IoUtil.loadTxtFromPath(Paths.get(file), read)
 
-  val filename = "wordtypelist_small.txt"
+  val filename = "wordlist_grammar_small.txt"
 
   IoUtil.saveToWorkDir(filename, (writer: BufferedWriter) => {
     sorted.foreach(value => {

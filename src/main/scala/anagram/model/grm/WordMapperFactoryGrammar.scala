@@ -1,30 +1,20 @@
 package anagram.model.grm
 
-import java.nio.file.Paths
-
-import anagram.common.IoUtil
 import anagram.model.plain.WordMapperFactoryPlain
-import anagram.words.{Word, WordMapper, WordMapperFactory}
+import anagram.words.{Word, WordMapper, WordMapperFactory, Wordlists}
 
 import scala.util.Random
 
 object WordMapperFactoryGrammar extends WordMapperFactory {
 
-  val resName = "wordlist/wordtypelist_small.txt"
-
   def create: WordMapper = {
     val ran = Random
-
-    def readLine(line: String): Word = {
-      val split = line.split(";")
-      Word(split(0), split(0).sorted, Some(split(1)))
-    }
 
     lazy val wl = WordMapperFactoryPlain.create.wordList
 
     val unknown = "?"
 
-    val words: Seq[Word] = IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (iter) => iter.toSeq.map(readLine))
+    val words: Seq[Word] = Wordlists.grammar.toSeq
     val wordMap: Map[String, Word] = words.map(gword => (gword.grp.get, gword)).toMap
 
     val grpList = words.map(groupedWord => groupedWord.grp.get).distinct.sorted :+ unknown

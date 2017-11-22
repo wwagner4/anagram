@@ -1,9 +1,6 @@
 package anagram.model.plain
 
-import java.nio.file.Paths
-
-import anagram.common.IoUtil
-import anagram.words.{Word, WordMapper}
+import anagram.words.{Word, WordMapper, Wordlists}
 
 import scala.util.Random
 
@@ -13,10 +10,7 @@ object WordMapperFactoryPlain {
 
   def create: WordMapper = {
 
-    val wordlist: Iterable[Word] =
-      loadWordList("wordlist/wordlist_small.txt")
-        .map(line => Word(line, line.sorted))
-
+    val wordlist: Iterable[Word] = Wordlists.plain
 
     val si: Seq[(String, Int)] = stringInt(wordlist)
     val siMap = si.toMap
@@ -68,6 +62,4 @@ object WordMapperFactoryPlain {
     x.sum
   }
 
-  private def loadWordList(resName: String): Iterable[String] =
-    IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(resName)), (l) => l.toIterable)
 }

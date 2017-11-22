@@ -4,6 +4,7 @@ import anagram.common.IoUtil
 import anagram.gui.SolverFactoryPlain
 import anagram.ml.rate.RaterAi
 import anagram.model.Configurations
+import anagram.words.Wordlists
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
@@ -58,7 +59,7 @@ object SolverMain extends App {
 
     val rater = new RaterAi(cfg)
     val baseSolver = SolverFactoryPlain().createSolver
-    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, WordLists.wordListIgnoring)
+    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, Wordlists.plainFreq3k)
     outWriteToFile(anagrams, srcText)
   }
   log.info("Finished")

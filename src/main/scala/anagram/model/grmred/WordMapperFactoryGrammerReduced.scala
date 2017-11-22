@@ -1,18 +1,11 @@
 package anagram.model.grmred
 
-import java.nio.file.Paths
-
-import anagram.common.IoUtil
 import anagram.model.plain.WordMapperFactoryPlain
-import anagram.words.{Word, WordMapper, WordMapperFactory}
+import anagram.words.{Word, WordMapper, WordMapperFactory, Wordlists}
 
 import scala.util.Random
 
 object WordMapperFactoryGrammerReduced extends WordMapperFactory {
-
-  case class GroupedWord(grp: String, value: String)
-
-  val resName = "wordlist/wordtypelist_small.txt"
 
   def create: WordMapper = {
     val ran = Random
@@ -34,9 +27,9 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       "prep",
     )
 
-    def readLine(line: String): GroupedWord = {
+    def readLine(line: String): Word = {
       val split = line.split(";")
-      GroupedWord(split(0), split(1))
+      Word(split(0), split(0).sorted , Some(split(1)), None)
     }
 
     def reduceGroups(grp: String): String = {
@@ -56,14 +49,11 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       }
     }
 
-    val words: Seq[GroupedWord] = IoUtil.loadTxtFromPath(
-      Paths.get(IoUtil.uri(resName)),
-      (iter) => iter.toSeq.map(readLine)).map(gw => GroupedWord(reduceGroups(gw.grp), gw.value))
-
-    val wordMap: Map[String, GroupedWord] = words.map(gword => (gword.value, gword)).toMap
+    val words: Seq[Word] = Wordlists.plain.toSeq
+    val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
 
     val grpList = words
-      .map(groupedWord => groupedWord.grp)
+      .map(groupedWord => groupedWord.grp.get)
       .distinct.sorted
 
     val grpListIdx = grpList.zipWithIndex
@@ -87,7 +77,7 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       override def containsWord(str: String): Boolean = grpList.contains(str)
 
       override def transform(value: String): Seq[String] =
-        Seq(wordMap.get(value).map(_.grp).getOrElse(unknown))
+        Seq(wordMap.get(value).map(_.grp.get).getOrElse(unknown))
 
       override def wordList: Iterable[Word] = wl
 
