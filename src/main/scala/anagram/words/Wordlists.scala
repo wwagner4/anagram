@@ -22,7 +22,7 @@ object Wordlists {
 
   def plain: Iterable[Word] = loadWordlistPlain(s"${prefix}_small.txt")
 
-  def grammar: Iterable[Word] = loadWordlistGrammar(s"${prefix}_grammar_small.txt")
+  def grammar: Iterable[Word] = loadWordlistGrammar(s"${prefix}_grammar_full.txt")
 
   private def loadWordlistGrammar(str: String): scala.Iterable[Word] = {
     def lineToWord(line: String): Word = {

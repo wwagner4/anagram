@@ -9,7 +9,7 @@ import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
 
 
-case class CreateLearningData(mapWordsToNumbers: Boolean = true) {
+object CreateLearningData {
 
   private val log = LoggerFactory.getLogger("LearningData")
 
@@ -24,7 +24,7 @@ case class CreateLearningData(mapWordsToNumbers: Boolean = true) {
       val sent: Seq[Sentence] = config.sentenceCreator.create(split, len, config.mapper)
       log.info(s"Created ${sent.size} sentences of length $len")
       val ldPath = IoUtil.saveDataToWorkDir(
-        filePrefix(config.id, mapWordsToNumbers),
+        filePrefix(config.id, config.mapWordsToNumbers),
         len,
         writeSentences(len, sent, config)(_),
       )
@@ -42,7 +42,7 @@ case class CreateLearningData(mapWordsToNumbers: Boolean = true) {
     for (rated <- config.sentenceRater.rateSentence(sentences)) {
       val sentAdjusted = Sentence(
         rated.sentence.sentenceType,
-        rated.sentence.words.map(word => if (mapWordsToNumbers) f(config.mapper.toNum(word)) else word)
+        rated.sentence.words.map(word => if (config.mapWordsToNumbers) f(config.mapper.toNum(word)) else word)
       )
       val ratingAdjusted = config.adjustRating(rated.rating, sentLength)
       writeSentence(Rated(sentAdjusted, ratingAdjusted))(wr)

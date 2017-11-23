@@ -7,15 +7,15 @@ class WordMapperFactoryGrammarSuite extends FunSuite with MustMatchers {
   private lazy val m = WordMapperFactoryGrammar.create
 
   test("transform house") {
-    m.transform("house") mustBe Seq("n&vt&vi")
+    m.transform("house") mustBe Seq("vi")
   }
 
   test("transform table") {
-    m.transform("table") mustBe Seq("n&vt&vi")
+    m.transform("table") mustBe Seq("vi")
   }
 
   test("transform eat") {
-    m.transform("eat") mustBe Seq("vt&vi")
+    m.transform("eat") mustBe Seq("vi")
   }
 
   test("transform i") {

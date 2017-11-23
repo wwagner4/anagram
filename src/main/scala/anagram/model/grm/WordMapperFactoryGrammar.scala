@@ -15,7 +15,7 @@ object WordMapperFactoryGrammar extends WordMapperFactory {
     val unknown = "?"
 
     val words: Seq[Word] = Wordlists.grammar.toSeq
-    val wordMap: Map[String, Word] = words.map(gword => (gword.grp.get, gword)).toMap
+    val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
 
     val grpList = words.map(groupedWord => groupedWord.grp.get).distinct.sorted :+ unknown
     val grpListIdx = grpList.zipWithIndex
@@ -38,7 +38,7 @@ object WordMapperFactoryGrammar extends WordMapperFactory {
       override def containsWord(str: String): Boolean = grpList.contains(str)
 
       override def transform(value: String): Seq[String] =
-        Seq(wordMap.get(value).map(_.word).getOrElse(unknown))
+        Seq(wordMap.get(value).map(_.grp.get).getOrElse(unknown))
 
       override def wordList: Iterable[Word] = wl
 

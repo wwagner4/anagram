@@ -40,6 +40,7 @@ class CfgModelPlain extends CfgModel {
     override def sentenceCreator: SentenceCreator = screator
     override def sentenceRater: SentenceRater = srater
     override def bookCollection: BookCollection = _bookCollection
+    override def mapWordsToNumbers: Boolean = true
 
   }
 

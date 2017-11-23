@@ -11,4 +11,5 @@ trait CfgCreateData {
   def bookCollection: BookCollection
   def sentenceLength: Iterable[Int]
   def adjustRating: (Double, Int) => Double
+  def mapWordsToNumbers: Boolean
 }
