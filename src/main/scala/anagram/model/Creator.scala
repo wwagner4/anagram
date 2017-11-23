@@ -5,10 +5,17 @@ import anagram.ml.train.Training
 
 object Creator extends App {
 
-  for (toCfg <- Configurations.all) {
-    CreateLearningData().createData(toCfg().cfgCreateData)
-    Training.train(toCfg().cfgTraining)
+
+  one(Configurations.grammarReduced)
+
+  private def all(): Unit = {
+    for (toCfg <- Configurations.all) {
+      one(toCfg())
+    }
   }
 
-
+  private def one(toCfg: CfgModel) = {
+    CreateLearningData().createData(toCfg.cfgCreateData)
+    Training.train(toCfg.cfgTraining)
+  }
 }

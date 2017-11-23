@@ -49,7 +49,7 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       }
     }
 
-    val words: Seq[Word] = Wordlists.plain.toSeq
+    val words: Seq[Word] = Wordlists.grammar.toSeq
     val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
 
     val grpList = words
