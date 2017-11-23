@@ -47,17 +47,17 @@ object SolverMain extends App {
   )
 
   val srcTextsCe = List(
-    "clint eastwood", // -> old west action             13 -> 700k
+    "clint eastwood", // -> old west action 13 -> 700k
   )
 
   val srcTexts = srcTextsCe
-  val cfg = Configurations.grammarReduced.cfgRaterAi
+  lazy val cfg = Configurations.grammarReduced.cfgRaterAi
   val idSolving = "02"
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
-    val rater = new RaterAi(cfg)
+    val rater = new RaterAi(() => cfg)
     val baseSolver = SolverFactoryPlain().createSolver
     val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, Wordlists.plainFreq3k)
     outWriteToFile(anagrams, srcText)

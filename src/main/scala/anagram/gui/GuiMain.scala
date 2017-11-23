@@ -80,8 +80,8 @@ case class Controller(
 
   val solverFactoryBase = SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel)
 
-  // Fill the solverListModel
-  Seq(
+
+  val solverFactories = Seq(
     {
       val rater = RaterFactoryNone()
       SolverFactoryRated(solverFactoryBase, rater)
@@ -90,19 +90,15 @@ case class Controller(
       val rater = RaterFactoryRandom()
       SolverFactoryRated(solverFactoryBase, rater)
     },
-    {
-      val rater = RaterFactoryAi(Configurations.plain.cfgRaterAi)
-      SolverFactoryRated(solverFactoryBase, rater)
-    },
-    {
-      val rater = RaterFactoryAi(Configurations.grammar.cfgRaterAi)
-      SolverFactoryRated(solverFactoryBase, rater)
-    },
-    {
-      val rater = RaterFactoryAi(Configurations.grammarReduced.cfgRaterAi)
-      SolverFactoryRated(solverFactoryBase, rater)
-    },
-  ).foreach(solverListModel.addElement)
+  )
+
+  val aiSolverFactories = Configurations.all.map {cfg =>
+    val rater = RaterFactoryAi(() => cfg().cfgRaterAi)
+    SolverFactoryRated(solverFactoryBase, rater)
+  }
+
+  // Fill the solverListModel
+  (solverFactories ++ aiSolverFactories).foreach(solverListModel.addElement)
 
   solverListSelectionModel.setSelectionInterval(2, 2)
 
@@ -482,18 +478,18 @@ trait RaterFactory {
 
 }
 
-case class RaterFactoryAi(raterAiCfg: CfgRaterAi) extends RaterFactory {
+case class RaterFactoryAi(raterAiCfg: () => CfgRaterAi) extends RaterFactory {
 
   override def createRater: Rater = new RaterAi(raterAiCfg, None)
 
   override def description: String = {
-    val cwf = raterAiCfg.comonWordRating.map(r => " CommonWordFactor:%.3f".format(r)).getOrElse("")
-    "AI id:'%s'%s" format(raterAiCfg.id, cwf)
+    val cwf = raterAiCfg().comonWordRating.map(r => " CommonWordFactor:%.3f".format(r)).getOrElse("")
+    "AI id:'%s'%s" format(raterAiCfg().id, cwf)
   }
 
   override def shortDescription: String = {
-    val cwf = raterAiCfg.comonWordRating.map(r => " CWF").getOrElse("")
-    "AI %s%s" format(raterAiCfg.id, cwf)
+    val cwf = raterAiCfg().comonWordRating.map(r => " CWF").getOrElse("")
+    "AI %s%s" format(raterAiCfg().id, cwf)
   }
 }
 
