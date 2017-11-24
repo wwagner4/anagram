@@ -8,31 +8,31 @@ object Wordlists {
 
   val prefix = "wordlist/wordlist"
 
-  def plainFreq2k: WordListFactory = f("Books 2k", "B2K", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_2000.txt"))
+  def plainFreq2k: WordListFactory = createFactory("Books 2k", "B2K", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_2000.txt"))
 
-  def plainFreq3k: WordListFactory = f("Books 3k", "B3k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_3000.txt"))
+  def plainFreq3k: WordListFactory = createFactory("Books 3k", "B3k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_3000.txt"))
 
-  def plainFreq5k: WordListFactory = f("Books 5k", "B5k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_5000.txt"))
+  def plainFreq5k: WordListFactory = createFactory("Books 5k", "B5k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_5000.txt"))
 
-  def plainFreq10k: WordListFactory = f("Books 10k", "B10K", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_10000.txt"))
+  def plainFreq10k: WordListFactory = createFactory("Books 10k", "B10K", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_10000.txt"))
 
-  def plainFreq50k: WordListFactory = f("Books 50k", "B50k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_50000.txt"))
+  def plainFreq50k: WordListFactory = createFactory("Books 50k", "B50k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_50000.txt"))
 
-  def plainFreq100k: WordListFactory = f("Books 100k", "B100k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_100000.txt"))
+  def plainFreq100k: WordListFactory = createFactory("Books 100k", "B100k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_100000.txt"))
 
-  def plain: WordListFactory = f("Plain small", "PLAIN_S", () => loadWordlistPlain(s"${prefix}_small.txt"))
+  def plain: WordListFactory = createFactory("Plain small", "PLAIN_S", () => loadWordlistPlain(s"${prefix}_small.txt"))
 
-  def grammar: WordListFactory = f("Grammar full", "GRM_L", () => loadWordlistGrammar(s"${prefix}_grammar_full.txt"))
+  def grammar: WordListFactory = createFactory("Grammar full", "GRM_L", () => loadWordlistGrammar(s"${prefix}_grammar_full.txt"))
 
-  def f(d: String, sd: String, f: () => Iterable[Word]): WordListFactory = {
+  private def createFactory(desc: String, sd: String, f: () => Iterable[Word]): WordListFactory = {
+
     new WordListFactory {
       override def wordList: () => Iterable[Word] = f
 
-      override def description: String = d
+      override def description: String = desc
 
       override def shortSescription: String = sd
     }
-
   }
 
   private def loadWordlistGrammar(str: String): scala.Iterable[Word] = {
