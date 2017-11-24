@@ -19,7 +19,7 @@ class SolverSolverRatedImplSuite extends FunSuite with MustMatchers {
       "r",
     ).map(toWord)
 
-    val anas = SolverPlain(4, 2).solve("Oast ogr", wordlist).toStream
+    val anas = SolverPlain(4, 2, wordlist).solve("Oast ogr").toStream
 
     anas.size mustBe 6
 
@@ -36,7 +36,7 @@ class SolverSolverRatedImplSuite extends FunSuite with MustMatchers {
 
   test("anagramm wolfi with wordlist test01") {
     val wordList = WordMapperFactoryPlain.create.wordList
-    val anas = SolverPlain(4, 2).solve("wolfi", wordList).toStream
+    val anas = SolverPlain(4, 2, wordList).solve("wolfi").toStream
     anas.size mustBe 10
 
     val strAnas = anas.map(sent => sent.mkString(" "))
@@ -50,7 +50,7 @@ class SolverSolverRatedImplSuite extends FunSuite with MustMatchers {
 
   test("anagramm iset with wordlist test01") {
     val wordList = WordMapperFactoryPlain.create.wordList
-    val anas = SolverPlain(4, 2).solve("iset", wordList).toStream
+    val anas = SolverPlain(4, 2, wordList).solve("iset").toStream
 
     val strAnas = anas.map(sent => sent.mkString(" "))
 
@@ -84,7 +84,7 @@ class SolverSolverRatedImplSuite extends FunSuite with MustMatchers {
 
   for ((w, txt, re) <- validWordData) {
     test(s"validWordFromSorted $w $txt") {
-      sorted(SolverPlain(4, 2).validWordFromSorted(toWord(w), txt.sorted)) mustBe re
+      sorted(SolverPlain(4, 2, null).validWordFromSorted(toWord(w), txt.sorted)) mustBe re
     }
   }
 
@@ -96,7 +96,7 @@ class SolverSolverRatedImplSuite extends FunSuite with MustMatchers {
 
   for ((c, s, i, re) <- removeFirstData) {
     test(s"removeFirst $c $s") {
-      SolverPlain(4, 3).removeFirst(c, s, i) mustBe re
+      SolverPlain(4, 3, null).removeFirst(c, s, i) mustBe re
     }
   }
 

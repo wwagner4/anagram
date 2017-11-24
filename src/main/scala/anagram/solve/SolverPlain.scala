@@ -7,11 +7,11 @@ import scala.collection.parallel.{ExecutionContextTaskSupport, ParIterable}
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
-case class SolverPlain(maxDepth: Int, parallel: Int)(implicit ec: ExecutionContext) extends Solver {
+case class SolverPlain(maxDepth: Int, parallel: Int, words: Iterable[Word])(implicit ec: ExecutionContext) extends Solver {
 
   private var _cancelled = false
 
-  override def solve(sourceText: String, words: Iterable[Word]): Iterator[Iterable[String]] = {
+  override def solve(sourceText: String): Iterator[Iterable[String]] = {
     _cancelled = false
     val txtAdj = sourceText.toLowerCase().replaceAll("\\s", "").sorted
     solve1(txtAdj, 0, words.toList, new AnaCache()).toIterator

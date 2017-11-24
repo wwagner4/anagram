@@ -13,7 +13,7 @@ object SolverPlainTryout extends App {
   val start = System.currentTimeMillis()
 
   private val src = "noah wagner"
-  val anas = SolverPlain(maxDepth = 4, parallel = 4).solve(src, wl)
+  val anas = SolverPlain(maxDepth = 4, parallel = 4, wl).solve(src)
 
   if (anas.isEmpty) println("-- empty --")
   else for ((sentence, i) <- anas.zipWithIndex) {

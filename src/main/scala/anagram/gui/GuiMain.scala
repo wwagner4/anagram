@@ -16,7 +16,7 @@ import anagram.model.{CfgRaterAiFactory, Configurations}
 import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
 import anagram.solve.concurrent.AnaExecutionContextImpl
-import anagram.words.Wordlists
+import anagram.words.{WordListFactory, Wordlists}
 import net.miginfocom.swing.MigLayout
 import org.slf4j.LoggerFactory
 
@@ -77,8 +77,10 @@ case class Controller(
 
   val maxDepth = 5
   val parallel = 3
+  val wordListFactory = Wordlists.plainFreq5k
 
-  val solverFactoryBase = SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel)
+
+  val solverFactoryBase = SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel, wordListFactory)
 
 
   val solverFactories = Seq(
@@ -107,8 +109,6 @@ case class Controller(
   var service = Option.empty[Services]
 
   var _cancelable = Seq.empty[Cancelable]
-
-  val wordListFactory = Wordlists.plainFreq100k
 
   solverListSelectionModel.addListSelectionListener(
     (_: ListSelectionEvent) => {
@@ -244,7 +244,7 @@ case class Controller(
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Int = {
     val solver = selectedSolverFactory.createSolver(ec)
     _cancelable :+= solver
-    val anas: Iterator[Ana] = solver.solve(srcText, wordListFactory.wordList())
+    val anas: Iterator[Ana] = solver.solve(srcText)
     log.info(s"[solve] after solver.solve")
     val sl = SortedList.instance[Ana]
     val future: Future[Int] = Future {
@@ -516,13 +516,13 @@ case class RaterFactoryNone() extends RaterFactory {
 }
 
 
-case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends SolverFactory {
+case class SolverFactoryPlain(maxDepth: Int, parallel: Int, wordListFactory: WordListFactory) extends SolverFactory {
 
-  def createSolver(implicit ec: ExecutionContextExecutor): Solver = SolverPlain(maxDepth, parallel)
+  def createSolver(implicit ec: ExecutionContextExecutor): Solver = SolverPlain(maxDepth, parallel, wordListFactory.wordList())
 
-  def description: String = s"Solver plain maxDepth:$maxDepth parallel:$parallel"
+  def description: String = s"Solver plain maxDepth:$maxDepth parallel:$parallel ${wordListFactory.description}"
 
-  def shortDescription: String = s"PLAIN"
+  def shortDescription: String = s"PLAIN_${wordListFactory.shortSescription}"
 
 }
 

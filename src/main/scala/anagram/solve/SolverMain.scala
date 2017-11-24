@@ -29,6 +29,10 @@ object SolverMain extends App {
     "william shakespeare", // -> i am a weakish speller 18 ->
   )
 
+  val srcTextsSug = List(
+    "scala user group",
+  )
+
   val srcTextsMedium = List(
     "wolfgang",
     "ditschi",
@@ -52,17 +56,17 @@ object SolverMain extends App {
     "clint eastwood", // -> old west action 13 -> 700k
   )
 
-  val srcTexts = srcTextsMedium
+  val srcTexts = srcTextsSug
   val cfg = Configurations.grammarReduced.cfgRaterAi
   val idSolving = "03"
-  val wl = Wordlists.plainFreq5k
+  val wlf = Wordlists.plainFreq5k
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
     val rater = new RaterAi(cfg.cfgRaterAi)
-    val baseSolver = SolverFactoryPlain().createSolver
-    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, wl.wordList())
+    val baseSolver = SolverFactoryPlain(maxDepth = 5, parallel = 4, wlf).createSolver
+    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText)
     outWriteToFile(anagrams, srcText)
   }
   log.info("Finished")
@@ -71,7 +75,7 @@ object SolverMain extends App {
 
     def fileName(idLearning: String, src: String): String = {
       val s1 = src.replaceAll("\\s", "_")
-      val wld = wl.shortSescription
+      val wld = wlf.shortSescription
       s"ana_${wld}_${idLearning}_$s1.txt"
     }
 
