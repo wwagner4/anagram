@@ -4,7 +4,7 @@ import anagram.words.{Word, Wordlists}
 
 object WordTypesAnalyze extends App {
 
-  val words: Seq[Word] = Wordlists.grammar.toSeq
+  val words: Seq[Word] = Wordlists.grammar.wordList().toSeq
   val words2 = Set("a", "i")
 
   val inter = words.filter(gw => words2.contains(gw.word)).toList

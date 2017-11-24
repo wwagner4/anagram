@@ -10,7 +10,7 @@ object WordMapperFactoryPlain {
 
   def create: WordMapper = {
 
-    val wordlist: Iterable[Word] = Wordlists.plain
+    val wordlist: Iterable[Word] = Wordlists.plain.wordList()
 
     val si: Seq[(String, Int)] = stringInt(wordlist)
     val siMap = si.toMap

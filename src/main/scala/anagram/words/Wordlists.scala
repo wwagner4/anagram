@@ -8,21 +8,32 @@ object Wordlists {
 
   val prefix = "wordlist/wordlist"
 
-  def plainFreq2k: Iterable[Word] = loadWordlistPlainFreq(s"${prefix}_books_frequency_2000.txt")
+  def plainFreq2k: WordListFactory = f("Books 2k", "B2K", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_2000.txt"))
 
-  def plainFreq3k: Iterable[Word] = loadWordlistPlainFreq(s"${prefix}_books_frequency_3000.txt")
+  def plainFreq3k: WordListFactory = f("Books 3k", "B3k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_3000.txt"))
 
-  def plainFreq5k: Iterable[Word] = loadWordlistPlainFreq(s"${prefix}_books_frequency_5000.txt")
+  def plainFreq5k: WordListFactory = f("Books 5k", "B5k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_5000.txt"))
 
-  def plainFreq10k: Iterable[Word] = loadWordlistPlainFreq(s"${prefix}_books_frequency_10000.txt")
+  def plainFreq10k: WordListFactory = f("Books 10k", "B10K", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_10000.txt"))
 
-  def plainFreq50k: Iterable[Word] = loadWordlistPlainFreq(s"${prefix}_books_frequency_50000.txt")
+  def plainFreq50k: WordListFactory = f("Books 50k", "B50k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_50000.txt"))
 
-  def plainFreq100k: Iterable[Word] = loadWordlistPlainFreq(s"${prefix}_books_frequency_100000.txt")
+  def plainFreq100k: WordListFactory = f("Books 100k", "B100k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_100000.txt"))
 
-  def plain: Iterable[Word] = loadWordlistPlain(s"${prefix}_small.txt")
+  def plain: WordListFactory = f("Plain small", "PLAIN_S", () => loadWordlistPlain(s"${prefix}_small.txt"))
 
-  def grammar: Iterable[Word] = loadWordlistGrammar(s"${prefix}_grammar_full.txt")
+  def grammar: WordListFactory = f("Grammar full", "GRM_L", () => loadWordlistGrammar(s"${prefix}_grammar_full.txt"))
+
+  def f(d: String, sd: String, f: () => Iterable[Word]): WordListFactory = {
+    new WordListFactory {
+      override def wordList: () => Iterable[Word] = f
+
+      override def description: String = d
+
+      override def shortSescription: String = sd
+    }
+
+  }
 
   private def loadWordlistGrammar(str: String): scala.Iterable[Word] = {
     def lineToWord(line: String): Word = {

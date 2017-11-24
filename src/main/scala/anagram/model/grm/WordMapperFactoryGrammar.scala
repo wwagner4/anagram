@@ -14,7 +14,7 @@ object WordMapperFactoryGrammar extends WordMapperFactory {
 
     val unknown = "?"
 
-    val words: Seq[Word] = Wordlists.grammar.toSeq
+    val words: Seq[Word] = Wordlists.grammar.wordList().toSeq
     val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
 
     val grpList = words.map(groupedWord => groupedWord.grp.get).distinct.sorted :+ unknown

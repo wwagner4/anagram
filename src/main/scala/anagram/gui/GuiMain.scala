@@ -108,6 +108,8 @@ case class Controller(
 
   var _cancelable = Seq.empty[Cancelable]
 
+  val wordListFactory = Wordlists.plainFreq100k
+
   solverListSelectionModel.addListSelectionListener(
     (_: ListSelectionEvent) => {
       val idx = solverListSelectionModel.getAnchorSelectionIndex
@@ -242,7 +244,7 @@ case class Controller(
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Int = {
     val solver = selectedSolverFactory.createSolver(ec)
     _cancelable :+= solver
-    val anas: Iterator[Ana] = solver.solve(srcText, Wordlists.plainFreq2k)
+    val anas: Iterator[Ana] = solver.solve(srcText, wordListFactory.wordList())
     log.info(s"[solve] after solver.solve")
     val sl = SortedList.instance[Ana]
     val future: Future[Int] = Future {

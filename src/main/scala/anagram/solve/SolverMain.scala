@@ -1,5 +1,7 @@
 package anagram.solve
 
+import java.nio.file.Paths
+
 import anagram.common.IoUtil
 import anagram.gui.SolverFactoryPlain
 import anagram.ml.rate.RaterAi
@@ -50,29 +52,32 @@ object SolverMain extends App {
     "clint eastwood", // -> old west action 13 -> 700k
   )
 
-  val srcTexts = srcTextsFull
+  val srcTexts = srcTextsMedium
   val cfg = Configurations.grammarReduced.cfgRaterAi
-  val idSolving = "02"
+  val idSolving = "03"
+  val wl = Wordlists.plainFreq5k
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
     val rater = new RaterAi(cfg.cfgRaterAi)
     val baseSolver = SolverFactoryPlain().createSolver
-    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, Wordlists.plainFreq3k)
+    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, wl.wordList())
     outWriteToFile(anagrams, srcText)
   }
   log.info("Finished")
 
   def outWriteToFile(anas: Iterator[Ana], srcText: String): Unit = {
 
-    def fileName(idLearning: String, idSolving: String, src: String): String = {
+    def fileName(idLearning: String, src: String): String = {
       val s1 = src.replaceAll("\\s", "_")
-      s"anagrams_${idLearning}_${idSolving}_$s1.txt"
+      val wld = wl.shortSescription
+      s"ana_${wld}_${idLearning}_$s1.txt"
     }
 
-    val fn = fileName(cfg.cfgRaterAi().id, idSolving, srcText)
-    IoUtil.saveToWorkDir(fn, (bw) => {
+    val fn = fileName(cfg.cfgRaterAi().id, srcText)
+    val dir = Paths.get("anagrams", idSolving)
+    IoUtil.saveToDir(dir, fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {
         if (cnt % 10000 == 0 && cnt > 0) log.info(s"Wrote $cnt anagrams")

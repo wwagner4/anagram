@@ -65,6 +65,15 @@ object IoUtil {
     url.toURI
   }
 
+  def getCreateDir(path: Path): Path = {
+    val dirAna: Path = Paths.get(System.getProperty("user.home"), "anagram")
+    val dir = dirAna.resolve(path)
+    if (!Files.exists(dir)) {
+      Files.createDirectories(dir)
+    }
+    dir
+  }
+
   def getCreateWorkDir: Path = {
     val dirWork: Path = Paths.get(System.getProperty("user.home"), "anagram", "work")
     if (!Files.exists(dirWork)) {
@@ -75,6 +84,10 @@ object IoUtil {
 
   def saveToWorkDir(fileName: String, f: BufferedWriter => Unit): Path = {
     save(getCreateWorkDir, fileName, f)
+  }
+
+  def saveToDir(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
+    save(getCreateDir(dir), fileName, f)
   }
 
   private def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {

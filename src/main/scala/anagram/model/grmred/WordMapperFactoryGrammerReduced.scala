@@ -44,7 +44,7 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       }
     }
 
-    val words: Seq[Word] = Wordlists.grammar.toSeq.map(w => w.copy(grp = Some(reduceGroups(w.grp.get))))
+    val words: Seq[Word] = Wordlists.grammar.wordList().toSeq.map(w => w.copy(grp = Some(reduceGroups(w.grp.get))))
     val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
 
     val grpList = words
