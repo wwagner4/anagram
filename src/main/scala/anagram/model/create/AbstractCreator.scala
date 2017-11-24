@@ -13,9 +13,9 @@ class AbstractCreator {
     }
   }
 
-  protected def one(toCfg: CfgModel) = {
-    CreateLearningData.createData(toCfg.cfgCreateData)
-    Training.train(toCfg.cfgTraining)
+  protected def one(toCfg: CfgModel): Unit = {
+    CreateLearningData.createData(toCfg.cfgCreateData.cfgCreateData())
+    Training.train(toCfg.cfgTraining.cfgTraining())
   }
 
   def unmapped(base: CfgCreateData): Unit = {
@@ -27,7 +27,7 @@ class AbstractCreator {
       base.bookCollection,
       Seq(3, 4),
       base.adjustRating,
-      false,
+      mapWordsToNumbers = false,
     )
 
     CreateLearningData.createData(adapted)

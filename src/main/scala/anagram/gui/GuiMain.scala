@@ -12,7 +12,7 @@ import javax.swing.text._
 
 import anagram.common.{Cancelable, IoUtil, SortedList}
 import anagram.ml.rate.{Rater, RaterAi, RaterRandom}
-import anagram.model.{CfgRaterAi, Configurations}
+import anagram.model.{CfgRaterAiFactory, Configurations}
 import anagram.morph.{AnagramMorph, Justify}
 import anagram.solve._
 import anagram.solve.concurrent.AnaExecutionContextImpl
@@ -93,7 +93,7 @@ case class Controller(
   )
 
   val aiSolverFactories = Configurations.all.map {cfg =>
-    val rater = RaterFactoryAi(() => cfg().cfgRaterAi)
+    val rater = RaterFactoryAi(cfg().cfgRaterAi)
     SolverFactoryRated(solverFactoryBase, rater)
   }
 
@@ -478,18 +478,18 @@ trait RaterFactory {
 
 }
 
-case class RaterFactoryAi(raterAiCfg: () => CfgRaterAi) extends RaterFactory {
+case class RaterFactoryAi(raterAiCfg: CfgRaterAiFactory) extends RaterFactory {
 
-  override def createRater: Rater = new RaterAi(raterAiCfg, None)
+  private lazy val cfg = raterAiCfg.cfgRaterAi
+
+  override def createRater: Rater = new RaterAi(cfg, None)
 
   override def description: String = {
-    val cwf = raterAiCfg().comonWordRating.map(r => " CommonWordFactor:%.3f".format(r)).getOrElse("")
-    "AI id:'%s'%s" format(raterAiCfg().id, cwf)
+    raterAiCfg.description
   }
 
   override def shortDescription: String = {
-    val cwf = raterAiCfg().comonWordRating.map(r => " CWF").getOrElse("")
-    "AI %s%s" format(raterAiCfg().id, cwf)
+    raterAiCfg.shortDescription
   }
 }
 
@@ -505,9 +505,7 @@ case class RaterFactoryRandom() extends RaterFactory {
 
 case class RaterFactoryNone() extends RaterFactory {
 
-  override def createRater = (sent: Iterable[String]) => {
-    1.0
-  }
+  override def createRater: Rater = _ => 1.0
 
   override def description = "no rating"
 
@@ -520,19 +518,19 @@ case class SolverFactoryPlain(maxDepth: Int = 4, parallel: Int = 4) extends Solv
 
   def createSolver(implicit ec: ExecutionContextExecutor): Solver = SolverPlain(maxDepth, parallel)
 
-  def description: String = s"SolverRated plain maxDepth:$maxDepth parallel:$parallel"
+  def description: String = s"Solver plain maxDepth:$maxDepth parallel:$parallel"
 
   def shortDescription: String = s"PLAIN"
 
 }
 
-case class SolverFactoryRated(solverFactory: SolverFactory, raterFactory: RaterFactory) extends SolverRatedFactory {
+case class SolverFactoryRated(solverFactoryBase: SolverFactory, raterFactory: RaterFactory) extends SolverRatedFactory {
 
   def createSolver(implicit ec: ExecutionContextExecutor): SolverRated = {
-    SolverRatedImpl(solverFactory.createSolver, raterFactory.createRater)
+    SolverRatedImpl(solverFactoryBase.createSolver, raterFactory.createRater)
   }
 
-  def description: String = s"SolverRated rated with: ${raterFactory.description}. Base solver: ${solverFactory.description}"
+  def description: String = s"Solver with Rating: ${raterFactory.description}. Base: ${solverFactoryBase.description}"
 
   def shortDescription: String = s"RATED ${raterFactory.shortDescription}"
 }

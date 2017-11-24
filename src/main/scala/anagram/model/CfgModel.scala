@@ -2,10 +2,10 @@ package anagram.model
 
 trait CfgModel {
 
-  def cfgCreateData: CfgCreateData
+  def cfgCreateData: CfgCreateDataFactory
 
-  def cfgTraining: CfgTraining
+  def cfgTraining: CfgTrainingFactory
 
-  def cfgRaterAi: CfgRaterAi
+  def cfgRaterAi: CfgRaterAiFactory
 
 }

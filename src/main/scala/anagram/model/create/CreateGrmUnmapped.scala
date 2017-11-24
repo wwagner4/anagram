@@ -4,6 +4,6 @@ import anagram.model.Configurations
 
 object CreateGrmUnmapped extends AbstractCreator with App {
 
-  unmapped(Configurations.grammar.cfgCreateData)
+  unmapped(Configurations.grammar.cfgCreateData.cfgCreateData())
 
 }

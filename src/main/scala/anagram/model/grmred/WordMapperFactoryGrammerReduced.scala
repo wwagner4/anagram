@@ -27,11 +27,6 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       "prep",
     )
 
-    def readLine(line: String): Word = {
-      val split = line.split(";")
-      Word(split(0), split(0).sorted , Some(split(1)), None)
-    }
-
     def reduceGroups(grp: String): String = {
       // treatment for 'do' which is usually not a noun
       if (grp == "n&vt,auxiliary&vi") "vi"
@@ -49,7 +44,7 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       }
     }
 
-    val words: Seq[Word] = Wordlists.grammar.toSeq
+    val words: Seq[Word] = Wordlists.grammar.toSeq.map(w => w.copy(grp = Some(reduceGroups(w.grp.get))))
     val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
 
     val grpList = words

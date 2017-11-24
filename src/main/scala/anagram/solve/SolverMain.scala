@@ -50,14 +50,14 @@ object SolverMain extends App {
     "clint eastwood", // -> old west action 13 -> 700k
   )
 
-  val srcTexts = srcTextsCe
-  lazy val cfg = Configurations.grammarReduced.cfgRaterAi
+  val srcTexts = srcTextsFull
+  val cfg = Configurations.grammarReduced.cfgRaterAi
   val idSolving = "02"
 
   for (srcText <- srcTexts) {
     log.info(s"Solving $srcText")
 
-    val rater = new RaterAi(() => cfg)
+    val rater = new RaterAi(cfg.cfgRaterAi)
     val baseSolver = SolverFactoryPlain().createSolver
     val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText, Wordlists.plainFreq3k)
     outWriteToFile(anagrams, srcText)
@@ -71,8 +71,7 @@ object SolverMain extends App {
       s"anagrams_${idLearning}_${idSolving}_$s1.txt"
     }
 
-    val fn = fileName(cfg.id, idSolving, srcText)
-    log.info(s"Write anagrams for '$srcText' to $fn")
+    val fn = fileName(cfg.cfgRaterAi().id, idSolving, srcText)
     IoUtil.saveToWorkDir(fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {
@@ -81,5 +80,6 @@ object SolverMain extends App {
         cnt += 1
       }
     })
+    log.info(s"Wrote anagrams for '$srcText' to $fn")
   }
 }

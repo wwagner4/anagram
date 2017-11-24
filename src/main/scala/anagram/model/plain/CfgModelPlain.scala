@@ -2,14 +2,14 @@ package anagram.model.plain
 
 import anagram.common.{LinearAdjust, LinearAdjustParam}
 import anagram.ml.data.common._
-import anagram.model.{CfgCreateData, CfgModel, CfgRaterAi, CfgTraining}
+import anagram.model._
 import anagram.words.{WordMapper, WordMapperPrediction}
 
 class CfgModelPlain extends CfgModel {
 
   val _dataId = "plain001"
   val _sentenceLengths = 2 to 5
-  val _bookCollection = BookCollections.collectionEn2
+  lazy val _bookCollection = BookCollections.collectionEn2
 
   val _adjRating = List(
     (2, LinearAdjustParam(21.7562, 7.1637)),
@@ -26,42 +26,76 @@ class CfgModelPlain extends CfgModel {
     else rating
   }
 
-  val _mapper = WordMapperFactoryPlain.create
+  lazy val _mapper = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()
-  val srater = new SentenceRaterStraight(_mapper)
+  lazy val srater = new SentenceRaterStraight(_mapper)
 
-  override lazy val cfgCreateData = new CfgCreateData {
+  override lazy val cfgCreateData = {
+    lazy val cfg = new CfgCreateData {
 
-    override def id: String = _dataId
-    override def adjustRating: (Double, Int) => Double = LinearAdjust.adjust(_adjRating)(_, _)
-    override def sentenceLength: Iterable[Int] = _sentenceLengths
-    override def mapper: WordMapper = _mapper
-    override def sentenceCreator: SentenceCreator = screator
-    override def sentenceRater: SentenceRater = srater
-    override def bookCollection: BookCollection = _bookCollection
-    override def mapWordsToNumbers: Boolean = true
+      override def id: String = _dataId
 
-  }
+      override def adjustRating: (Double, Int) => Double = LinearAdjust.adjust(_adjRating)(_, _)
 
-  override lazy val cfgTraining = new CfgTraining {
+      override def sentenceLength: Iterable[Int] = _sentenceLengths
 
-    override def id: String = _dataId
-    override def iterations: Int => Int = (sentLen: Int) => {
-      if (sentLen <= 2) 180
-      else if (sentLen <= 3) 150
-      else 120
+      override def mapper: WordMapper = _mapper
+
+      override def sentenceCreator: SentenceCreator = screator
+
+      override def sentenceRater: SentenceRater = srater
+
+      override def bookCollection: BookCollection = _bookCollection
+
+      override def mapWordsToNumbers: Boolean = true
+
     }
-
+    new CfgCreateDataFactory {
+      override def cfgCreateData: () => CfgCreateData = () => cfg
+    }
   }
 
-  override lazy val cfgRaterAi = new CfgRaterAi {
 
-    override def id: String = _dataId
-    override def mapper: WordMapperPrediction = _mapper
-    override def comonWordRating: Option[Double] = None
-    override def adjustOutput: (Int, Double) => Double = adjustOutputPlain
+  override lazy val cfgTraining: CfgTrainingFactory = {
+    lazy val cfg = new CfgTraining {
 
+      override def id: String = _dataId
+
+      override def iterations: Int => Int = (sentLen: Int) => {
+        if (sentLen <= 2) 180
+        else if (sentLen <= 3) 150
+        else 120
+      }
+
+    }
+    new CfgTrainingFactory {
+      override def cfgTraining: () => CfgTraining = () => cfg
+    }
   }
+
+
+  override lazy val cfgRaterAi = {
+    lazy val cfg = new CfgRaterAi {
+
+      override def id: String = _dataId
+
+      override def mapper: WordMapperPrediction = _mapper
+
+      override def comonWordRating: Option[Double] = None
+
+      override def adjustOutput: (Int, Double) => Double = adjustOutputPlain
+
+    }
+    new CfgRaterAiFactory {override def description: String = s"Plain ${_dataId}"
+
+      override def shortDescription: String = s"PLAIN ${_dataId}"
+
+      override def cfgRaterAi: () => CfgRaterAi = () => cfg
+    }
+  }
+
+
+
 
 }
