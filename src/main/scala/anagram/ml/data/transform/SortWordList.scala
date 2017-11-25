@@ -14,7 +14,7 @@ object SortWordList extends App {
 
   val filename = "wordlist_grammar_small.txt"
 
-  IoUtil.saveToWorkDir(filename, (writer: BufferedWriter) => {
+  IoUtil.save(IoUtil.dirWork, filename, (writer: BufferedWriter) => {
     sorted.foreach(value => {
       writer.write(s"${value._1};${value._2}\r")
     })

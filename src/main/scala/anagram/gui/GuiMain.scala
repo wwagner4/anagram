@@ -180,7 +180,7 @@ case class Controller(
     def calcLines(txt: String): Int = (txt.length * 0.7).toInt
 
     def outFile(src: String, ana: String): Path = {
-      val workDir = IoUtil.getCreateWorkDir
+      val workDir = IoUtil.dirWork
       val imageDir = workDir.resolve("morph")
       if (!Files.exists(imageDir)) Files.createDirectories(imageDir)
       val src1 = src.replaceAll("\\s", "_")

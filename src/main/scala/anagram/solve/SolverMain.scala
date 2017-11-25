@@ -83,8 +83,8 @@ object SolverMain extends App {
     }
 
     val fn = fileName(cfg.cfgRaterAi.cfgRaterAi().id, srcText)
-    val dir = Paths.get("anagrams", idSolving, cfg.cfgRaterAi.shortDescription)
-    IoUtil.saveToDir(dir, fn, (bw) => {
+    val dir = IoUtil.getCreateDirOut.resolve(Paths.get(idSolving, cfg.cfgRaterAi.shortDescription))
+    IoUtil.save(dir, fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {
         if (cnt % 10000 == 0 && cnt > 0) log.info(s"Wrote $cnt anagrams")

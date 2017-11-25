@@ -26,7 +26,7 @@ object GcideTransfom extends App {
   val outFileName = "wordTypeList.txtSorted"
 
   log.info("STARTED writing to <workdir>/" + outFileName)
-  IoUtil.saveToWorkDir(outFileName, { bw =>
+  IoUtil.save(IoUtil.dirWork, outFileName, { bw =>
     val words: Stream[WordType] = cideFiles.flatMap { path =>
       IoUtil.loadTxtFromPath(path, processLines, codec = Codec.ISO8859)
     }

@@ -35,19 +35,19 @@ object IoUtil {
   }
 
   def loadTxtFromWorkdir[T](fileName: String, f: Iterator[String] => T): T = {
-    val file = getCreateWorkDir.resolve(fileName)
+    val file = dirWork.resolve(fileName)
     loadTxtFromPath(file, f)
   }
 
   def getTxtDataFilesFromWorkDir(id: String): Seq[DataFile] = {
-    Files.list(getCreateWorkDir)
+    Files.list(dirWork)
       .iterator().asScala.toStream
       .filter(s => s.getFileName.toString.contains(s"${id}_data_"))
       .map(createDataFile(_, ".*_data_(.*).txt"))
   }
 
   def getNnDataFilesFromWorkDir(id: String): Seq[DataFile] = {
-    Files.list(IoUtil.getCreateWorkDir)
+    Files.list(IoUtil.dirWork)
       .iterator()
       .asScala
       .toSeq
@@ -56,7 +56,7 @@ object IoUtil {
   }
 
   def nnDataFilePath(id: String, sentenceLength: Int): Path = {
-    getCreateWorkDir.resolve(s"anagram_${id}_nn_$sentenceLength.ser")
+    dirWork.resolve(s"anagram_${id}_nn_$sentenceLength.ser")
   }
 
   def uri(res: String): URI = {
@@ -65,32 +65,34 @@ object IoUtil {
     url.toURI
   }
 
-  def getCreateDir(path: Path): Path = {
-    val dirAna: Path = Paths.get(System.getProperty("user.home"), "anagram")
-    val dir = dirAna.resolve(path)
-    if (!Files.exists(dir)) {
-      Files.createDirectories(dir)
+
+  private lazy val _dirAna = Paths.get(System.getProperty("user.home"), "anagram")
+
+  def getCreateDirRelative(pathRelative: Path): Path = {
+    val dir = _dirAna.resolve(pathRelative)
+    getCreateDir(dir)
+  }
+
+  def dirWork: Path = {
+    getCreateDir(_dirAna.resolve("work"))
+  }
+
+  def dirAna: Path = {
+    getCreateDir(_dirAna)
+  }
+
+  def getCreateDirOut: Path = {
+    getCreateDir(_dirAna.resolve("out"))
+  }
+
+  private def getCreateDir(p: Path): Path = {
+    if (!Files.exists(p)) {
+      Files.createDirectories(p)
     }
-    dir
+    p
   }
 
-  def getCreateWorkDir: Path = {
-    val dirWork: Path = Paths.get(System.getProperty("user.home"), "anagram", "work")
-    if (!Files.exists(dirWork)) {
-      Files.createDirectories(dirWork)
-    }
-    dirWork
-  }
-
-  def saveToWorkDir(fileName: String, f: BufferedWriter => Unit): Path = {
-    save(getCreateWorkDir, fileName, f)
-  }
-
-  def saveToDir(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
-    save(getCreateDir(dir), fileName, f)
-  }
-
-  private def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
+  def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
     val file = dir.resolve(fileName)
     val wr: BufferedWriter = Files.newBufferedWriter(file)
     try f(wr) finally wr.close()
@@ -99,12 +101,12 @@ object IoUtil {
 
   private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
     val filename = s"anagram_$id.txt"
-    save(getCreateWorkDir, filename, f)
+    save(dirWork, filename, f)
   }
 
   private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
     val fileName = s"anagram_$id.txt"
-    val file = getCreateWorkDir.resolve(fileName)
+    val file = dirWork.resolve(fileName)
     loadTxtFromPath(file, f)
   }
 

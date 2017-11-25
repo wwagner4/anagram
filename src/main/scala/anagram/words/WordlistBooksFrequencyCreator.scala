@@ -25,7 +25,7 @@ object WordlistBooksFrequencyCreator extends App {
 
   for (len <- lens) {
     val outfileName = s"wordlist_books_frequency_$len.txt"
-    val path = IoUtil.saveToWorkDir(outfileName, bw => {
+    val path = IoUtil.save(IoUtil.dirWork, outfileName, bw => {
       wsorted.take(len).foreach {
         case ((w, freq, _, _), _) => bw.write("%s;%s%n".format(w, freq))
       }
