@@ -37,8 +37,6 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
 
   private val log = LoggerFactory.getLogger("RaterAi")
 
-  private lazy val _commonWords = commonWords
-
   require(logInterval.forall(n => n > 0), "If loginterval is defined it must be greater 0")
 
   var cnt = 0

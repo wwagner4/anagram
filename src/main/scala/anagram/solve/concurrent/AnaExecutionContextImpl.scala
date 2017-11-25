@@ -88,7 +88,7 @@ object AnaExecutionContextImpl {
       thread
     }
 
-    // As per ThreadFactory contract newThread should rejktrturn `null` if cannot create new thread.
+    // As per ThreadFactory contract newThread should return `null` if cannot create new thread.
     def newThread(runnable: Runnable): Thread =
       if (reserveThread())
         wire(new Thread(() => try runnable.run() finally deregisterThread())) else null
