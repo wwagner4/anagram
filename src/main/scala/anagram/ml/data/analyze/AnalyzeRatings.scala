@@ -39,7 +39,7 @@ object AnalyseRatings extends App {
     }
 
   def stat(desc: DataFileDesc): Stat = {
-    IoUtil.loadTxtFromPath(desc.file, toStat(desc.sentenceLength))
+    IoUtil.loadTxtFromFile(desc.file, toStat(desc.sentenceLength))
   }
 
   def toStat(len: Int)(lines: Iterator[String]): Stat = {

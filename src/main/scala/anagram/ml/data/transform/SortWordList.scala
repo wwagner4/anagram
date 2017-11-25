@@ -10,7 +10,7 @@ object SortWordList extends App {
 
   val file: URI = IoUtil.uri("wordlist/wordlist_grammar_small.txt")
 
-  val sorted: Iterable[(String, String)] = IoUtil.loadTxtFromPath(Paths.get(file), read)
+  val sorted: Iterable[(String, String)] = IoUtil.loadTxtFromFile(Paths.get(file), read)
 
   val filename = "wordlist_grammar_small.txt"
 

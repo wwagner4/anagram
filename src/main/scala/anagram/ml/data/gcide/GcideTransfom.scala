@@ -28,7 +28,7 @@ object GcideTransfom extends App {
   log.info("STARTED writing to <workdir>/" + outFileName)
   IoUtil.save(IoUtil.dirWork, outFileName, { bw =>
     val words: Stream[WordType] = cideFiles.flatMap { path =>
-      IoUtil.loadTxtFromPath(path, processLines, codec = Codec.ISO8859)
+      IoUtil.loadTxtFromFile(path, processLines, codec = Codec.ISO8859)
     }
     words.foreach { wt =>
       bw.write("%s;%s%n" format(wt.wtype, wt.txt))

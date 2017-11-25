@@ -41,12 +41,12 @@ object Wordlists {
       Word(_s(1), _s(1).sorted, Some(_s(0)), None)
     }
 
-    IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
+    IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
       .map(line => lineToWord(line))
   }
 
   private def loadWordlistPlain(str: String): scala.Iterable[Word] = {
-    IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
+    IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
       .map(line => Word(line, line.sorted))
   }
 
@@ -56,11 +56,11 @@ object Wordlists {
       Word(_s(0), _s(0).sorted, None, Some(_s(1).toInt))
     }
 
-    IoUtil.loadTxtFromPath(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
+    IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
       .map(line => lineToWord(line))
   }
 
-  val ignoreWords = Seq(
+  private val ignoreWords = Seq(
     "ere",
     "nth",
     "id",
