@@ -75,9 +75,9 @@ case class Controller(
 
   private val log = LoggerFactory.getLogger("Controller")
 
-  val maxDepth = 5
-  val parallel = 3
-  val wordListFactory = Wordlists.plainFreq5k
+  private val maxDepth = 5
+  private val parallel = 3
+  private val wordListFactory = Wordlists.plainFreq5k
 
 
   val solverFactoryBase = SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel, wordListFactory)
@@ -94,8 +94,8 @@ case class Controller(
     },
   )
 
-  val aiSolverFactories = Configurations.all.map {cfg =>
-    val rater = RaterFactoryAi(cfg().cfgRaterAi)
+  private val aiSolverFactories = Configurations.all.map {cfg =>
+    val rater = RaterFactoryAi(cfg.cfgRaterAi)
     SolverFactoryRated(solverFactoryBase, rater)
   }
 

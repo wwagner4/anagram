@@ -6,10 +6,10 @@ import anagram.model.plain.CfgModelPlain
 
 object Configurations {
 
-  def all: Iterable[() => CfgModel] = List(
-    () => plain,
-    () => grammar,
-    () => grammarReduced,
+  def all: Iterable[CfgModel] = List(
+    plain,
+    grammar,
+    grammarReduced,
   )
 
   def grammarReduced: CfgModel = new CfgModelGrmRed

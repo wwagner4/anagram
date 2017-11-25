@@ -9,7 +9,7 @@ class AbstractCreator {
 
   protected def all(): Unit = {
     for (toCfg <- Configurations.all) {
-      one(toCfg())
+      one(toCfg)
     }
   }
 

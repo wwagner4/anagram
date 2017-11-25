@@ -5,7 +5,7 @@ import java.nio.file.Paths
 import anagram.common.IoUtil
 import anagram.gui.SolverFactoryPlain
 import anagram.ml.rate.RaterAi
-import anagram.model.Configurations
+import anagram.model.{CfgModel, Configurations}
 import anagram.words.Wordlists
 import org.slf4j.LoggerFactory
 
@@ -24,6 +24,7 @@ object SolverMain extends App {
     "ditschi wolfi", //                                 12 -> 17k
     "noah the great", //                                12 -> 708k
     "clint eastwood", // -> old west action             13 -> 700k
+    "scala user group",
     "leornado da vinci", // -> did color in a nave      15 -> 1900k
     "ingrid bernd in love", //                          17 ->
     "william shakespeare", // -> i am a weakish speller 18 ->
@@ -56,22 +57,24 @@ object SolverMain extends App {
     "clint eastwood", // -> old west action 13 -> 700k
   )
 
-  val srcTexts = srcTextsSug
-  val cfg = Configurations.grammarReduced.cfgRaterAi
-  val idSolving = "03"
+  val srcTexts = srcTextsFull
+  val idSolving = "04"
   val wlf = Wordlists.plainFreq5k
 
-  for (srcText <- srcTexts) {
-    log.info(s"Solving $srcText")
+  for (cfg <- Configurations.all) {
+    for (srcText <- srcTexts) {
+      log.info(s"Solving $srcText")
 
-    val rater = new RaterAi(cfg.cfgRaterAi)
-    val baseSolver = SolverFactoryPlain(maxDepth = 5, parallel = 4, wlf).createSolver
-    val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText)
-    outWriteToFile(anagrams, srcText)
+      val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi)
+      val baseSolver = SolverFactoryPlain(maxDepth = 5, parallel = 4, wlf).createSolver
+      val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText)
+      outWriteToFile(anagrams, srcText, cfg)
+    }
   }
+
   log.info("Finished")
 
-  def outWriteToFile(anas: Iterator[Ana], srcText: String): Unit = {
+  def outWriteToFile(anas: Iterator[Ana], srcText: String, cfg: CfgModel): Unit = {
 
     def fileName(idLearning: String, src: String): String = {
       val s1 = src.replaceAll("\\s", "_")
@@ -79,8 +82,8 @@ object SolverMain extends App {
       s"ana_${wld}_${idLearning}_$s1.txt"
     }
 
-    val fn = fileName(cfg.cfgRaterAi().id, srcText)
-    val dir = Paths.get("anagrams", idSolving)
+    val fn = fileName(cfg.cfgRaterAi.cfgRaterAi().id, srcText)
+    val dir = Paths.get("anagrams", idSolving, cfg.cfgRaterAi.shortDescription)
     IoUtil.saveToDir(dir, fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {
