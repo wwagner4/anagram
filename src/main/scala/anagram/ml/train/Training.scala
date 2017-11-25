@@ -1,5 +1,8 @@
 package anagram.ml.train
 
+import java.nio.file.Path
+
+import anagram.common.IoUtil.dirWork
 import anagram.common.{DataFile, IoUtil}
 import anagram.ml.MlUtil
 import anagram.model.CfgTraining
@@ -49,7 +52,7 @@ object Training {
     log.info(s"started the training")
     nn.fit(dsIter)
 
-    val serfile = IoUtil.nnDataFilePath(cfg.id, dataFile.wordLen)
+    val serfile = nnDataFilePath(cfg.id, dataFile.wordLen)
     ModelSerializer.writeModel(nn, serfile.toFile, true)
     log.info(s"Wrote net to: '$serfile'")
 
@@ -86,6 +89,10 @@ object Training {
       .pretrain(false)
       .backprop(true)
       .build
+  }
+
+  private def nnDataFilePath(id: String, sentenceLength: Int): Path = {
+    dirWork.resolve(s"anagram_${id}_nn_$sentenceLength.ser")
   }
 
 }
