@@ -1,6 +1,7 @@
 package anagram.ml.train
 
 import anagram.common.{DataFile, IoUtil}
+import anagram.ml.MlUtil
 import anagram.model.CfgTraining
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
@@ -28,7 +29,7 @@ object Training {
 
   def train(cfg: CfgTraining): Unit = {
     log.info(s"Started training for run: '${cfg.id}'")
-    IoUtil.getTxtDataFilesFromWorkDir(cfg.id).foreach{dataFile =>
+    MlUtil.getTxtDataFilesFromWorkDir(IoUtil.dirWork, cfg.id).foreach{dataFile =>
       trainDataFile(dataFile, cfg)
     }
     log.info(s"Finished training for run: '${cfg.id}'")

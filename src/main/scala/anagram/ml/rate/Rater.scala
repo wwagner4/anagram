@@ -3,6 +3,7 @@ package anagram.ml.rate
 import java.nio.file.Path
 
 import anagram.common.IoUtil
+import anagram.ml.MlUtil
 import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
 import anagram.model.CfgRaterAi
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
@@ -44,7 +45,7 @@ class RaterAi(cfg1: () => CfgRaterAi, logInterval: Option[Int] = Some(1000)) ext
 
   var cnt = 0
 
-  private val nnMap: Map[Int, MultiLayerNetwork] = IoUtil.getNnDataFilesFromWorkDir(cfg.id)
+  private val nnMap: Map[Int, MultiLayerNetwork] = MlUtil.getNnDataFilesFromWorkDir(IoUtil.dirWork, cfg.id)
     .map(df => (df.wordLen, deserializeNn(df.path)))
     .toMap
 

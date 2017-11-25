@@ -4,7 +4,6 @@ import java.io.BufferedWriter
 import java.net.URI
 import java.nio.file.{Files, Path, Paths}
 
-import scala.collection.JavaConverters._
 import scala.io.Codec
 
 /**
@@ -39,20 +38,16 @@ object IoUtil {
     loadTxtFromPath(file, f)
   }
 
-  def getTxtDataFilesFromWorkDir(id: String): Seq[DataFile] = {
-    Files.list(dirWork)
-      .iterator().asScala.toStream
-      .filter(s => s.getFileName.toString.contains(s"${id}_data_"))
-      .map(createDataFile(_, ".*_data_(.*).txt"))
+
+  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
+    val filename = s"anagram_$id.txt"
+    save(dirWork, filename, f)
   }
 
-  def getNnDataFilesFromWorkDir(id: String): Seq[DataFile] = {
-    Files.list(IoUtil.dirWork)
-      .iterator()
-      .asScala
-      .toSeq
-      .filter(s => s.getFileName.toString.contains(s"${id}_nn"))
-      .map(createDataFile(_, ".*_nn_(.*).ser"))
+  private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
+    val fileName = s"anagram_$id.txt"
+    val file = dirWork.resolve(fileName)
+    loadTxtFromPath(file, f)
   }
 
   def nnDataFilePath(id: String, sentenceLength: Int): Path = {
@@ -98,24 +93,4 @@ object IoUtil {
     try f(wr) finally wr.close()
     file
   }
-
-  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
-    val filename = s"anagram_$id.txt"
-    save(dirWork, filename, f)
-  }
-
-  private def loadTxtFromWorkDir[T](id: String, f: Iterator[String] => T): T = {
-    val fileName = s"anagram_$id.txt"
-    val file = dirWork.resolve(fileName)
-    loadTxtFromPath(file, f)
-  }
-
-  private def createDataFile(path: Path, regex: String): DataFile = {
-    val REG = regex.r
-    path.getFileName.toString match {
-      case REG(lenStr) => DataFile(lenStr.toInt, path)
-      case _ => throw new IllegalArgumentException(s"Could not extract groups length from filename '$path'")
-    }
-  }
-
 }
