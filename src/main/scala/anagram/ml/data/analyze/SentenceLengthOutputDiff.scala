@@ -32,7 +32,7 @@ object SentenceLengthRatingDiff extends App {
   }
 
   def read(fileName: String): Iterable[GenRating] = {
-    IoUtil.loadTxtFromWorkdir(fileName, (iter) => {
+    IoUtil.loadTxtFromFile(IoUtil.dirWork.resolve(fileName), (iter) => {
       iter.toIterable.map(s => mkGenRating(s))
     })
   }

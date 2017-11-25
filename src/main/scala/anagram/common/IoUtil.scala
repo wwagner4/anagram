@@ -16,14 +16,9 @@ case class DataFile(
 
 object IoUtil {
 
-  def loadTxtFromFile[T](path: Path, f: Iterator[String] => T, codec: Codec = Codec.default): T = {
-    val iter = scala.io.Source.fromFile(path.toFile)(codec).getLines()
+  def loadTxtFromFile[T](file: Path, f: Iterator[String] => T, codec: Codec = Codec.default): T = {
+    val iter = scala.io.Source.fromFile(file.toFile)(codec).getLines()
     f(iter)
-  }
-
-  def loadTxtFromWorkdir[T](fileName: String, f: Iterator[String] => T): T = {
-    val file = dirWork.resolve(fileName)
-    loadTxtFromFile(file, f)
   }
 
 
