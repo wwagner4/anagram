@@ -70,10 +70,15 @@ class CfgModelGrm extends CfgModel {
     }
   }
 
-  private def adjustOutputPlain(len: Int, rating: Double): Double = {
-    if (len == 1) rating + 5 // Anagram existing of one word must always be top
-    else if (len == 2) rating + 0.2
-    else rating
+  private def _adjustOutput(len: Int, rating: Double): Double = {
+    len match {
+      case 1 => rating + 20
+      case 2 => rating + 0.1848
+      case 3 => rating + 0.0000
+      case 4 => rating + 0.1224
+      case 5 => rating + 0.6322
+      case _ => rating - 20
+    }
   }
 
   override lazy val cfgRaterAi: CfgRaterAiFactory = {
@@ -83,9 +88,9 @@ class CfgModelGrm extends CfgModel {
 
       override def mapper: WordMapperPrediction = _mapper
 
-      override def comonWordRating: Option[Double] = None
+      override def adjustOutputFunc: (Int, Double) => Double = _adjustOutput
 
-      override def adjustOutput: (Int, Double) => Double = adjustOutputPlain
+      override def adjustOutput: Boolean = true
 
     }
     new CfgRaterAiFactory {
@@ -95,6 +100,7 @@ class CfgModelGrm extends CfgModel {
       override def shortDescription: String = s"GRM_${_dataId}"
 
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
+
     }
   }
 

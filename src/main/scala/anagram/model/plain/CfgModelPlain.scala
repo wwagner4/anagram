@@ -18,12 +18,15 @@ class CfgModelPlain extends CfgModel {
     (5, LinearAdjustParam(22.1913, 8.2909)),
   ).toMap
 
-  private def adjustOutputPlain(len: Int, rating: Double): Double = {
-    if (len == 1) rating + 5 // Anagram existing of one word must always be top
-    else if (len == 2) rating + 3.9
-    else if (len == 3) rating + 1.5
-    else if (len == 4) rating + 1.2
-    else rating
+  private def _adjustOutput(len: Int, rating: Double): Double = {
+    len match {
+      case 1 => rating + 20
+      case 2 => rating + 0.3046
+      case 3 => rating + 0.1024
+      case 4 => rating + 0.0756
+      case 5 => rating + 0.0000
+      case _ => rating - 20
+    }
   }
 
   private lazy val _mapper = WordMapperFactoryPlain.create
@@ -81,9 +84,9 @@ class CfgModelPlain extends CfgModel {
 
       override def mapper: WordMapperPrediction = _mapper
 
-      override def comonWordRating: Option[Double] = None
+      override def adjustOutputFunc: (Int, Double) => Double = _adjustOutput
 
-      override def adjustOutput: (Int, Double) => Double = adjustOutputPlain
+      override def adjustOutput: Boolean = true
 
     }
     new CfgRaterAiFactory {override def description: String = s"Plain ${_dataId}"

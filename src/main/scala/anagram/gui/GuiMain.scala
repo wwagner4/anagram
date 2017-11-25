@@ -482,7 +482,7 @@ trait RaterFactory {
 
 case class RaterFactoryAi(raterAiCfg: CfgRaterAiFactory) extends RaterFactory {
 
-  private lazy val cfg = raterAiCfg.cfgRaterAi
+  private lazy val cfg = raterAiCfg.cfgRaterAi()
 
   override def createRater: Rater = new RaterAi(cfg, None)
 

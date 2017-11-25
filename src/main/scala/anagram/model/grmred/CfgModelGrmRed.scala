@@ -70,10 +70,10 @@ class CfgModelGrmRed extends CfgModel {
   private def adjustOutputPlain(len: Int, rating: Double): Double = {
     len match {
       case 1 => rating + 20
-      case 2 => rating + 0.6
-      case 3 => rating + 0.2
-      case 4 => rating + 0.3
-      case 5 => rating
+      case 2 => rating + 0.0448
+      case 3 => rating + 0.0128
+      case 4 => rating + 0.0216
+      case 5 => rating + 0.0000
       case _ => rating - 20
     }
   }
@@ -85,9 +85,9 @@ class CfgModelGrmRed extends CfgModel {
 
       override def mapper: WordMapperPrediction = _mapper
 
-      override def comonWordRating: Option[Double] = None
+      override def adjustOutputFunc: (Int, Double) => Double = adjustOutputPlain
 
-      override def adjustOutput: (Int, Double) => Double = adjustOutputPlain
+      override def adjustOutput: Boolean = true
 
     }
     new CfgRaterAiFactory {

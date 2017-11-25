@@ -69,7 +69,7 @@ object SolverMain extends App {
     for (srcText <- srcTexts) {
       log.info(s"Solving $srcText")
 
-      val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi)
+      val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi())
       val baseSolver = SolverFactoryPlain(maxDepth = 5, parallel = 4, wlf).createSolver
       val anagrams: Iterator[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText)
       outWriteToFile(anagrams, srcText, cfg)

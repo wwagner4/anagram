@@ -33,13 +33,11 @@ class RaterNone extends Rater {
 
 }
 
-class RaterAi(cfg1: () => CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Rater {
+class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Rater {
 
   private val log = LoggerFactory.getLogger("RaterAi")
 
   private lazy val _commonWords = commonWords
-
-  lazy val cfg = cfg1()
 
   require(logInterval.forall(n => n > 0), "If loginterval is defined it must be greater 0")
 
@@ -78,9 +76,10 @@ class RaterAi(cfg1: () => CfgRaterAi, logInterval: Option[Int] = Some(1000)) ext
 
 
     val _ratingNN = rateNN
-    val _ratingCommoWords = CommonWordRater.rateCommonWords(sent, _commonWords, cfg.comonWordRating)
 
-    cfg.adjustOutput(sent.size, _ratingNN + _ratingCommoWords)
+    if (cfg.adjustOutput) cfg.adjustOutputFunc(sent.size, _ratingNN)
+    else _ratingNN
+
 
   }
 
@@ -108,13 +107,3 @@ class RaterAi(cfg1: () => CfgRaterAi, logInterval: Option[Int] = Some(1000)) ext
 
 }
 
-object CommonWordRater {
-
-  def rateCommonWords(sent: Iterable[String], commonWords: Set[String], commonFactor: Option[Double]): Double = {
-    if (commonFactor.isDefined) {
-      sent.map(w => if (commonWords.contains(w)) 1 else 0).sum * commonFactor.get
-    } else {
-      0.0
-    }
-  }
-}

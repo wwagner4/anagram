@@ -10,12 +10,12 @@ object RandomRatedSentencesTryout extends App {
 
   val raterf = Configurations.plain.cfgRaterAi
 
-  val rater: Rater = new RaterAi(raterf.cfgRaterAi)
+  val rater: Rater = new RaterAi(raterf.cfgRaterAi())
 
   (2 to 5).foreach{len =>
     val  rf = raterf.description
     println(s"------- $len --- $rf")
-    RandomRatedSentences.create(10, len, wlf.wordList().toSeq).foreach { sent =>
+    RandomSentences.create(10, len, wlf.wordList().toSeq).foreach { sent =>
       val r: Double = rater.rate(sent)
       println("%10.4f - %s".format(r, sent.mkString(" ")))
     }
