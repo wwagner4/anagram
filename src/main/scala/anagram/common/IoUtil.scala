@@ -16,10 +16,6 @@ case class DataFile(
 
 object IoUtil {
 
-  def saveDataToWorkDir(id: String, sentencelength: Int, f: BufferedWriter => Unit): Path = {
-    saveTxtToWorkDir(s"${id}_data_$sentencelength", f)
-  }
-
   def loadTxtFromFile[T](path: Path, f: Iterator[String] => T, codec: Codec = Codec.default): T = {
     val iter = scala.io.Source.fromFile(path.toFile)(codec).getLines()
     f(iter)
@@ -31,11 +27,6 @@ object IoUtil {
   }
 
 
-  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
-    val filename = s"anagram_$id.txt"
-    save(dirWork, filename, f)
-  }
-
   def nnDataFilePath(id: String, sentenceLength: Int): Path = {
     dirWork.resolve(s"anagram_${id}_nn_$sentenceLength.ser")
   }
@@ -45,7 +36,6 @@ object IoUtil {
     if (url == null) throw new IllegalArgumentException(s"Illegal URL '$res'")
     url.toURI
   }
-
 
   private lazy val _dirAna = Paths.get(System.getProperty("user.home"), "anagram")
 

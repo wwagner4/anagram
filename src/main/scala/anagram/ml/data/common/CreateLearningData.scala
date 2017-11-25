@@ -1,9 +1,11 @@
 package anagram.ml.data.common
 
 import java.io.BufferedWriter
+import java.nio.file.Path
 import java.util.Locale
 
 import anagram.common.IoUtil
+import anagram.common.IoUtil.{dirWork, save}
 import anagram.model.CfgCreateData
 import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
@@ -23,7 +25,7 @@ object CreateLearningData {
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
       val sent: Seq[Sentence] = config.sentenceCreator.create(split, len, config.mapper)
       log.info(s"Created ${sent.size} sentences of length $len")
-      val ldPath = IoUtil.saveDataToWorkDir(
+      val ldPath = saveDataToWorkDir(
         filePrefix(config.id, config.mapWordsToNumbers),
         len,
         writeSentences(len, sent, config)(_),
@@ -66,6 +68,17 @@ object CreateLearningData {
     sb.append("%30s: %s%n".format("ID", id))
     sb.toString()
   }
+
+  private def saveDataToWorkDir(id: String, sentencelength: Int, f: BufferedWriter => Unit): Path = {
+    saveTxtToWorkDir(s"${id}_data_$sentencelength", f)
+  }
+
+  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
+    val filename = s"anagram_$id.txt"
+    save(dirWork, filename, f)
+  }
+
+
 
 
 }
