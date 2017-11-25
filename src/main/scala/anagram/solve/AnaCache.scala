@@ -7,7 +7,7 @@ class AnaCache {
   var map =  Map.empty[String, GenIterable[List[String]]]
 
   def addAna(txt: String, anas: GenIterable[List[String]]): Unit = synchronized {
-    map = ((txt -> anas) :: map.toList).take(100000).toMap
+    map += (txt -> anas)
   }
 
   def ana(txt: String): Option[GenIterable[List[String]]] = map.get(txt)

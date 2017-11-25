@@ -34,10 +34,6 @@ object SolverMain extends App {
     "a very bad text",
   )
 
-  val srcTextsSug = List(
-    "scala user group",
-  )
-
   val srcTextsMedium = List(
     "wolfgang",
     "ditschi",
@@ -61,11 +57,15 @@ object SolverMain extends App {
     "clint eastwood", // -> old west action 13 -> 700k
   )
 
-  val srcTexts = srcTextsFull
-  val idSolving = "06"
-  val wlf = Wordlists.plainFreq5k
+  val srcTextsTmp = List(
+    "old man at home",
+  )
 
-  for (cfg <- Configurations.all) {
+  val srcTexts = srcTextsTmp
+  val idSolving = "07"
+  val wlf = Wordlists.plainFreq50k
+
+  for (cfg <- Configurations.all.par) {
     for (srcText <- srcTexts) {
       log.info(s"Solving $srcText")
 

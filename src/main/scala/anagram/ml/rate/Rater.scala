@@ -50,8 +50,8 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
   require(nnMap.nonEmpty, s"Found no NNs for dataId: '${cfg.id}'")
 
   def rate(sent: Iterable[String]): Double = {
-    if (sent.size <= 1) 1.0
-    else if (sent.size >= 6) 0.0
+    if (sent.size <= 1) 100
+    else if (sent.size >= 6) -100
     else {
       nnMap.get(sent.size)
         .map(rate(_, sent))

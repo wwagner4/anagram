@@ -1,7 +1,7 @@
 package anagram.gui
 
 import java.awt.event.ActionEvent
-import java.awt.{BorderLayout, Color, Component, Image}
+import java.awt.{BorderLayout, Color, Component, Desktop, Image}
 import java.nio.file.{Files, Path}
 import java.util.concurrent._
 import javax.imageio.ImageIO
@@ -10,6 +10,7 @@ import javax.swing.border.Border
 import javax.swing.event.ListSelectionEvent
 import javax.swing.text._
 
+import anagram.Scheduler
 import anagram.common.{Cancelable, IoUtil, SortedList}
 import anagram.ml.rate.{Rater, RaterAi, RaterRandom}
 import anagram.model.{CfgRaterAiFactory, Configurations}
@@ -117,26 +118,68 @@ case class Controller(
       setInfoDoc(desc)
     })
 
-  def getStartAction: Action = new AbstractAction() {
+  var cnt = 0
 
+  def getStartAction: Action = new AbstractAction() {
     override def actionPerformed(e: ActionEvent): Unit = {
       if (service.isDefined) {
         log.info("[actionPerformed] already started")
       } else {
+        cnt = 0
         background((ec: ExecutionContextExecutor) => {
           setStateDoc(s"solving $getText")
           fillListModel(Seq.empty[String])
-          val cnt = solve(getText)(ec)
-          setStateDoc(s"solved $cnt anagrams")
+          solve(getText)(ec)
         }, () => {
         })
       }
     }
   }
 
-  def pause(milis: Int): Unit = try Thread.sleep(milis) catch {
-    case _: InterruptedException =>
-  } // Nothing to do}
+  def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Unit = {
+    val solver = selectedSolverFactory.createSolver(ec)
+    _cancelable :+= solver
+    val anas: Iterator[Ana] = solver.solve(srcText)
+    log.info(s"[solve] after solver.solve")
+    val sl = SortedList.instance[Ana]
+    val sched = Scheduler.schedule(1){ () =>
+      if (running) {
+        var cnt1 = 0
+        while (cnt1 < 50) {
+          if (!anas.hasNext && running) {
+            SwingUtilities.invokeAndWait { () =>
+              if (running) {
+                val n = sl.size
+                setStateDoc(s"solved $n anagrams")
+              }
+              val line = sl.take(500)
+                .map(_.sentence)
+                .map(_.mkString(" "))
+              fillListModel(line)
+            }
+            shutdown()
+          } else {
+            sl.add(anas.next())
+            cnt1 += 1
+            cnt += 1
+          }
+        }
+        SwingUtilities.invokeAndWait { () =>
+          if (running) {
+            val n = sl.size
+            setStateDoc(s"found $n anagrams")
+          }
+          val line = sl.take(500)
+            .map(_.sentence)
+            .map(_.mkString(" "))
+          fillListModel(line)
+        }
+      }
+    }
+    _cancelable :+= sched
+  }
+
+
 
   def getStopAction: Action = new AbstractAction() {
 
@@ -160,7 +203,7 @@ case class Controller(
           val src = getText
           val ana = selectedAnagram.get
           setStateDoc(s"morphing $ana")
-          val _outFile = outFile(src, ana)
+          val _outFile: Path = outFile(src, ana)
           background((_: ExecutionContextExecutor) => {
             val morpher = AnagramMorph.anagramMorphLinear
             val justifier = Justify.justifyDefault
@@ -168,6 +211,7 @@ case class Controller(
             justifier.writePng(lines, _outFile.toFile, 400)
             setStateDoc(s"morphed $ana")
             log.info(s"writing morph image to ${_outFile}")
+            Desktop.getDesktop.open(_outFile.toFile)
           }, () => {
             setStateDoc(s"wrote morph image to ${_outFile}")
           })
@@ -219,10 +263,8 @@ case class Controller(
     }
     future.onComplete {
       case Success(_) =>
-        shutdown()
         onSuccess()
       case Failure(ex) =>
-        shutdown()
         val msg = ex.getMessage
         setStateDoc(msg)
         log.error(s"Error: $msg", ex)
@@ -240,36 +282,6 @@ case class Controller(
   def running: Boolean = service.isDefined
 
   implicit val ordering: OrderingAnaRatingDesc = new OrderingAnaRatingDesc
-
-  def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Int = {
-    val solver = selectedSolverFactory.createSolver(ec)
-    _cancelable :+= solver
-    val anas: Iterator[Ana] = solver.solve(srcText)
-    log.info(s"[solve] after solver.solve")
-    val sl = SortedList.instance[Ana]
-    val future: Future[Int] = Future {
-      while (running && anas.hasNext) {
-        var cnt = 0
-        while (cnt < 100 && anas.hasNext) {
-          sl.add(anas.next())
-          cnt += 1
-        }
-        SwingUtilities.invokeAndWait { () =>
-          if (running) {
-            val n = sl.size
-            setStateDoc(s"found $n anagrams")
-          }
-          val line = sl.take(500)
-            .map(_.sentence)
-            .map(_.mkString(" "))
-          fillListModel(line)
-        }
-        pause(100)
-      }
-      sl.size
-    }
-    Await.result(future, Duration(10, TimeUnit.HOURS))
-  }
 
   def getText: String = textDoc.getText(0, textDoc.getLength)
 

@@ -46,62 +46,122 @@ object Wordlists {
   }
 
   private def loadWordlistPlain(str: String): scala.Iterable[Word] = {
+    def word(line: String): Option[Word] = if (ignoreWords.contains(line)) None else Some(Word(line, line.sorted))
+
     IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
-      .map(line => Word(line, line.sorted))
+      .flatMap(word)
   }
 
   private def loadWordlistPlainFreq(str: String): scala.Iterable[Word] = {
-    def lineToWord(line: String): Word = {
+    def lineToWord(line: String): Option[Word] = {
       val _s = line.split(';')
-      Word(_s(0), _s(0).sorted, None, Some(_s(1).toInt))
+      if (ignoreWords.contains(_s(0))) None
+      else Some(Word(_s(0), _s(0).sorted, None, Some(_s(1).toInt)))
     }
 
     IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
-      .map(line => lineToWord(line))
+      .flatMap(line => lineToWord(line))
   }
 
-  private val ignoreWords = Seq(
-    "ere",
-    "nth",
-    "id",
-    "dreg",
-    "cal",
-    "inc",
-    "nevi",
-    "von",
-    "cit",
-    "esc",
-    "alt",
-    "brin",
-    "veer",
-    "brin",
-    "bin",
-    "nil",
-    "chi",
+  val ignoreWords = Set(
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+    "ah",
     "cd",
+    "de",
+    "el",
+    "id",
+    "la",
+    "le",
+    "lo",
+    "na",
+    "oh",
+    "st",
+    "ahl",
+    "alt",
+    "bin",
+    "cal",
+    "chi",
+    "cia",
+    "cit",
+    "dib",
+    "din",
+    "ere",
+    "esc",
+    "etc",
+    "inc",
+    "lbs",
+    "led",
+    "nil",
+    "nth",
     "ohs",
-    "lith",
-    "noir",
-    "veda",
-    "vade",
-    "vinal",
+    "von",
+    "attn",
+    "bldg",
+    "blvd",
+    "brin",
+    "dibs",
     "dict",
-    "wonts",
-    "wots",
+    "dows",
+    "dreg",
+    "ghee",
+    "lith",
+    "nevi",
+    "noir",
     "odic",
     "orth",
-    "dows",
     "thor",
-    "ghee",
-    "attn",
-    "din",
-    "led",
-    "etc",
-    "cia",
-    "lbs",
-    "blvd",
-    "bldg",
-    "dibs",
-    "dib",
-  ).toSet
+    "vade",
+    "veda",
+    "veer",
+    "wots",
+    "vinal",
+    "wonts",
+    "hm",
+    "mon",
+    "ole",
+    "em",
+    "th",
+    "ho",
+    "ha",
+    "eh",
+    "ont",
+    "al",
+    "eh",
+  )
 }
+
+object SortWords extends App {
+
+  import anagram.words.Wordlists.ignoreWords
+
+  ignoreWords
+    .toSeq
+    .sorted
+    .sortBy(_.length)
+    .foreach(w => println(s"""    "$w","""))
+}
+
+

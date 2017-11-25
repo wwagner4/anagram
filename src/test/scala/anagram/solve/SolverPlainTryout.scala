@@ -1,6 +1,7 @@
 package anagram.solve
 
 import anagram.model.grm.WordMapperFactoryGrammar
+import anagram.words.Wordlists
 
 import scala.concurrent.ExecutionContext
 
@@ -8,11 +9,11 @@ object SolverPlainTryout extends App {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
-  val wl =  WordMapperFactoryGrammar.create.wordList
+  val wl = Wordlists.plainFreq5k.wordList()
 
   val start = System.currentTimeMillis()
 
-  private val src = "noah wagner"
+  private val src = "the old man and the sea"
   val anas = SolverPlain(maxDepth = 4, parallel = 4, wl).solve(src)
 
   if (anas.isEmpty) println("-- empty --")

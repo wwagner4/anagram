@@ -67,7 +67,7 @@ class CfgModelGrmRed extends CfgModel {
   }
 
 
-  private def adjustOutputPlain(len: Int, rating: Double): Double = {
+  private def _adjustOutput(len: Int, rating: Double): Double = {
     len match {
       case 1 => rating + 20
       case 2 => rating + 0.0448
@@ -85,7 +85,7 @@ class CfgModelGrmRed extends CfgModel {
 
       override def mapper: WordMapperPrediction = _mapper
 
-      override def adjustOutputFunc: (Int, Double) => Double = adjustOutputPlain
+      override def adjustOutputFunc: (Int, Double) => Double = _adjustOutput
 
       override def adjustOutput: Boolean = true
 

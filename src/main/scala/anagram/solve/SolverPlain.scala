@@ -1,6 +1,7 @@
 package anagram.solve
 
 import anagram.words.Word
+import org.slf4j.LoggerFactory
 
 import scala.collection.GenIterable
 import scala.collection.parallel.{ExecutionContextTaskSupport, ParIterable}
@@ -10,6 +11,8 @@ import scala.util.Random
 case class SolverPlain(maxDepth: Int, parallel: Int, words: Iterable[Word])(implicit ec: ExecutionContext) extends Solver {
 
   private var _cancelled = false
+
+  private val log = LoggerFactory.getLogger("SolverPlain")
 
   override def solve(sourceText: String): Iterator[Iterable[String]] = {
     _cancelled = false
