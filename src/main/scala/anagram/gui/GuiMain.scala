@@ -136,6 +136,20 @@ case class Controller(
   }
 
   def solve(srcText: String)(implicit ec: ExecutionContextExecutor): Unit = {
+
+    def updateStatus(sl: SortedList[Ana]): Unit = {
+      SwingUtilities.invokeAndWait { () =>
+        if (running) {
+          val n = sl.size
+          setStateDoc(s"solved $n anagrams")
+        }
+        val line = sl.take(500)
+          .map(_.sentence)
+          .map(_.mkString(" "))
+        fillListModel(line)
+      }
+    }
+
     val solver = selectedSolverFactory.createSolver(ec)
     _cancelable :+= solver
     val anas: Iterator[Ana] = solver.solve(srcText)
@@ -144,18 +158,9 @@ case class Controller(
     val sched = Scheduler.schedule(1){ () =>
       if (running) {
         var cnt1 = 0
-        while (cnt1 < 50) {
+        while (cnt1 < 100) {
           if (!anas.hasNext && running) {
-            SwingUtilities.invokeAndWait { () =>
-              if (running) {
-                val n = sl.size
-                setStateDoc(s"solved $n anagrams")
-              }
-              val line = sl.take(500)
-                .map(_.sentence)
-                .map(_.mkString(" "))
-              fillListModel(line)
-            }
+            updateStatus(sl)
             shutdown()
           } else {
             sl.add(anas.next())
@@ -163,16 +168,7 @@ case class Controller(
             cnt += 1
           }
         }
-        SwingUtilities.invokeAndWait { () =>
-          if (running) {
-            val n = sl.size
-            setStateDoc(s"found $n anagrams")
-          }
-          val line = sl.take(500)
-            .map(_.sentence)
-            .map(_.mkString(" "))
-          fillListModel(line)
-        }
+        updateStatus(sl)
       }
     }
     _cancelable :+= sched
@@ -212,6 +208,7 @@ case class Controller(
             log.info(s"writing morph image to ${_outFile}")
             Desktop.getDesktop.open(_outFile.toFile)
           }, () => {
+            shutdown()
             setStateDoc(s"wrote morph image to ${_outFile}")
           })
         } else {

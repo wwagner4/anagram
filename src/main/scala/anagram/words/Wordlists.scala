@@ -150,6 +150,9 @@ object Wordlists {
     "ont",
     "al",
     "eh",
+    "ive",
+    "tis",
+    "wot",
   )
 }
 
