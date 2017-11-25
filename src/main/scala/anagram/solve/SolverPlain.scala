@@ -50,9 +50,9 @@ case class SolverPlain(maxDepth: Int, parallel: Int, words: Iterable[Word])(impl
   def toParallel[T](in: Iterable[T]): ParIterable[Iterable[T]] = {
     val _size = in.size
     val grpSize = if (_size <= parallel) 1 else _size / parallel
-    val mwsp = in.grouped(grpSize).toSeq.par
-    mwsp.tasksupport = new ExecutionContextTaskSupport(ec)
-    mwsp
+    val out = in.grouped(grpSize).toSeq.par
+    out.tasksupport = new ExecutionContextTaskSupport(ec)
+    out
   }
 
   def validWordFromSorted(word: Word, txtSorted: String): Option[String] = {
@@ -72,7 +72,6 @@ case class SolverPlain(maxDepth: Int, parallel: Int, words: Iterable[Word])(impl
           else v(iw, it + 1)
         }
       }
-
       v(0, 0)
     }
   }
