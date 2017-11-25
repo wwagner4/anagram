@@ -83,7 +83,7 @@ object SolverMain extends App {
     }
 
     val fn = fileName(cfg.cfgRaterAi.cfgRaterAi().id, srcText)
-    val dir = IoUtil.getCreateDirOut.resolve(Paths.get(idSolving, cfg.cfgRaterAi.shortDescription))
+    val dir = IoUtil.dirOut.resolve(Paths.get(idSolving, cfg.cfgRaterAi.shortDescription))
     IoUtil.save(dir, fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {
