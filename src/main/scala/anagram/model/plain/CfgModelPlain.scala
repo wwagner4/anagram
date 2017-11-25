@@ -7,11 +7,11 @@ import anagram.words.{WordMapper, WordMapperPrediction}
 
 class CfgModelPlain extends CfgModel {
 
-  val _dataId = "plain001"
-  val _sentenceLengths = 2 to 5
-  lazy val _bookCollection = BookCollections.collectionEn2
+  private val _dataId = "plain001"
+  private val _sentenceLengths = 2 to 5
+  private lazy val _bookCollection = BookCollections.collectionEn2
 
-  val _adjRating = List(
+  private val _adjRating = List(
     (2, LinearAdjustParam(21.7562, 7.1637)),
     (3, LinearAdjustParam(21.9250, 7.6221)),
     (4, LinearAdjustParam(22.0688, 7.9778)),
@@ -26,13 +26,12 @@ class CfgModelPlain extends CfgModel {
     else rating
   }
 
-  lazy val _mapper = WordMapperFactoryPlain.create
+  private lazy val _mapper = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()
   lazy val srater = new SentenceRaterStraight(_mapper)
 
-  override lazy val cfgCreateData = {
-    lazy val cfg = new CfgCreateData {
+  override lazy val cfgCreateData: CfgCreateDataFactory = {    lazy val cfg = new CfgCreateData {
 
       override def id: String = _dataId
 
@@ -75,7 +74,7 @@ class CfgModelPlain extends CfgModel {
   }
 
 
-  override lazy val cfgRaterAi = {
+  override lazy val cfgRaterAi: CfgRaterAiFactory = {
     lazy val cfg = new CfgRaterAi {
 
       override def id: String = _dataId
@@ -89,7 +88,7 @@ class CfgModelPlain extends CfgModel {
     }
     new CfgRaterAiFactory {override def description: String = s"Plain ${_dataId}"
 
-      override def shortDescription: String = s"PLAIN ${_dataId}"
+      override def shortDescription: String = s"PLAIN_${_dataId}"
 
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
     }

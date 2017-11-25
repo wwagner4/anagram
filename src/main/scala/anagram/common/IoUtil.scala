@@ -38,6 +38,10 @@ object IoUtil {
     getCreateDir(_dirAna.resolve("out"))
   }
 
+  def dirAnagrams: Path = {
+    getCreateDir(_dirAna.resolve("anagrams"))
+  }
+
   private def getCreateDir(p: Path): Path = {
     if (!Files.exists(p)) {
       Files.createDirectories(p)
@@ -46,7 +50,8 @@ object IoUtil {
   }
 
   def save(dir: Path, fileName: String, f: BufferedWriter => Unit): Path = {
-    val file = dir.resolve(fileName)
+    val d = getCreateDir(dir)
+    val file = d.resolve(fileName)
     val wr: BufferedWriter = Files.newBufferedWriter(file)
     try f(wr) finally wr.close()
     file

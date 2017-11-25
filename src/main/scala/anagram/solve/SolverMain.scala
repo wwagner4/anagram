@@ -28,6 +28,10 @@ object SolverMain extends App {
     "leornado da vinci", // -> did color in a nave      15 -> 1900k
     "ingrid bernd in love", //                          17 ->
     "william shakespeare", // -> i am a weakish speller 18 ->
+    "some nice text",
+    "another nice text",
+    "a not so nice text",
+    "a very bad text",
   )
 
   val srcTextsSug = List(
@@ -58,7 +62,7 @@ object SolverMain extends App {
   )
 
   val srcTexts = srcTextsFull
-  val idSolving = "04"
+  val idSolving = "06"
   val wlf = Wordlists.plainFreq5k
 
   for (cfg <- Configurations.all) {
@@ -78,12 +82,11 @@ object SolverMain extends App {
 
     def fileName(idLearning: String, src: String): String = {
       val s1 = src.replaceAll("\\s", "_")
-      val wld = wlf.shortSescription
-      s"ana_${wld}_${idLearning}_$s1.txt"
+      s"ana_${idLearning}_$s1.txt"
     }
 
     val fn = fileName(cfg.cfgRaterAi.cfgRaterAi().id, srcText)
-    val dir = IoUtil.dirOut.resolve(Paths.get(idSolving, cfg.cfgRaterAi.shortDescription))
+    val dir = IoUtil.dirOut.resolve(Paths.get(idSolving, cfg.cfgRaterAi.shortDescription, wlf.shortSescription))
     IoUtil.save(dir, fn, (bw) => {
       var cnt = 0
       for ((ana, i) <- anas.toList.sortBy(-_.rate).zipWithIndex) {

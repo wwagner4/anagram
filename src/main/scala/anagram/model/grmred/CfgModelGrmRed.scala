@@ -94,7 +94,7 @@ class CfgModelGrmRed extends CfgModel {
 
       override def description: String = s"Grammar Reduced ${_dataId}"
 
-      override def shortDescription: String = s"GRMRED ${_dataId}"
+      override def shortDescription: String = s"GRMRED_${_dataId}"
 
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
     }
