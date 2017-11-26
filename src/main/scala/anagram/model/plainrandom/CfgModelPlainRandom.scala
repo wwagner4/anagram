@@ -94,7 +94,7 @@ class CfgModelPlainRandom extends CfgModel {
     new CfgRaterAiFactory {
       override def description: String = s"Plain random ${_dataId}"
 
-      override def shortDescription: String = s"PLAIN_RAND_${_dataId}"
+      override def shortDescription: String = s"PLAINR_${_dataId}"
 
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
     }

@@ -356,7 +356,7 @@ class Frame(
 
   class Content extends JPanel {
 
-    private val fontSize = 25f
+    private val fontSize = 20f
     private val fontSizeSmall = fontSize * 0.8f
     private val listCellSize = (fontSize * 1.2).toInt
 
@@ -372,8 +372,8 @@ class Frame(
       cont.add(createStopButton, "grow")
       cont.add(createMorphButton, "grow, wrap")
       cont.add(createTextField, "span 3, grow, wrap")
-      cont.add(createStatText, "height 150!, span 3, grow, wrap")
-      cont.add(createSolverFactoryList, "height 180!, span 3, grow, wrap")
+      cont.add(createStatText, "height 100!, span 3, grow, wrap")
+      cont.add(createSolverFactoryList, "height 250!, span 3, grow, wrap")
       cont.add(createInfoText, "height 150!, span 3, grow, wrap")
       cont
     }
