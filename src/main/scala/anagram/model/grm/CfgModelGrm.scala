@@ -56,10 +56,10 @@ class CfgModelGrm extends CfgModel {
       override def id: String = _dataId
 
       override def iterations: Int => Int = (sentLen: Int) => {
-        if (sentLen == 2) 400
-        else if (sentLen == 3) 300
-        else if (sentLen == 4) 250
-        else if (sentLen == 5) 100
+        if (sentLen == 2) 500
+        else if (sentLen == 3) 400
+        else if (sentLen == 4) 350
+        else if (sentLen == 5) 200
         else throw new IllegalStateException("Unknown sentence length " + sentLen)
       }
     }
