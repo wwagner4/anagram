@@ -8,7 +8,7 @@ import anagram.words.{WordMapper, WordMapperPrediction}
 
 class CfgModelPlainRandom extends CfgModel {
 
-  private val _dataId = "plain001"
+  private val _dataId = "plainRand001"
   private val _sentenceLengths = 2 to 5
   private lazy val _bookCollection = BookCollections.collectionEn2
 
@@ -92,9 +92,9 @@ class CfgModelPlainRandom extends CfgModel {
 
     }
     new CfgRaterAiFactory {
-      override def description: String = s"Plain ${_dataId}"
+      override def description: String = s"Plain random ${_dataId}"
 
-      override def shortDescription: String = s"PLAIN_${_dataId}"
+      override def shortDescription: String = s"PLAIN_RAND_${_dataId}"
 
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
     }
