@@ -1,16 +1,23 @@
-- Plain mapping with common words. E.g. the most common words in the books.
--- Make Wordlist configurable
+- Adding new more modern books
+
+- Selct common words not only by frequency but by mixture of frequency and length. Short words are always more frequent than
+  long words.
+-- Analyze the relationship between frequency and length
+--- Extract the Viz functionality from vsoc in order to meake easy analyzes
+
+- add random sentences with low ratings to the learning data
 
 - Plain mapping using word frequency
 
 - Grammar mapping using word frequency
 
-- Adding new books
-
+- Category mapping with
 
 
 
 ----------------------------------------------------------------------------
+- OK Plain mapping with common words. E.g. the most common words in the books.
+
 - Solver uses SortedMap as Parameter. No return
 
 -  Solver
