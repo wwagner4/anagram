@@ -1,5 +1,3 @@
-- Make the logo images transparent PNGs
-
 - Selct common words not only by frequency but by mixture of frequency and length. Short words are always more frequent than
   long words.
 -- Analyze the relationship between frequency and length
@@ -19,6 +17,8 @@
 
 
 ----------------------------------------------------------------------------
+- OK Make the logo images transparent PNGs
+
 - OK Plain mapping with common words. E.g. the most common words in the books.
 
 - Solver uses SortedMap as Parameter. No return

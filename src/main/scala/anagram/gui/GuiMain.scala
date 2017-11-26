@@ -327,8 +327,29 @@ class Frame(
   setSize(800, 800)
   setTitle("anagram creator")
   setIconImages(images.asJava)
-  // remove the following line if you are not on mac OS
-  com.apple.eawt.Application.getApplication.setDockIconImage(toImage("images/scala-logo-square-orig.png"))
+  setDockIcon()
+
+  private def setDockIcon(): Unit = {
+    val os = System.getProperty("os.name")
+    if (isMacOs(os)) {
+      try {
+        val img: Image = toImage("images/scala-logo-square-orig.png")
+        // Calling all methods by reflection to avoid compile problems on 'notmac' platforms :(
+        val appClass: Class[_] = Class.forName("com.apple.eawt.Application")
+        val method1 = appClass.getMethod("getApplication")
+        val app = method1.invoke(null)
+        val method2 = app.getClass.getMethod("setDockIconImage", classOf[Image])
+        method2.invoke(app, img)
+      } catch {
+        case _: Exception => // Just ignore it
+      }
+      // Original call
+      // com.apple.eawt.Application.getApplication.setDockIconImage(toImage("images/scala-logo-square-orig.png"))
+    }
+  }
+
+  def isMacOs(osName: String): Boolean = osName.toLowerCase.indexOf("mac") >= 0
+
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setContentPane(new Content)
 
@@ -440,7 +461,7 @@ class Frame(
 
   def images: List[Image] = {
     List("128", "64", "32", "16")
-      .map(nr => s"images/scala-logo-square-$nr.jpg")
+      .map(nr => s"images/scala-logo-square-$nr.png")
       .map(res => toImage(res))
   }
 
