@@ -41,7 +41,7 @@ object Training {
   def trainDataFile(dataFile: DataFile, cfg: CfgTraining): Unit = {
     log.info(s"Started training data file: '${dataFile.path.getFileName}'")
 
-    val recordReader = new CSVRecordReader(0, ";")
+    val recordReader = new CSVRecordReader(0, ';')
     recordReader.initialize(new FileSplit(dataFile.path.toFile))
     val dsIter = new RecordReaderDataSetIterator(recordReader, 100000, dataFile.wordLen, dataFile.wordLen, true)
     log.info(s"read dataset iterator")
@@ -72,7 +72,6 @@ object Training {
       .weightInit(WeightInit.XAVIER)
       .updater(Updater.NESTEROVS)
       .regularization(false)
-      .momentum(0.9)
       .list
       .layer(0, new DenseLayer.Builder()
         .nIn(numInput)
