@@ -1,9 +1,10 @@
-- Adding new more modern books
+- Make the logo images transparent PNGs
 
 - Selct common words not only by frequency but by mixture of frequency and length. Short words are always more frequent than
   long words.
 -- Analyze the relationship between frequency and length
 --- Extract the Viz functionality from vsoc in order to meake easy analyzes
+    CURRENTLY OBSOLETE scala 2.11. Alternatively use vega-viz 0.3.11
 
 - add random sentences with low ratings to the learning data
 
@@ -12,6 +13,8 @@
 - Grammar mapping using word frequency
 
 - Category mapping with
+
+- Adding new more modern books
 
 
 

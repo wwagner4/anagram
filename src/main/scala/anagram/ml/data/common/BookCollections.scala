@@ -34,6 +34,8 @@ object BookCollections {
       Book("books/CampingAtCherryPond.txt", "Camping at Cherry Pond", "Henry Abbott"),
       Book("books/StateOfTheUnionAddresses.txt", "State of the Union Addresses", "Ronald Reagan"),
       Book("books/ThePeoplesOfIndia.txt", "The Peoples of India", "James Drummond Anderson"),
+      Book("books/OperationHaystick.txt", "Operation Haystic", "Frank Herbert"),
+      Book("books/Sanin.txt", "Sanin", "Artsybashev"),
       Book("books/UnderGreekSkies.txt", "Under Greek Skies", "Julia D. Dragoumis"),
     )
   )
