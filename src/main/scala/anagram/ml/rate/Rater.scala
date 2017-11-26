@@ -91,7 +91,7 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
     val splitter = new BookSplitterTxt
     coll.books
       .map(_.filename)
-      .flatMap(resName => splitter.splitSentences(IoUtil.uri(resName)))
+      .flatMap(resName => splitter.splitSentences(resName))
       .flatten
       .groupBy(identity)
       .toList

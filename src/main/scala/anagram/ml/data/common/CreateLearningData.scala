@@ -4,10 +4,8 @@ import java.io.BufferedWriter
 import java.nio.file.Path
 import java.util.Locale
 
-import anagram.common.IoUtil
 import anagram.common.IoUtil.{dirWork, save}
 import anagram.model.CfgCreateData
-import anagram.words.WordMapper
 import org.slf4j.LoggerFactory
 
 
@@ -19,7 +17,7 @@ object CreateLearningData {
 
   def createData(config: CfgCreateData): Unit = {
 
-    val uris = config.bookCollection.books.map(bc => IoUtil.uri(bc.filename)).toStream
+    val uris = config.bookCollection.books.map(bc => bc.filename).toStream
     for (len <- config.sentenceLength) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")

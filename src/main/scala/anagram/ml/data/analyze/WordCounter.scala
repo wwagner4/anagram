@@ -1,6 +1,5 @@
 package anagram.ml.data.analyze
 
-import anagram.common.IoUtil
 import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
 
 object WordCounter extends App {
@@ -10,7 +9,7 @@ object WordCounter extends App {
 
   val x: Set[String] = coll.books
     .map(_.filename)
-    .flatMap(resName => splitter.splitSentences(IoUtil.uri(resName)))
+    .flatMap(resName => splitter.splitSentences(resName))
     .flatten
     .groupBy(identity)
     .toList

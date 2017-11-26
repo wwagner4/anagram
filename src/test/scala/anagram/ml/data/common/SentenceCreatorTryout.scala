@@ -1,11 +1,10 @@
 package anagram.ml.data.common
 
-import anagram.common.IoUtil
 import anagram.model.plain.WordMapperFactoryPlain
 
 object SentenceCreatorTryout extends App {
 
-  val uris = BookSplitterTxt.booksBig.toStream.map(IoUtil.uri)
+  val resNames = BookSplitterTxt.booksBig.toStream
   val wm = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt
   val creator = new SentenceCreatorSliding()
@@ -14,7 +13,7 @@ object SentenceCreatorTryout extends App {
   //completeWords
 
   def completeWords(): Unit = {
-    val split = uris.flatMap(splitter.splitSentences)
+    val split = resNames.flatMap(splitter.splitSentences)
 
     List(2, 3, 4, 5, 6, 7).foreach { size =>
       val stat: Map[SentenceType, Stream[Sentence]] = creator.create(split, size, wm)
@@ -28,7 +27,7 @@ object SentenceCreatorTryout extends App {
   }
 
   def showSentences(): Unit = {
-    val split = uris.flatMap(splitter.splitSentences)
+    val split = resNames.flatMap(splitter.splitSentences)
     val sent = creator.create(split, 2, wm)
     sent.foreach { sent =>
       val ws = sent.words.mkString(" ")

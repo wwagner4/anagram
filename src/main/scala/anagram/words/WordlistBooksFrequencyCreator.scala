@@ -11,7 +11,7 @@ object WordlistBooksFrequencyCreator extends App {
   val bs = new BookSplitterTxt
 
 
-  val words: Seq[String] = bc.books.flatMap(book => bs.splitSentences(IoUtil.uri(book.filename))).flatten
+  val words: Seq[String] = bc.books.flatMap(book => bs.splitSentences(book.filename)).flatten
 
   val wsorted = words.groupBy(identity)
     .map { case (w, l) => (w, l.size, w.length, lenFact(w.length)) }

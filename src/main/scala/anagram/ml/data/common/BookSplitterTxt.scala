@@ -1,7 +1,5 @@
 package anagram.ml.data.common
 
-import java.net.URI
-
 import scala.io.Source
 
 object BookSplitterTxt {
@@ -25,8 +23,9 @@ class BookSplitterTxt extends BookSplitter {
 
   private val validChars: Seq[Char] = (32 :: 46 :: (65 to 90).toList ::: (97 to 122).toList).map(i => i.toChar)
 
-  def splitSentences(bookUri: URI): Stream[Seq[String]] = {
-    Source.fromFile(bookUri, "UTF-8").iter.toStream
+  def splitSentences(resName: String): Stream[Seq[String]] = {
+    val is = getClass.getClassLoader.getResourceAsStream(resName)
+    Source.fromInputStream(is, "UTF-8").iter.toStream
       // convert all word separating characters to BLANK. (CR, LF, -)
       .map { case '\u000D' => ' ' case '\u000A' => ' ' case '-' => ' ' case any => any }
       .filter(validChars.contains(_))

@@ -1,16 +1,14 @@
 package anagram.ml.data.common
 
-import anagram.common.IoUtil
-
 object BookSplitterTryout extends App {
 
-  val uri = IoUtil.uri(BookSplitterTxt.bookCommonSenseRes)
+  val resName = BookSplitterTxt.bookCommonSenseRes
   val splitter = new BookSplitterTxt
 
-  val sentences = splitter.splitSentences(uri)
+  val sentences = splitter.splitSentences(resName)
   println(sentences.map(_.mkString(" ")).mkString("\n"))
 
-  val sentences1 = splitter.splitSentences(uri)
+  val sentences1 = splitter.splitSentences(resName)
   println("-- size:" + sentences1.size)
 
 }

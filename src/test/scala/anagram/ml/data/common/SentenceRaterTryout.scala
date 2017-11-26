@@ -1,6 +1,5 @@
 package anagram.ml.data.common
 
-import anagram.common.IoUtil
 import anagram.model.plain.WordMapperFactoryPlain
 
 object SentenceRaterTryout extends App {
@@ -11,9 +10,9 @@ object SentenceRaterTryout extends App {
   val sentenceRater: SentenceRater = new SentenceRaterStraight(mapper)
 
 
-  val bookUri = IoUtil.uri("books/CommonSense.txt")
+  val bookResName = "books/CommonSense.txt"
 
-  val plainSentences: Stream[Seq[String]] = splitter.splitSentences(bookUri)
+  val plainSentences: Stream[Seq[String]] = splitter.splitSentences(bookResName)
   val sentences: Seq[Sentence] = screa.create(plainSentences, 4, mapper)
   val rated = sentenceRater.rateSentence(sentences)
 

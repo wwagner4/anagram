@@ -1,11 +1,10 @@
 package anagram.common
 
 import java.io.BufferedWriter
-import java.net.URI
 import java.nio.file.{Files, Path, Paths}
 import java.util.stream.Collectors
-import scala.collection.JavaConverters._
 
+import scala.collection.JavaConverters._
 import scala.io.Codec
 
 /**
@@ -17,12 +16,6 @@ case class DataFile(
                    )
 
 object IoUtil {
-
-  def uri(res: String): URI = {
-    val url = getClass.getClassLoader.getResource(res)
-    if (url == null) throw new IllegalArgumentException(s"Illegal URL '$res'")
-    url.toURI
-  }
 
   private lazy val _dirAna = Paths.get(System.getProperty("user.home"), "ana")
 
@@ -59,6 +52,12 @@ object IoUtil {
 
   def loadTxtFromFile[T](file: Path, f: Iterator[String] => T, codec: Codec = Codec.default): T = {
     val iter = scala.io.Source.fromFile(file.toFile)(codec).getLines()
+    f(iter)
+  }
+
+  def loadTxtFromResourceName[T](resName: String, f: Iterator[String] => T, codec: Codec = Codec.default): T = {
+    val inputStream = getClass.getClassLoader.getResourceAsStream(resName)
+    val iter = scala.io.Source.fromInputStream(inputStream)(codec).getLines()
     f(iter)
   }
 

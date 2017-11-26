@@ -1,7 +1,5 @@
 package anagram.words
 
-import java.nio.file.Paths
-
 import anagram.common.IoUtil
 
 object Wordlists {
@@ -35,31 +33,31 @@ object Wordlists {
     }
   }
 
-  private def loadWordlistGrammar(str: String): scala.Iterable[Word] = {
+  private def loadWordlistGrammar(resourceName: String): scala.Iterable[Word] = {
     def lineToWord(line: String): Word = {
       val _s = line.split(';')
       Word(_s(1), _s(1).sorted, Some(_s(0)), None)
     }
 
-    IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
+    IoUtil.loadTxtFromResourceName(resourceName, (l) => l.toIterable)
       .map(line => lineToWord(line))
   }
 
-  private def loadWordlistPlain(str: String): scala.Iterable[Word] = {
+  private def loadWordlistPlain(resName: String): scala.Iterable[Word] = {
     def word(line: String): Option[Word] = if (ignoreWords.contains(line)) None else Some(Word(line, line.sorted))
 
-    IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
+    IoUtil.loadTxtFromResourceName(resName, (l) => l.toIterable)
       .flatMap(word)
   }
 
-  private def loadWordlistPlainFreq(str: String): scala.Iterable[Word] = {
+  private def loadWordlistPlainFreq(resName: String): scala.Iterable[Word] = {
     def lineToWord(line: String): Option[Word] = {
       val _s = line.split(';')
       if (ignoreWords.contains(_s(0))) None
       else Some(Word(_s(0), _s(0).sorted, None, Some(_s(1).toInt)))
     }
 
-    IoUtil.loadTxtFromFile(Paths.get(IoUtil.uri(str)), (l) => l.toIterable)
+    IoUtil.loadTxtFromResourceName(resName, (l) => l.toIterable)
       .flatMap(line => lineToWord(line))
   }
 

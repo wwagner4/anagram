@@ -1,16 +1,14 @@
 package anagram.ml.data.transform
 
 import java.io.BufferedWriter
-import java.net.URI
-import java.nio.file.Paths
 
 import anagram.common.IoUtil
 
 object SortWordList extends App {
 
-  val file: URI = IoUtil.uri("wordlist/wordlist_grammar_small.txt")
+  val resName: String = "wordlist/wordlist_grammar_small.txt"
 
-  val sorted: Iterable[(String, String)] = IoUtil.loadTxtFromFile(Paths.get(file), read)
+  val sorted: Iterable[(String, String)] = IoUtil.loadTxtFromResourceName(resName, read)
 
   val filename = "wordlist_grammar_small.txt"
 
