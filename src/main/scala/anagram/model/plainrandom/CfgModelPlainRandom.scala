@@ -1,11 +1,12 @@
-package anagram.model.plain
+package anagram.model.plainrandom
 
 import anagram.common.{LinearAdjust, LinearAdjustParam}
 import anagram.ml.data.common._
 import anagram.model._
+import anagram.model.plain.WordMapperFactoryPlain
 import anagram.words.{WordMapper, WordMapperPrediction}
 
-class CfgModelPlain extends CfgModel {
+class CfgModelPlainRandom extends CfgModel {
 
   private val _dataId = "plain001"
   private val _sentenceLengths = 2 to 5
@@ -18,23 +19,14 @@ class CfgModelPlain extends CfgModel {
     (5, LinearAdjustParam(0, 1)),
   ).toMap
 
-  private def _adjustOutput(len: Int, rating: Double): Double = {
-    len match {
-      case 1 => rating + 20
-      case 2 => rating + 0.3046
-      case 3 => rating + 0.1024
-      case 4 => rating + 0.0756
-      case 5 => rating + 0.0000
-      case _ => rating - 20
-    }
-  }
-
   private lazy val _mapper = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()
-  lazy val srater = new SentenceRaterStraight(_mapper)
+  lazy val srater = new SentenceRaterStraightWithRandom(_mapper)
 
-  override lazy val cfgCreateData: CfgCreateDataFactory = {    lazy val cfg = new CfgCreateData {
+  override lazy val cfgCreateData: CfgCreateDataFactory = {
+
+    lazy val cfg = new CfgCreateData {
 
       override def id: String = _dataId
 
@@ -65,9 +57,9 @@ class CfgModelPlain extends CfgModel {
       override def id: String = _dataId
 
       override def iterations: Int => Int = (sentLen: Int) => {
-        if (sentLen <= 2) 180
-        else if (sentLen <= 3) 150
-        else 120
+        if (sentLen <= 2) 60
+        else if (sentLen <= 3) 70
+        else 60
       }
 
     }
@@ -76,6 +68,16 @@ class CfgModelPlain extends CfgModel {
     }
   }
 
+  private def _adjustOutput(len: Int, rating: Double): Double = {
+    len match {
+      case 1 => rating + 20
+      case 2 => rating + 0.3046
+      case 3 => rating + 0.1024
+      case 4 => rating + 0.0756
+      case 5 => rating + 0.0000
+      case _ => rating - 20
+    }
+  }
 
   override lazy val cfgRaterAi: CfgRaterAiFactory = {
     lazy val cfg = new CfgRaterAi {
@@ -89,15 +91,14 @@ class CfgModelPlain extends CfgModel {
       override def adjustOutput: Boolean = true
 
     }
-    new CfgRaterAiFactory {override def description: String = s"Plain ${_dataId}"
+    new CfgRaterAiFactory {
+      override def description: String = s"Plain ${_dataId}"
 
       override def shortDescription: String = s"PLAIN_${_dataId}"
 
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
     }
   }
-
-
 
 
 }

@@ -7,6 +7,7 @@ sealed trait SentenceType
 case object SentenceType_COMPLETE extends SentenceType
 case object SentenceType_BEGINNING extends SentenceType
 case object SentenceType_OTHER extends SentenceType
+case object SentenceType_RANDOM extends SentenceType
 
 case class Sentence (
                       sentenceType: SentenceType,

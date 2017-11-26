@@ -2,7 +2,7 @@ package anagram.model.create
 
 import anagram.model.Configurations
 
-object CreateGrmRedUnmapped extends AbstractCreator with App {
+object CreateorGrmRedUnmapped extends AbstractCreator with App {
 
   unmapped(Configurations.grammarReduced.cfgCreateData.cfgCreateData())
 

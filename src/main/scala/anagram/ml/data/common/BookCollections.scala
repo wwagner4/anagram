@@ -37,6 +37,12 @@ object BookCollections {
       Book("books/OperationHaystack.txt", "Operation Haystic", "Frank Herbert"),
       Book("books/Sanine.txt", "Sanine", "Artsybashev"),
       Book("books/UnderGreekSkies.txt", "Under Greek Skies", "Julia D. Dragoumis"),
+      Book("books/TheLureOfTheMask.txt", "The Lure of the Mask", "Mac Grath"),
+      Book("books/TreasureHunters.txt", "Treasure Hunters", "Unknown"),
+      Book("books/SomethingChildishAndOtherStories.txt", "Something Childish and Other Stories", "Katherine Mansfield"),
+      Book("books/TheSignOfTheSpider.txt", "The Sign of the Spider", "Bertram Mitford"),
+      Book("books/AGoodCleanAHarshClean.txt", "A good clean, a harsh clean", "Brian Martinez"),
+      Book("books/FabulousFancies.txt", "Fabulous Fancies", "William Babington Maxwell"),
     )
   )
 
