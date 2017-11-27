@@ -40,6 +40,7 @@ object SentenceCreatorTryout extends App {
       case SentenceType_BEGINNING => "B"
       case SentenceType_COMPLETE => "C"
       case SentenceType_OTHER => "O"
+      case SentenceType_RANDOM => "R"
     }
   }
 }

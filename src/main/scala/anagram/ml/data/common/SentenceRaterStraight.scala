@@ -26,6 +26,7 @@ class SentenceRaterStraight(val wm: WordMapper) extends SentenceRater {
       case SentenceType_COMPLETE => 100.0
       case SentenceType_BEGINNING => 50.0
       case SentenceType_OTHER => 20.0
+      case SentenceType_RANDOM => 0.0
     }
   }
 
