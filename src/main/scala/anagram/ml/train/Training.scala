@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory
 
 
 case class CfgTrainingImpl(
-                         id: String,
-                         iterations: Int => Int
-                         ) extends CfgTraining
+                            id: String,
+                            iterations: Int => Int
+                          ) extends CfgTraining
 
 object Training {
 
@@ -32,10 +32,17 @@ object Training {
 
   def train(cfg: CfgTraining): Unit = {
     log.info(s"Started training for run: '${cfg.id}'")
-    MlUtil.getTxtDataFilesFromWorkDir(IoUtil.dirWork, cfg.id).foreach{dataFile =>
+    MlUtil.getTxtDataFilesFromWorkDir(IoUtil.dirWork, cfg.id).foreach { dataFile =>
       trainDataFile(dataFile, cfg)
     }
     log.info(s"Finished training for run: '${cfg.id}'")
+  }
+
+  def scoresString(scores: Iterable[(Int, Double)]): String = {
+    val lines = for ((c, s) <- scores) yield {
+      s"($c, $s)"
+    }
+    lines.mkString("\n")
   }
 
   def trainDataFile(dataFile: DataFile, cfg: CfgTraining): Unit = {
@@ -48,9 +55,11 @@ object Training {
     val nnConf = nnConfiguration(dataFile.wordLen, cfg.iterations(dataFile.wordLen))
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    nn.setListeners(new ScoreIterationListener(30))
+    val listenerScore = new IterationListenerScore(10)
+    nn.setListeners(listenerScore)
     log.info(s"started the training")
     nn.fit(dsIter)
+    log.info("scores\n" + scoresString(listenerScore.scores))
 
     val serfile = nnDataFilePath(cfg.id, dataFile.wordLen)
     ModelSerializer.writeModel(nn, serfile.toFile, true)
