@@ -5,3 +5,4 @@ object CreatorAll extends AbstractCreator with App {
   all()
 
 }
+

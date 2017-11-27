@@ -16,10 +16,10 @@ class CfgModelGrm extends CfgModel {
   private val screator = new SentenceCreatorSliding()
   private val srater = new SentenceRaterCounting
   private val _adjRating = List(
-    (2, LinearAdjustParam(31.2029, 229.6509)),
-    (3, LinearAdjustParam(4.8286, 23.7397)),
-    (4, LinearAdjustParam(1.9724, 4.4061)),
-    (5, LinearAdjustParam(1.4014, 1.5247)),
+    (2, LinearAdjustParam(618.0639,2629.7913)),
+    (3, LinearAdjustParam(64.0179,276.0944)),
+    (4, LinearAdjustParam(11.5856,38.8528)),
+    (5, LinearAdjustParam(3.5476,7.2595)),
   ).toMap
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
@@ -54,6 +54,8 @@ class CfgModelGrm extends CfgModel {
     lazy val cfg = new CfgTraining {
 
       override def id: String = _dataId
+
+      override def batchSize: Int = 100000
 
       override def iterations: Int => Int = (sentLen: Int) => {
         if (sentLen == 2) 500

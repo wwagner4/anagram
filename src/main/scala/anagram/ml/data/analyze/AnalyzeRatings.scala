@@ -1,6 +1,7 @@
 package anagram.ml.data.analyze
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Files, Path}
+import java.util.stream.Collectors
 
 import anagram.common.IoUtil
 
@@ -12,15 +13,17 @@ case class Stat(len: Int, mean: Double, dev: Double)
 
 object AnalyseRatings extends App {
 
-  val id = "GrmRed01"
+  val id = "grmRed001"
 
-  lazy val homeDir = System.getProperty("user.home")
-
-  val workdir: Path = Paths.get(homeDir, "anagram", "work")
+  val workdir: Path = IoUtil.dirWork
 
   require(Files.exists(workdir), s"Workdir $workdir does not exist")
   require(Files.isDirectory(workdir), s"$workdir is not a directory")
 
+
+  val files = Files.list(workdir)
+  val cnt = files.collect(Collectors.counting())
+  require(cnt > 0, s"found no files in $workdir")
 
   val descs: Seq[DataFileDesc] = Files.list(workdir)
     .iterator

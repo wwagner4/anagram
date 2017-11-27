@@ -14,7 +14,6 @@ import org.deeplearning4j.nn.conf.layers.{DenseLayer, OutputLayer}
 import org.deeplearning4j.nn.conf.{MultiLayerConfiguration, NeuralNetConfiguration, Updater}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.lossfunctions.LossFunctions
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory
 
 case class CfgTrainingImpl(
                             id: String,
+                            batchSize: Int,
                             iterations: Int => Int
                           ) extends CfgTraining
 
@@ -50,7 +50,7 @@ object Training {
 
     val recordReader = new CSVRecordReader(0, ';')
     recordReader.initialize(new FileSplit(dataFile.path.toFile))
-    val dsIter = new RecordReaderDataSetIterator(recordReader, 100000, dataFile.wordLen, dataFile.wordLen, true)
+    val dsIter = new RecordReaderDataSetIterator(recordReader, cfg.batchSize, dataFile.wordLen, dataFile.wordLen, true)
     log.info(s"read dataset iterator")
     val nnConf = nnConfiguration(dataFile.wordLen, cfg.iterations(dataFile.wordLen))
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
