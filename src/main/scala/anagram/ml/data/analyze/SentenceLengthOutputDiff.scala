@@ -35,8 +35,8 @@ object SentenceLengthRatingDiff extends App {
       Wordlists.plainFreq2k,
       Wordlists.plainFreq3k,
       Wordlists.plainFreq5k,
-      Wordlists.plainFreq50k,
-      Wordlists.plainFreq100k,
+      Wordlists.plainFreq10k,
+      Wordlists.plainFreq30k,
     )
     val n = 2000
     val doAdjust = false

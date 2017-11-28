@@ -63,7 +63,7 @@ object SolverMain extends App {
 
   val srcTexts = srcTextsTmp
   val idSolving = "07"
-  val wlf = Wordlists.plainFreq50k
+  val wlf = Wordlists.plainFreq30k
 
   for (cfg <- Configurations.all.par) {
     for (srcText <- srcTexts) {

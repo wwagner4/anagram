@@ -6,8 +6,8 @@ import entelijan.viz.{Viz, VizCreatorGnuplot}
 object AnalyzeFrequencyWordLen extends App {
 
   val _id = "fw_3k_Sig4_02a"
-  val _title = "frequencies of words 3k sig(4)"
-  val _wlFactory = Wordlists.plainFreq50k
+  val _title = "frequencies of words 30k sig(4)"
+  val _wlFactory = Wordlists.plainFreq30k
 
   val _ff: Int => Double = ffSig(4)
 

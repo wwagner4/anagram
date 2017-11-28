@@ -6,7 +6,7 @@ import anagram.words.Wordlists
 
 object RandomRatedSentencesTryout extends App {
 
-  val wlf = Wordlists.plainFreq100k
+  val wlf = Wordlists.plainFreq30k
 
   val raterf = Configurations.plain.cfgRaterAi
 

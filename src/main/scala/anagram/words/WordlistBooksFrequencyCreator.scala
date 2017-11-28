@@ -21,11 +21,11 @@ object WordlistBooksFrequencyCreator extends App {
 
   def lenFact(len: Int): Double = 0.2 + 0.2 * len
 
-  val lens = Seq(2000, 3000, 5000, 10000, 50000, 100000)
+  val lens = Seq(2000, 3000, 5000, 10000, 30000)
 
   for (len <- lens) {
     val outfileName = s"wordlist_books_frequency_$len.txt"
-    val path = IoUtil.save(IoUtil.dirWork, outfileName, bw => {
+    val path = IoUtil.save(IoUtil.dirWork.resolve("wordlists_book"), outfileName, bw => {
       wsorted.take(len).foreach {
         case ((w, freq, _, _), _) => bw.write("%s;%s%n".format(w, freq))
       }

@@ -14,9 +14,7 @@ object Wordlists {
 
   def plainFreq10k: WordListFactory = createFactory("Books 10k", "B10K", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_10000.txt"))
 
-  def plainFreq50k: WordListFactory = createFactory("Books 50k", "B50k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_50000.txt"))
-
-  def plainFreq100k: WordListFactory = createFactory("Books 100k", "B100k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_100000.txt"))
+  def plainFreq30k: WordListFactory = createFactory("Books 30k", "B30k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_30000.txt"))
 
   def plain: WordListFactory = createFactory("Plain small", "PLAIN_S", () => loadWordlistPlain(s"${prefix}_small.txt"))
 
