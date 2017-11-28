@@ -64,12 +64,15 @@ class CfgModelPlain extends CfgModel {
 
       override def id: String = _dataId
 
-      override def batchSize: Int = 5000
+      override def batchSize: Int = 15000
 
-      override def iterations: Int => Int = (sentLen: Int) => {
-        if (sentLen <= 2) 180
-        else if (sentLen <= 3) 150
-        else 120
+      override def learningRate: Double = 1E-5
+
+      override def iterations: Int => Int = {
+        case 2 => 50
+        case 3 => 50
+        case 4 => 50
+        case 5 => 50
       }
 
     }

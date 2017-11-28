@@ -55,7 +55,9 @@ class CfgModelGrm extends CfgModel {
 
       override def id: String = _dataId
 
-      override def batchSize: Int = 100000
+      override def batchSize: Int = 1000
+
+      override def learningRate: Double = 0.00001
 
       override def iterations: Int => Int = (sentLen: Int) => {
         if (sentLen == 2) 500

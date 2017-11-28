@@ -12,5 +12,7 @@ trait CfgTraining {
 
   def batchSize: Int
 
+  def learningRate: Double
+
   def iterations: Int => Int
 }

@@ -26,6 +26,6 @@ class IterationListenerScore(val printIterations: Int) extends IterationListener
 
   override def invoked(): Boolean = _invoked
 
-  def scores: Iterable[(Int, Double)] = _scores
+  def scores: Iterable[(Int, Double)] = _scores.reverse
 
 }

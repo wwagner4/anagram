@@ -52,6 +52,10 @@ class CfgModelGrmRed extends CfgModel {
 
       override def id: String = _dataId
 
+      override def batchSize = 1000
+
+      override def learningRate: Double = 0.00001
+
       override def iterations: Int => Int = (sentLen: Int) => {
         if (sentLen == 2) 600
         else if (sentLen == 3) 400
@@ -59,8 +63,6 @@ class CfgModelGrmRed extends CfgModel {
         else if (sentLen == 5) 200
         else throw new IllegalStateException("Unknown sentence length " + sentLen)
       }
-
-      override def batchSize = 100000
 
     }
     new CfgTrainingFactory {

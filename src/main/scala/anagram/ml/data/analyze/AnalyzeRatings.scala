@@ -11,7 +11,7 @@ case class DataFileDesc(file: Path, sentenceLength: Int)
 
 case class Stat(len: Int, mean: Double, dev: Double)
 
-object AnalyseRatings extends App {
+object AnalyzeRatings extends App {
 
   val id = "grmRed001"
 

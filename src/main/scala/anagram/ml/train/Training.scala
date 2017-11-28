@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory
 case class CfgTrainingImpl(
                             id: String,
                             batchSize: Int,
+                            learningRate: Double,
                             iterations: Int => Int
                           ) extends CfgTraining
 
@@ -40,7 +41,7 @@ object Training {
 
   def scoresString(scores: Iterable[(Int, Double)]): String = {
     val lines = for ((c, s) <- scores) yield {
-      s"($c, $s)"
+      s"    ($c, $s),"
     }
     lines.mkString("\n")
   }
@@ -52,10 +53,14 @@ object Training {
     recordReader.initialize(new FileSplit(dataFile.path.toFile))
     val dsIter = new RecordReaderDataSetIterator(recordReader, cfg.batchSize, dataFile.wordLen, dataFile.wordLen, true)
     log.info(s"read dataset iterator")
-    val nnConf = nnConfiguration(dataFile.wordLen, cfg.iterations(dataFile.wordLen))
+    val nnConf = nnConfiguration(
+      dataFile.wordLen,
+      cfg.iterations(dataFile.wordLen),
+      cfg.learningRate
+    )
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    val listenerScore = new IterationListenerScore(10)
+    val listenerScore = new IterationListenerScore(200)
     nn.setListeners(listenerScore)
     log.info(s"started the training")
     nn.fit(dsIter)
@@ -68,7 +73,11 @@ object Training {
     log.info(s"Finished training data file: '${dataFile.path.getFileName}'")
   }
 
-  private def nnConfiguration(numInput: Int, iterations: Int): MultiLayerConfiguration = {
+  private def nnConfiguration(numInput: Int, iterations: Int, learningRate: Double): MultiLayerConfiguration = {
+
+    log.info(s"numInput: $numInput")
+    log.info(s"iterations: $iterations")
+    log.info(f"learningRate: $learningRate%.2e")
 
     val numHidden = 400
     val act = Activation.SIGMOID
@@ -77,7 +86,7 @@ object Training {
       .seed(92388784L)
       .iterations(iterations)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-      .learningRate(0.00001)
+      .learningRate(learningRate)
       .weightInit(WeightInit.XAVIER)
       .updater(Updater.NESTEROVS)
       .regularization(false)
