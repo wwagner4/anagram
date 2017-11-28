@@ -1,6 +1,6 @@
 package anagram.ml.data.analyze
 
-import anagram.words.{Word, WordListFactory, Wordlists}
+import anagram.words.{Word, Wordlists}
 import entelijan.viz.{Viz, VizCreatorGnuplot}
 
 object AnalyzeFrequencyWordLen extends App {
