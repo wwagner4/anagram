@@ -24,9 +24,9 @@ class SentenceRaterStraight(val wm: WordMapper) extends SentenceRater {
   def rating(sentence: Sentence): Double = {
     sentence.sentenceType match {
       case SentenceType_COMPLETE => 100.0
-      case SentenceType_BEGINNING => 50.0
-      case SentenceType_OTHER => 20.0
-      case SentenceType_RANDOM => 0.0
+      case SentenceType_BEGINNING => 60.0
+      case SentenceType_OTHER => 30.0
+      case SentenceType_RANDOM => 10.0
     }
   }
 
