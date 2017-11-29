@@ -4,7 +4,7 @@ import java.nio.file.Path
 
 import anagram.common.IoUtil.dirWork
 import anagram.common.{DataFile, IoUtil}
-import anagram.ml.MlUtil
+import anagram.ml.{DataCollector, MlUtil}
 import anagram.model.CfgTraining
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
@@ -24,6 +24,7 @@ case class CfgTrainingImpl(
                             id: String,
                             batchSize: Int,
                             learningRate: Double,
+                            iterationListenerUpdateCount: Int,
                             iterations: Int => Int
                           ) extends CfgTraining
 
@@ -31,22 +32,15 @@ object Training {
 
   private val log = LoggerFactory.getLogger("Training")
 
-  def train(cfg: CfgTraining): Unit = {
+  def train(cfg: CfgTraining, dataCollector: DataCollector): Unit = {
     log.info(s"Started training for run: '${cfg.id}'")
     MlUtil.getTxtDataFilesFromWorkDir(IoUtil.dirWork, cfg.id).foreach { dataFile =>
-      trainDataFile(dataFile, cfg)
+      trainDataFile(dataFile, cfg, dataCollector)
     }
     log.info(s"Finished training for run: '${cfg.id}'")
   }
 
-  def scoresString(scores: Iterable[(Int, Double)]): String = {
-    val lines = for ((c, s) <- scores) yield {
-      s"    ($c, $s),"
-    }
-    lines.mkString("\n")
-  }
-
-  def trainDataFile(dataFile: DataFile, cfg: CfgTraining): Unit = {
+  def trainDataFile(dataFile: DataFile, cfg: CfgTraining, dataCollector: DataCollector): Unit = {
     log.info(s"Started training data file: '${dataFile.path.getFileName}'")
 
     val recordReader = new CSVRecordReader(0, ';')
@@ -60,11 +54,10 @@ object Training {
     )
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    val listenerScore = new IterationListenerScore(200)
+    val listenerScore = new IterationListenerScore(dataCollector, dataFile.wordLen, cfg)
     nn.setListeners(listenerScore)
     log.info(s"started the training")
     nn.fit(dsIter)
-    log.info("scores\n" + scoresString(listenerScore.scores))
 
     val serfile = nnDataFilePath(cfg.id, dataFile.wordLen)
     ModelSerializer.writeModel(nn, serfile.toFile, true)

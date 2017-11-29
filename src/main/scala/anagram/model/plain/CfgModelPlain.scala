@@ -68,6 +68,8 @@ class CfgModelPlain extends CfgModel {
 
       override def learningRate: Double = 1E-5
 
+      override def iterationListenerUpdateCount: Int = 200
+
       override def iterations: Int => Int = {
         case 2 => 50
         case 3 => 50

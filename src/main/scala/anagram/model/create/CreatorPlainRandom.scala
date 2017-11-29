@@ -1,9 +1,12 @@
 package anagram.model.create
 
+import anagram.ml.DataCollectorStdout
 import anagram.model.Configurations
 
 object CreatorPlainRandom extends AbstractCreator with App {
 
-  one(Configurations.plainRandom)
+  var dc = new DataCollectorStdout
+  one(Configurations.plainRandom, dc)
+  dc.output
 
 }

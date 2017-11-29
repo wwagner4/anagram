@@ -13,10 +13,10 @@ class CfgModelPlainRandom extends CfgModel {
   private lazy val _bookCollection = BookCollections.collectionEn2
 
   private val _adjRating = List(
-    (3, LinearAdjustParam(11.0748,12.4438)),
-    (2, LinearAdjustParam(10.9777,12.2090)),
-    (5, LinearAdjustParam(11.2379,12.8447)),
-    (4, LinearAdjustParam(11.1638,12.6591)),
+    (3, LinearAdjustParam(0, 1)),
+    (2, LinearAdjustParam(0, 1)),
+    (5, LinearAdjustParam(0, 1)),
+    (4, LinearAdjustParam(0, 1)),
   ).toMap
 
   private lazy val _mapper = WordMapperFactoryPlain.create
@@ -58,12 +58,15 @@ class CfgModelPlainRandom extends CfgModel {
 
       override def batchSize: Int = 1000
 
-      override def learningRate: Double = 1.0E-5
+      override def learningRate: Double = 1.0E-7
 
-      override def iterations: Int => Int = (sentLen: Int) => {
-        if (sentLen <= 2) 60
-        else if (sentLen <= 3) 70
-        else 60
+      override def iterationListenerUpdateCount: Int = 1000
+
+      override def iterations: Int => Int = {
+        case 2 => 30
+        case 3 => 30
+        case 4 => 30
+        case 5 => 30
       }
 
     }
