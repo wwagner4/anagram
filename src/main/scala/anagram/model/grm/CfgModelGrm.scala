@@ -59,6 +59,8 @@ class CfgModelGrm extends CfgModel {
 
       override def learningRate: Double = 0.00001
 
+      override def iterationListenerUpdateCount: Int = 200
+
       override def iterations: Int => Int = (sentLen: Int) => {
         if (sentLen == 2) 500
         else if (sentLen == 3) 400

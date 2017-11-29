@@ -1,5 +1,6 @@
 package anagram.model.create
 
+import anagram.ml.DataCollector
 import anagram.ml.data.common.{BookCollection, CreateLearningData, SentenceCreator, SentenceRater}
 import anagram.ml.train.Training
 import anagram.model.{CfgCreateData, CfgModel, Configurations}
@@ -7,15 +8,15 @@ import anagram.words.WordMapper
 
 class AbstractCreator {
 
-  protected def all(): Unit = {
+  protected def all(dataCollector: DataCollector): Unit = {
     for (toCfg <- Configurations.all) {
-      one(toCfg)
+      one(toCfg, dataCollector)
     }
   }
 
-  protected def one(toCfg: CfgModel): Unit = {
+  protected def one(toCfg: CfgModel, dataCollector: DataCollector): Unit = {
     CreateLearningData.createData(toCfg.cfgCreateData.cfgCreateData())
-    Training.train(toCfg.cfgTraining.cfgTraining())
+    Training.train(toCfg.cfgTraining.cfgTraining(), dataCollector)
   }
 
   def unmapped(base: CfgCreateData): Unit = {

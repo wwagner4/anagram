@@ -14,5 +14,7 @@ trait CfgTraining {
 
   def learningRate: Double
 
+  def iterationListenerUpdateCount: Int
+
   def iterations: Int => Int
 }
