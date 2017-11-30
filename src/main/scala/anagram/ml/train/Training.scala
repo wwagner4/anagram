@@ -16,6 +16,7 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.activations.Activation
+import org.nd4j.linalg.learning.config.Nesterovs
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
 
@@ -83,6 +84,7 @@ object Training {
       .weightInit(WeightInit.XAVIER)
       .updater(Updater.NESTEROVS)
       .regularization(false)
+      .updater(new Nesterovs(0.9))
       .list
       .layer(0, new DenseLayer.Builder()
         .nIn(numInput)

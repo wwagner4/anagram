@@ -12,10 +12,10 @@ class CfgModelPlain extends CfgModel {
   private lazy val _bookCollection = BookCollections.collectionEn2
 
   private val _adjRating = List(
-    (5, LinearAdjustParam(22.4758,8.7973)),
-    (4, LinearAdjustParam(22.3276,8.4406)),
-    (3, LinearAdjustParam(22.1497,8.0245)),
-    (2, LinearAdjustParam(21.9553,7.5566)),
+    (2, LinearAdjustParam(31.2029,229.6509)),
+    (3, LinearAdjustParam(4.8286,23.7397)),
+    (4, LinearAdjustParam(1.9724,4.4061)),
+    (5, LinearAdjustParam(1.4014,1.5247)),
   ).toMap
 
   private def _adjustOutput(len: Int, rating: Double): Double = {
@@ -64,17 +64,17 @@ class CfgModelPlain extends CfgModel {
 
       override def id: String = _dataId
 
-      override def batchSize: Int = 15000
+      override def batchSize: Int = 100000
 
-      override def learningRate: Double = 1E-5
+      override def learningRate: Double = 0.00001
 
-      override def iterationListenerUpdateCount: Int = 200
+      override def iterationListenerUpdateCount: Int = 30
 
       override def iterations: Int => Int = {
-        case 2 => 50
-        case 3 => 50
-        case 4 => 50
-        case 5 => 50
+        case 2 => 180
+        case 3 => 150
+        case 4 => 120
+        case 5 => 120
       }
 
     }
