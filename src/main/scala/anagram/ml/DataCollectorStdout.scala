@@ -10,28 +10,29 @@ class DataCollectorStdout extends DataCollector {
     scores = Score(sentenceLength, iterations, score) :: scores
   }
 
-  def output: Unit = {
-    println("""// To bi used in anagram.ml.data.analyze.DiaScore""")
-    for((l, scs) <- scores.reverse
+  def output(): Unit = {
+    println("""// To be used in anagram.ml.data.analyze.DiaScore""")
+    val datas = scores.reverse
       .groupBy(_.sentenceLength)
-      .toSeq
-      .sortBy(_._1)) {
+      .toSeq.sortBy(_._1)
+    val dataStr = for ((l, scs) <- datas) yield {
       val values = scs
         .map(valuesLine)
         .mkString("\n")
       s"""
-        |  val data$l. = Seq(
-        |  $values
-        |  ).map(toXY)
-        |
+         |  val data$l = Seq(
+         |  $values
+         |  ).map(toXY)
+         |
       """.stripMargin
     }
+    println(dataStr.mkString("\n"))
   }
 
   def valuesLine(score: Score): String = {
     val a = score.iterations
     val b = score.score
-    f"""    ($a, $b),"""
+    f"""       ($a, $b),"""
   }
 
 }
