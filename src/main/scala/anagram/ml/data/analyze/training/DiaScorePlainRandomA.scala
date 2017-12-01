@@ -1,8 +1,8 @@
-package anagram.ml.data.analyze
+package anagram.ml.data.analyze.training
 
 import entelijan.viz.{Viz, VizCreator, VizCreatorGnuplot}
 
-object DiaScorePlainA extends App {
+object DiaScorePlainRandomA extends App {
 
   implicit val creator: VizCreator[Viz.XY] = VizCreatorGnuplot[Viz.XY]()
 
@@ -329,6 +329,8 @@ object DiaScorePlainA extends App {
     id = "scorePlainRan03a",
     title = "ScorePlainRandom bs: 100000 lr: 1E-5",
     legendPlacement = Viz.LegendPlacement_RIGHT,
+    xRange = Some(Viz.Range(Some(0.0), Some(500))),
+    yRange = Some(Viz.Range(Some(0.0), Some(800))),
     dataRows = dataRows
   )
 
