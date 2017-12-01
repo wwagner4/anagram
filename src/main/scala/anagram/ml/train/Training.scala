@@ -20,6 +20,8 @@ import org.nd4j.linalg.learning.config.Nesterovs
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
 
+import scala.util.Random
+
 
 case class CfgTrainingImpl(
                             id: String,
@@ -77,14 +79,13 @@ object Training {
     val act = Activation.SIGMOID
 
     new NeuralNetConfiguration.Builder()
-      .seed(92388784L)
+      .seed(Random.nextLong())
       .iterations(iterations)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
       .learningRate(learningRate)
       .weightInit(WeightInit.XAVIER)
       .updater(Updater.NESTEROVS)
       .regularization(false)
-      .updater(new Nesterovs(0.9))
       .list
       .layer(0, new DenseLayer.Builder()
         .nIn(numInput)
