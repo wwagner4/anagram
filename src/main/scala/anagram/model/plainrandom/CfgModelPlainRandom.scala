@@ -56,17 +56,17 @@ class CfgModelPlainRandom extends CfgModel {
 
       override def id: String = _dataId
 
-      override def batchSize: Int = 1000
+      override def batchSize: Int = 10000
 
-      override def learningRate: Double = 1.0E-7
+      override def learningRate: Double = 1.0E-5
 
-      override def iterationListenerUpdateCount: Int = 1000
+      override def iterationListenerUpdateCount: Int = 30
 
       override def iterations: Int => Int = {
-        case 2 => 30
-        case 3 => 30
-        case 4 => 30
-        case 5 => 30
+        case 2 => 180
+        case 3 => 150
+        case 4 => 120
+        case 5 => 120
       }
 
     }
