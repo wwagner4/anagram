@@ -1,6 +1,5 @@
 package anagram.model.grmred
 
-import anagram.common.{LinearAdjust, LinearAdjustParam}
 import anagram.ml.data.common._
 import anagram.model._
 import anagram.words.{WordMapper, WordMapperPrediction}
@@ -15,19 +14,11 @@ class CfgModelGrmRed extends CfgModel {
 
   private val screator = new SentenceCreatorSliding()
   private val srater = new SentenceRaterCounting
-  private val _adjRating = List(
-    (3, LinearAdjustParam(924.7948,1787.1869)),
-    (2, LinearAdjustParam(9421.5798,13329.6052)),
-    (5, LinearAdjustParam(19.8063,41.2225)),
-    (4, LinearAdjustParam(113.0483,251.5941)),
-  ).toMap
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
     lazy val cfg = new CfgCreateData {
 
       override def id: String = _dataId
-
-      override def adjustRating: (Double, Int) => Double = LinearAdjust.adjust(_adjRating)(_, _)
 
       override def sentenceLength: Iterable[Int] = _sentenceLengths
 

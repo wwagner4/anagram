@@ -1,6 +1,5 @@
 package anagram.model.plainrandom
 
-import anagram.common.{LinearAdjust, LinearAdjustParam}
 import anagram.ml.data.common._
 import anagram.model._
 import anagram.model.plain.WordMapperFactoryPlain
@@ -12,13 +11,6 @@ class CfgModelPlainRandom extends CfgModel {
   private val _sentenceLengths = 2 to 5
   private lazy val _bookCollection = BookCollections.collectionEn2
 
-  private val _adjRating = List(
-    (3, LinearAdjustParam(0, 1)),
-    (2, LinearAdjustParam(0, 1)),
-    (5, LinearAdjustParam(0, 1)),
-    (4, LinearAdjustParam(0, 1)),
-  ).toMap
-
   private lazy val _mapper = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()
@@ -29,8 +21,6 @@ class CfgModelPlainRandom extends CfgModel {
     lazy val cfg = new CfgCreateData {
 
       override def id: String = _dataId
-
-      override def adjustRating: (Double, Int) => Double = LinearAdjust.adjust(_adjRating)(_, _)
 
       override def sentenceLength: Iterable[Int] = _sentenceLengths
 

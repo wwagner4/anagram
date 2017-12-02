@@ -1,6 +1,5 @@
 package anagram.model.plain
 
-import anagram.common.{LinearAdjust, LinearAdjustParam}
 import anagram.ml.data.common._
 import anagram.model._
 import anagram.words.{WordMapper, WordMapperPrediction}
@@ -10,13 +9,6 @@ class CfgModelPlain extends CfgModel {
   private val _dataId = "plain001"
   private val _sentenceLengths = 2 to 5
   private lazy val _bookCollection = BookCollections.collectionEn2
-
-  private val _adjRating = List(
-    (2, LinearAdjustParam(31.2029,229.6509)),
-    (3, LinearAdjustParam(4.8286,23.7397)),
-    (4, LinearAdjustParam(1.9724,4.4061)),
-    (5, LinearAdjustParam(1.4014,1.5247)),
-  ).toMap
 
   private def _adjustOutput(len: Int, rating: Double): Double = {
     len match {
@@ -37,8 +29,6 @@ class CfgModelPlain extends CfgModel {
   override lazy val cfgCreateData: CfgCreateDataFactory = {    lazy val cfg = new CfgCreateData {
 
       override def id: String = _dataId
-
-      override def adjustRating: (Double, Int) => Double = LinearAdjust.adjust(_adjRating)(_, _)
 
       override def sentenceLength: Iterable[Int] = _sentenceLengths
 

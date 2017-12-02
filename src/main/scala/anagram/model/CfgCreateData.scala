@@ -21,7 +21,5 @@ trait CfgCreateData {
 
   def sentenceLength: Iterable[Int]
 
-  def adjustRating: (Double, Int) => Double
-
   def mapWordsToNumbers: Boolean
 }

@@ -8,14 +8,14 @@ import anagram.words.WordMapper
 
 class AbstractCreator {
 
-  protected def all(dataCollector: DataCollector, training: Boolean = true, adjustLearningDataRating: Boolean = true): Unit = {
+  protected def all(dataCollector: DataCollector, training: Boolean = true): Unit = {
     for (toCfg <- Configurations.all) {
-      one(toCfg, dataCollector, training, adjustLearningDataRating)
+      one(toCfg, dataCollector, training)
     }
   }
 
-  protected def one(toCfg: CfgModel, dataCollector: DataCollector, training: Boolean = true, adjustLearningDataRating: Boolean = true): Unit = {
-    CreateLearningData.createData(toCfg.cfgCreateData.cfgCreateData(), adjustLearningDataRating)
+  protected def one(toCfg: CfgModel, dataCollector: DataCollector, training: Boolean = true): Unit = {
+    CreateLearningData.createData(toCfg.cfgCreateData.cfgCreateData())
     if (training) {
       Training.train(toCfg.cfgTraining.cfgTraining(), dataCollector)
     }
@@ -29,7 +29,6 @@ class AbstractCreator {
       base.sentenceRater,
       base.bookCollection,
       Seq(3, 4),
-      base.adjustRating,
       mapWordsToNumbers = false,
     )
 
@@ -45,6 +44,5 @@ case class CfgCreateDataImpl(
                               sentenceRater: SentenceRater,
                               bookCollection: BookCollection,
                               sentenceLength: Iterable[Int],
-                              adjustRating: (Double, Int) => Double,
                               mapWordsToNumbers: Boolean,
                             ) extends CfgCreateData
