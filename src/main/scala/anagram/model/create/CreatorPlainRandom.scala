@@ -6,7 +6,7 @@ import anagram.model.Configurations
 object CreatorPlainRandom extends AbstractCreator with App {
 
   var dc = new DataCollectorStdout
-  one(Configurations.plainRandom, dc)
-  dc.output
+  one(Configurations.plainRandom, training = true, dc)
+  dc.output()
 
 }
