@@ -1,4 +1,4 @@
-package anagram.ml.data.analyze
+package anagram.ml.data.analyze.training
 
 import entelijan.viz.{Viz, VizCreator, VizCreatorGnuplot}
 
