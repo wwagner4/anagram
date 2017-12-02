@@ -5,7 +5,7 @@ import anagram.ml.DataCollectorStdout
 object CreatorAll extends AbstractCreator with App {
 
   var dc = new DataCollectorStdout
-  all(training = true, dc)
+  all(dc)
   dc.output()
 }
 

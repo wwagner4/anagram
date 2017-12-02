@@ -15,7 +15,7 @@ object CreateLearningData {
 
   val bookSplitter: BookSplitter = new BookSplitterTxt
 
-  def createData(config: CfgCreateData): Unit = {
+  def createData(config: CfgCreateData, adjustRating: Boolean): Unit = {
 
     val uris = config.bookCollection.books.map(bc => bc.filename).toStream
     for (len <- config.sentenceLength) {
@@ -26,7 +26,7 @@ object CreateLearningData {
       val ldPath = saveDataToWorkDir(
         filePrefix(config.id, config.mapWordsToNumbers),
         len,
-        writeSentences(len, sent, config)(_),
+        writeSentences(len, sent, config, adjustRating)(_),
       )
       log.info("Created learning data in " + ldPath)
     }
@@ -38,13 +38,15 @@ object CreateLearningData {
     else s"${id}_unmapped"
   }
 
-  def writeSentences(sentLength: Int, sentences: Seq[Sentence], config: CfgCreateData)(wr: BufferedWriter): Unit = {
+  def writeSentences(sentLength: Int, sentences: Seq[Sentence], config: CfgCreateData, adjustRating: Boolean)(wr: BufferedWriter): Unit = {
     for (rated <- config.sentenceRater.rateSentence(sentences)) {
       val sentAdjusted = Sentence(
         rated.sentence.sentenceType,
         rated.sentence.words.map(word => if (config.mapWordsToNumbers) f(config.mapper.toNum(word)) else word)
       )
-      val ratingAdjusted = config.adjustRating(rated.rating, sentLength)
+      val ratingAdjusted =
+        if (adjustRating) config.adjustRating(rated.rating, sentLength)
+        else rated.rating
       writeSentence(Rated(sentAdjusted, ratingAdjusted))(wr)
     }
   }

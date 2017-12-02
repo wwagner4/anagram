@@ -8,14 +8,14 @@ import anagram.words.WordMapper
 
 class AbstractCreator {
 
-  protected def all(training: Boolean, dataCollector: DataCollector): Unit = {
+  protected def all(dataCollector: DataCollector, training: Boolean = true, adjustLearningDataRating: Boolean = true): Unit = {
     for (toCfg <- Configurations.all) {
-      one(toCfg, training, dataCollector)
+      one(toCfg, dataCollector, training, adjustLearningDataRating)
     }
   }
 
-  protected def one(toCfg: CfgModel, training: Boolean, dataCollector: DataCollector): Unit = {
-    CreateLearningData.createData(toCfg.cfgCreateData.cfgCreateData())
+  protected def one(toCfg: CfgModel, dataCollector: DataCollector, training: Boolean = true, adjustLearningDataRating: Boolean = true): Unit = {
+    CreateLearningData.createData(toCfg.cfgCreateData.cfgCreateData(), adjustLearningDataRating)
     if (training) {
       Training.train(toCfg.cfgTraining.cfgTraining(), dataCollector)
     }
@@ -33,7 +33,6 @@ class AbstractCreator {
       mapWordsToNumbers = false,
     )
 
-    CreateLearningData.createData(adapted)
   }
 
 

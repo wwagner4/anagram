@@ -6,7 +6,10 @@ import anagram.model.Configurations
 object CreatorPlain extends AbstractCreator with App {
 
   var dc = new DataCollectorStdout
-  one(Configurations.plain, training = true, dc)
+  one(
+    Configurations.plain,
+    dc,
+  )
   dc.output()
 
 }

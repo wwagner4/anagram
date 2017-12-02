@@ -13,7 +13,7 @@ case class Stat(len: Int, mean: Double, dev: Double)
 
 object AnalyzeLearningDataRatings extends App {
 
-  val id = "grmRed001"
+  val id = "plain001"
 
   val workdir: Path = IoUtil.dirWork
 
