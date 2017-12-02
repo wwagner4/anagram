@@ -6,7 +6,7 @@ import anagram.model.Configurations
 object CreatorGrmRed extends AbstractCreator with App {
 
   var dc = new DataCollectorStdout
-  one(Configurations.grammarReduced, dc)
-  dc.output
+  one(Configurations.grammarReduced, training = true, dc)
+  dc.output()
 
 }
