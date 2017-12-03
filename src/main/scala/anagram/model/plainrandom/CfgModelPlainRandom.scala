@@ -68,10 +68,10 @@ class CfgModelPlainRandom extends CfgModel {
   private def _adjustOutput(len: Int, rating: Double): Double = {
     len match {
       case 1 => rating + 20
-      case 2 => rating + 0.3046
-      case 3 => rating + 0.1024
-      case 4 => rating + 0.0756
-      case 5 => rating + 0.0000
+      case 2 => rating + 0.7409
+      case 3 => rating + 0.5021
+      case 4 => rating + 0.0000
+      case 5 => rating + 0.1284
       case _ => rating - 20
     }
   }

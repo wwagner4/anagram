@@ -18,13 +18,12 @@ class CfgModelPlain extends CfgModel {
   private def _adjustOutput(len: Int, rating: Double): Double = {
     len match {
       case 1 => rating + 20
-      case 2 => rating + 0.3046
-      case 3 => rating + 0.1024
-      case 4 => rating + 0.0756
-      case 5 => rating + 0.0000
+      case 2 => rating + 1.4105
+      case 3 => rating + 0.5655
+      case 4 => rating + 0.0000
+      case 5 => rating + 0.4568
       case _ => rating - 20
-    }
-  }
+    }  }
 
   private lazy val _mapper = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt()
