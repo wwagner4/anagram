@@ -3,7 +3,7 @@ package anagram.model.create
 import anagram.ml.DataCollector
 import anagram.ml.data.common.{BookCollection, CreateLearningData, SentenceCreator, SentenceRater}
 import anagram.ml.train.Training
-import anagram.model.{CfgCreateData, CfgModel, Configurations}
+import anagram.model._
 import anagram.words.WordMapper
 
 class AbstractCreator {
@@ -21,6 +21,11 @@ class AbstractCreator {
     }
   }
 
+  val _sentLen = Seq(
+    SentenceLength_2(),
+    SentenceLength_4(),
+  )
+
   def unmapped(base: CfgCreateData): Unit = {
     val adapted = CfgCreateDataImpl(
       base.id,
@@ -28,7 +33,7 @@ class AbstractCreator {
       base.sentenceCreator,
       base.sentenceRater,
       base.bookCollection,
-      Seq(3, 4),
+      _sentLen,
       mapWordsToNumbers = false,
     )
 
@@ -43,6 +48,6 @@ case class CfgCreateDataImpl(
                               sentenceCreator: SentenceCreator,
                               sentenceRater: SentenceRater,
                               bookCollection: BookCollection,
-                              sentenceLength: Iterable[Int],
+                              sentenceLength: Iterable[SentenceLength],
                               mapWordsToNumbers: Boolean,
                             ) extends CfgCreateData

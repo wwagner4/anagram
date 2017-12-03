@@ -7,7 +7,12 @@ import anagram.words.{WordMapper, WordMapperPrediction}
 class CfgModelGrm extends CfgModel {
 
   private val _dataId = "grm001"
-  private val _sentenceLengths = 2 to 5
+  private val _sentenceLengths = Seq(
+    SentenceLength_2(),
+    SentenceLength_3(),
+    SentenceLength_4(),
+    SentenceLength_5(),
+  )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
   private lazy val _mapper = WordMapperFactoryGrammar.create
@@ -21,7 +26,7 @@ class CfgModelGrm extends CfgModel {
     lazy val cfg = new CfgCreateData {
       override def id: String = _dataId
 
-      override def sentenceLength: Iterable[Int] = _sentenceLengths
+      override def sentenceLength: Iterable[SentenceLength] = _sentenceLengths
 
       override def mapper: WordMapper = _mapper
 

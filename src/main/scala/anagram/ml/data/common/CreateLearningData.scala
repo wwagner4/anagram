@@ -21,12 +21,12 @@ object CreateLearningData {
     for (len <- config.sentenceLength) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
-      val sent: Seq[Sentence] = config.sentenceCreator.create(split, len, config.mapper)
+      val sent: Seq[Sentence] = config.sentenceCreator.create(split, len.length, config.mapper)
       log.info(s"Created ${sent.size} sentences of length $len")
       val ldPath = saveDataToWorkDir(
         filePrefix(config.id, config.mapWordsToNumbers),
-        len,
-        writeSentences(len, sent, config)(_),
+        len.length,
+        writeSentences(len.length, sent, config)(_),
       )
       log.info("Created learning data in " + ldPath)
     }

@@ -19,7 +19,7 @@ trait CfgCreateData {
 
   def bookCollection: BookCollection
 
-  def sentenceLength: Iterable[Int]
+  def sentenceLength: Iterable[SentenceLength]
 
   def mapWordsToNumbers: Boolean
 }
