@@ -9,10 +9,10 @@ class CfgModelPlainRandom extends CfgModel {
 
   private val _dataId = "plainRand001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(),
-    SentenceLength_3(),
-    SentenceLength_4(),
-    SentenceLength_5(),
+    SentenceLength_2(2),
+    SentenceLength_3(2),
+    SentenceLength_4(2),
+    SentenceLength_5(2),
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 

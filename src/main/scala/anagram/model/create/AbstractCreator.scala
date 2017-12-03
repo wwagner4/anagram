@@ -21,12 +21,13 @@ class AbstractCreator {
     }
   }
 
-  val _sentLen = Seq(
-    SentenceLength_2(),
-    SentenceLength_4(),
-  )
-
   def unmapped(base: CfgCreateData): Unit = {
+
+    val _sentLen = Seq(
+      SentenceLength_2(10),
+      SentenceLength_4(10),
+    )
+
     val adapted = CfgCreateDataImpl(
       base.id,
       base.mapper,

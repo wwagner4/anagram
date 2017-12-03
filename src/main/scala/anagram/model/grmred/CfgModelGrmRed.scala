@@ -8,10 +8,10 @@ class CfgModelGrmRed extends CfgModel {
 
   private val _dataId = "grmRed001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(),
-    SentenceLength_3(),
-    SentenceLength_4(),
-    SentenceLength_5(),
+    SentenceLength_2(1),
+    SentenceLength_3(1),
+    SentenceLength_4(1),
+    SentenceLength_5(1),
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 

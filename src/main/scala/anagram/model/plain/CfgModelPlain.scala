@@ -8,10 +8,10 @@ class CfgModelPlain extends CfgModel {
 
   private val _dataId = "plain001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(),
-    SentenceLength_3(),
-    SentenceLength_4(),
-    SentenceLength_5(),
+    SentenceLength_2(2),
+    SentenceLength_3(2),
+    SentenceLength_4(2),
+    SentenceLength_5(3),
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
