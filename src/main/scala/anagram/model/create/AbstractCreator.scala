@@ -9,9 +9,7 @@ import anagram.words.WordMapper
 class AbstractCreator {
 
   protected def all(dataCollector: DataCollector, training: Boolean = true): Unit = {
-    for (toCfg <- Configurations.all) {
-      one(toCfg, dataCollector, training)
-    }
+    Configurations.all.foreach((toCfg: CfgModel) => one(toCfg, dataCollector, training))
   }
 
   protected def one(toCfg: CfgModel, dataCollector: DataCollector, training: Boolean = true): Unit = {
@@ -23,18 +21,13 @@ class AbstractCreator {
 
   def unmapped(base: CfgCreateData): Unit = {
 
-    val _sentLen = Seq(
-      SentenceLength_2(10, 0),
-      SentenceLength_4(10, 0),
-    )
-
-    val adapted = CfgCreateDataImpl(
+    val adapted: CfgCreateDataImpl = CfgCreateDataImpl(
       base.id,
       base.mapper,
       base.sentenceCreator,
       base.sentenceRater,
       base.bookCollection,
-      _sentLen,
+      base.sentenceLengths,
       mapWordsToNumbers = false,
     )
 
