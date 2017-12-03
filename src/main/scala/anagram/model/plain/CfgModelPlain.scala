@@ -8,33 +8,36 @@ class CfgModelPlain extends CfgModel {
 
   private val _dataId = "plain001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(2),
-    SentenceLength_3(2),
-    SentenceLength_4(2),
-    SentenceLength_5(3),
+    SentenceLength_2(
+      trainingIterations = 2,
+      ratingAdjustOutput = 1.8,
+    ),
+    SentenceLength_3(
+      trainingIterations = 2,
+      ratingAdjustOutput = 0.75,
+    ),
+    SentenceLength_4(
+      trainingIterations = 2,
+      ratingAdjustOutput = 0.64,
+    ),
+    SentenceLength_5(
+      trainingIterations = 3,
+      ratingAdjustOutput = 0.0,
+    ),
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
-
-  private def _adjustOutput(len: Int, rating: Double): Double = {
-    len match {
-      case 1 => rating + 20
-      case 2 => rating + 1.4105
-      case 3 => rating + 0.5655
-      case 4 => rating + 0.0000
-      case 5 => rating + 0.4568
-      case _ => rating - 20
-    }  }
 
   private lazy val _mapper = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding()
   lazy val srater = new SentenceRaterStraight(_mapper)
 
-  override lazy val cfgCreateData: CfgCreateDataFactory = {    lazy val cfg = new CfgCreateData {
+  override lazy val cfgCreateData: CfgCreateDataFactory = {
+    lazy val cfg = new CfgCreateData {
 
       override def id: String = _dataId
 
-      override def sentenceLength: Iterable[SentenceLength] = _sentenceLengths
+      override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def mapper: WordMapper = _mapper
 
@@ -82,20 +85,17 @@ class CfgModelPlain extends CfgModel {
 
       override def mapper: WordMapperPrediction = _mapper
 
-      override def adjustOutputFunc: (Int, Double) => Double = _adjustOutput
-
       override def adjustOutput: Boolean = true
 
     }
-    new CfgRaterAiFactory {override def description: String = s"Plain ${_dataId}"
+    new CfgRaterAiFactory {
+      override def description: String = s"Plain ${_dataId}"
 
       override def shortDescription: String = s"PLAIN_${_dataId}"
 
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
     }
   }
-
-
 
 
 }

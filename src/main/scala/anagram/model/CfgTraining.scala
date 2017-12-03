@@ -8,8 +8,6 @@ trait CfgTrainingFactory {
 
 trait CfgTraining extends Cfg {
 
-  def id: String
-
   def batchSize: Int
 
   def learningRate: Double

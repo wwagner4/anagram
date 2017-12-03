@@ -24,7 +24,7 @@ object CreateLearningData {
     }
 
     val uris = config.bookCollection.books.map(bc => bc.filename).toStream
-    for (len <- config.sentenceLength) {
+    for (len <- config.sentenceLengths) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
       val sent: Seq[Sentence] = config.sentenceCreator.create(split, len.length, config.mapper)

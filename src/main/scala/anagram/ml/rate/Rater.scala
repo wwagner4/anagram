@@ -5,7 +5,7 @@ import java.nio.file.Path
 import anagram.common.IoUtil
 import anagram.ml.MlUtil
 import anagram.ml.data.common.{BookCollections, BookSplitterTxt}
-import anagram.model.CfgRaterAi
+import anagram.model.{CfgRaterAi, SentenceLength}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.factory.Nd4j
@@ -35,29 +35,33 @@ class RaterNone extends Rater {
 
 class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Rater {
 
+  case class Model(
+                    sentenceLength: SentenceLength,
+                    multiLayerNetwork: MultiLayerNetwork,
+                  )
+
   private val log = LoggerFactory.getLogger("RaterAi")
 
   require(logInterval.forall(n => n > 0), "If loginterval is defined it must be greater 0")
 
   var cnt = 0
 
-  private val nnMap: Map[Int, MultiLayerNetwork] = cfg.sentenceLengths
-    .map(sl => (sl.length, deserializeNn(IoUtil.dirWork.resolve(MlUtil.nnFileName(cfg.id, sl.length)))))
+  private val nnModel: Map[Int, Model] = cfg.sentenceLengths
+    .map(sl => (sl.length, Model(
+      sl,
+      deserializeNn(IoUtil.dirWork.resolve(MlUtil.nnFileName(cfg.id, sl.length)))
+    )))
     .toMap
 
-  require(nnMap.nonEmpty, s"Found no NNs for dataId: '${cfg.id}'")
-
   def rate(sent: Iterable[String]): Double = {
-    if (sent.size <= 1) 100
-    else if (sent.size >= 6) -100
-    else {
-      nnMap.get(sent.size)
-        .map(rate(_, sent))
-        .getOrElse(throw new IllegalStateException(s"Found no NN for dataId ${cfg.id} and sentence size ${sent.size}"))
+    val _size = sent.size
+    nnModel.get(_size) match {
+      case Some(m) => rate(m.multiLayerNetwork, m.sentenceLength, sent)
+      case None => if (_size <= 1.0) 100 else -100
     }
   }
 
-  def rate(nn: MultiLayerNetwork, sent: Iterable[String]): Double = {
+  def rate(nn: MultiLayerNetwork, sentenceLength: SentenceLength, sent: Iterable[String]): Double = {
     logInterval.foreach { interv =>
       if (cnt % interv == 0 && cnt > 0) log.info(s"Rated $cnt sentences")
     }
@@ -75,7 +79,7 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
 
     val _ratingNN = rateNN
 
-    if (cfg.adjustOutput) cfg.adjustOutputFunc(sent.size, _ratingNN)
+    if (cfg.adjustOutput) _ratingNN + sentenceLength.ratingAdjustOutput
     else _ratingNN
 
 

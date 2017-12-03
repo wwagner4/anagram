@@ -4,7 +4,7 @@ import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.rate.{Rater, RaterAi}
-import anagram.model.{CfgRaterAiImpl, CfgRaterAiImplCreator, Configurations}
+import anagram.model.{CfgRaterAiImplCreator, Configurations}
 import anagram.words.{Word, WordListFactory, Wordlists}
 
 import scala.util.Random
@@ -29,14 +29,14 @@ object SentenceLengthRatingDiff extends App {
 
   def maxRatingsFromRandomSentences(): Unit = {
 
-    val raterf = Configurations.grammarReduced.cfgRaterAi
+    val raterf = Configurations.plain.cfgRaterAi
 
     val wordLists = Seq(
       Wordlists.plainFreq2k,
       Wordlists.plainFreq3k,
       Wordlists.plainFreq5k,
       Wordlists.plainFreq10k,
-      Wordlists.plainFreq30k,
+      Wordlists.plainFreq30k
     )
     val n = 2000
     val doAdjust = false
@@ -104,14 +104,10 @@ object SentenceLengthRatingDiff extends App {
   def output1(mr: Seq[(Int, Double)]): Unit = {
     val max = mr.map(t => t._2).max
 
-    println(f"len match {")
-    println(f"case 1 => rating + 20")
     for ((len, maxRating) <- mr) {
       val diff = max - maxRating
-      println(f"case $len => rating + $diff%.4f")
+      println(f"ratingAdjustOutput = $diff%.4f, // $len")
     }
-    println(f"case _ => rating - 20")
-    println(f"}")
   }
 
 

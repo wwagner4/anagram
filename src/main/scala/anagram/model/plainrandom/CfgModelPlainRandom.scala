@@ -9,10 +9,22 @@ class CfgModelPlainRandom extends CfgModel {
 
   private val _dataId = "plainRand001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(2),
-    SentenceLength_3(2),
-    SentenceLength_4(2),
-    SentenceLength_5(2),
+    SentenceLength_2(
+      trainingIterations = 2,
+      ratingAdjustOutput = 0.72,
+    ),
+    SentenceLength_3(
+      trainingIterations = 2,
+      ratingAdjustOutput = 0.52,
+    ),
+    SentenceLength_4(
+      trainingIterations = 2,
+      ratingAdjustOutput = 0.0,
+    ),
+    SentenceLength_5(
+      trainingIterations =  2,
+      ratingAdjustOutput = 0.11,
+    ),
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
@@ -27,7 +39,7 @@ class CfgModelPlainRandom extends CfgModel {
 
       override def id: String = _dataId
 
-      override def sentenceLength: Iterable[SentenceLength] = _sentenceLengths
+      override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def mapper: WordMapper = _mapper
 
@@ -65,17 +77,6 @@ class CfgModelPlainRandom extends CfgModel {
     }
   }
 
-  private def _adjustOutput(len: Int, rating: Double): Double = {
-    len match {
-      case 1 => rating + 20
-      case 2 => rating + 0.7409
-      case 3 => rating + 0.5021
-      case 4 => rating + 0.0000
-      case 5 => rating + 0.1284
-      case _ => rating - 20
-    }
-  }
-
   override lazy val cfgRaterAi: CfgRaterAiFactory = {
     lazy val cfg = new CfgRaterAi {
 
@@ -84,8 +85,6 @@ class CfgModelPlainRandom extends CfgModel {
       override def id: String = _dataId
 
       override def mapper: WordMapperPrediction = _mapper
-
-      override def adjustOutputFunc: (Int, Double) => Double = _adjustOutput
 
       override def adjustOutput: Boolean = true
 

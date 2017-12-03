@@ -8,8 +8,7 @@ trait CfgCreateDataFactory {
   def cfgCreateData: () => CfgCreateData
 }
 
-trait CfgCreateData {
-  def id: String
+trait CfgCreateData extends Cfg {
 
   def mapper: WordMapper
 
@@ -18,8 +17,6 @@ trait CfgCreateData {
   def sentenceRater: SentenceRater
 
   def bookCollection: BookCollection
-
-  def sentenceLength: Iterable[SentenceLength]
 
   def mapWordsToNumbers: Boolean
 }

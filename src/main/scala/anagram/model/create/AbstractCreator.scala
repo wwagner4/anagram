@@ -24,8 +24,8 @@ class AbstractCreator {
   def unmapped(base: CfgCreateData): Unit = {
 
     val _sentLen = Seq(
-      SentenceLength_2(10),
-      SentenceLength_4(10),
+      SentenceLength_2(10, 0),
+      SentenceLength_4(10, 0),
     )
 
     val adapted = CfgCreateDataImpl(
@@ -38,6 +38,8 @@ class AbstractCreator {
       mapWordsToNumbers = false,
     )
 
+    CreateLearningData.createData(adapted)
+
   }
 
 
@@ -49,6 +51,6 @@ case class CfgCreateDataImpl(
                               sentenceCreator: SentenceCreator,
                               sentenceRater: SentenceRater,
                               bookCollection: BookCollection,
-                              sentenceLength: Iterable[SentenceLength],
+                              sentenceLengths: Iterable[SentenceLength],
                               mapWordsToNumbers: Boolean,
                             ) extends CfgCreateData

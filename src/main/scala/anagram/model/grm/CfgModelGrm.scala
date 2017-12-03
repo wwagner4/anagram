@@ -8,10 +8,10 @@ class CfgModelGrm extends CfgModel {
 
   private val _dataId = "grm001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(1),
-    SentenceLength_3(1),
-    SentenceLength_4(1),
-    SentenceLength_5(1),
+    SentenceLength_2(1, 0),
+    SentenceLength_3(1, 0),
+    SentenceLength_4(1, 0),
+    SentenceLength_5(1, 0),
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
@@ -26,7 +26,7 @@ class CfgModelGrm extends CfgModel {
     lazy val cfg = new CfgCreateData {
       override def id: String = _dataId
 
-      override def sentenceLength: Iterable[SentenceLength] = _sentenceLengths
+      override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def mapper: WordMapper = _mapper
 
@@ -67,17 +67,6 @@ class CfgModelGrm extends CfgModel {
     }
   }
 
-  private def _adjustOutput(len: Int, rating: Double): Double = {
-    len match {
-      case 1 => rating + 20
-      case 2 => rating + 0.1848
-      case 3 => rating + 0.0000
-      case 4 => rating + 0.1224
-      case 5 => rating + 0.6322
-      case _ => rating - 20
-    }
-  }
-
   override lazy val cfgRaterAi: CfgRaterAiFactory = {
     lazy val cfg = new CfgRaterAi {
 
@@ -86,8 +75,6 @@ class CfgModelGrm extends CfgModel {
       override def id: String = _dataId
 
       override def mapper: WordMapperPrediction = _mapper
-
-      override def adjustOutputFunc: (Int, Double) => Double = _adjustOutput
 
       override def adjustOutput: Boolean = true
 
