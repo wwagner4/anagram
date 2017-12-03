@@ -13,11 +13,8 @@ class SentenceRaterStraight(val wm: WordMapper) extends SentenceRater {
 
   def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
     sentences.flatMap { sentence =>
-      if (!sentence.words.forall(w => wm.containsWord(w))) {
-        Seq.empty[Rated]
-      } else {
-        Seq(Rated(sentence, rating(sentence)))
-      }
+      if (!sentence.words.forall(w => wm.containsWord(w))) None
+      else Some(Rated(sentence, rating(sentence)))
     }
   }
 
