@@ -41,8 +41,8 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
 
   var cnt = 0
 
-  private val nnMap: Map[Int, MultiLayerNetwork] = MlUtil.getNnDataFilesFromWorkDir(IoUtil.dirWork, cfg.id)
-    .map(df => (df.wordLen, deserializeNn(df.path)))
+  private val nnMap: Map[Int, MultiLayerNetwork] = cfg.sentenceLengths
+    .map(sl => (sl.length, deserializeNn(IoUtil.dirWork.resolve(MlUtil.nnFileName(cfg.id, sl.length)))))
     .toMap
 
   require(nnMap.nonEmpty, s"Found no NNs for dataId: '${cfg.id}'")

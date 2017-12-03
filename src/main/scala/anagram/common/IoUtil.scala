@@ -7,14 +7,6 @@ import java.util.stream.Collectors
 import scala.collection.JavaConverters._
 import scala.io.Codec
 
-/**
-  * Description for a datafile
-  */
-case class DataFile(
-                     wordLen: Int,
-                     path: Path,
-                   )
-
 object IoUtil {
 
   private lazy val _dirAna = Paths.get(System.getProperty("user.home"), "ana")

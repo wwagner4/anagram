@@ -2,10 +2,10 @@ package anagram.ml.train
 
 import java.nio.file.Path
 
+import anagram.common.IoUtil
 import anagram.common.IoUtil.dirWork
-import anagram.common.{DataFile, IoUtil}
 import anagram.ml.{DataCollector, MlUtil}
-import anagram.model.CfgTraining
+import anagram.model.{CfgTraining, SentenceLength}
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
@@ -16,7 +16,6 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.linalg.activations.Activation
-import org.nd4j.linalg.learning.config.Nesterovs
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
 
@@ -24,6 +23,7 @@ import scala.util.Random
 
 
 case class CfgTrainingImpl(
+                            sentenceLengths: Iterable[SentenceLength],
                             id: String,
                             batchSize: Int,
                             learningRate: Double,
@@ -36,37 +36,42 @@ object Training {
   private val log = LoggerFactory.getLogger("Training")
 
   def train(cfg: CfgTraining, dataCollector: DataCollector): Unit = {
-    log.info(s"Started training for run: '${cfg.id}'")
-    MlUtil.getTxtDataFilesFromWorkDir(IoUtil.dirWork, cfg.id).foreach { dataFile =>
-      trainDataFile(dataFile, cfg, dataCollector)
+    for (s <- cfg.sentenceLengths) {
+      train(cfg, s, dataCollector)
     }
+  }
+
+  def train(cfg: CfgTraining, sentenceLength: SentenceLength, dataCollector: DataCollector): Unit = {
+    log.info(s"Started training for run: '${cfg.id}'")
+    val dataFile = IoUtil.dirWork.resolve(MlUtil.dataFileName(cfg.id, sentenceLength.length))
+    trainDataFile(dataFile, cfg, sentenceLength, dataCollector)
     log.info(s"Finished training for run: '${cfg.id}'")
   }
 
-  def trainDataFile(dataFile: DataFile, cfg: CfgTraining, dataCollector: DataCollector): Unit = {
-    log.info(s"Started training data file: '${dataFile.path.getFileName}'")
+  def trainDataFile(dataFile: Path, cfg: CfgTraining, sentenceLength: SentenceLength, dataCollector: DataCollector): Unit = {
+    log.info(s"Started training data file: '${dataFile.getFileName}'")
 
     val recordReader = new CSVRecordReader(0, ';')
-    recordReader.initialize(new FileSplit(dataFile.path.toFile))
-    val dsIter = new RecordReaderDataSetIterator(recordReader, cfg.batchSize, dataFile.wordLen, dataFile.wordLen, true)
+    recordReader.initialize(new FileSplit(dataFile.toFile))
+    val dsIter = new RecordReaderDataSetIterator(recordReader, cfg.batchSize, sentenceLength.length, sentenceLength.length, true)
     log.info(s"read dataset iterator")
     val nnConf = nnConfiguration(
-      dataFile.wordLen,
-      cfg.iterations(dataFile.wordLen),
+      sentenceLength.length,
+      sentenceLength.trainingIterations,
       cfg.learningRate
     )
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    val listenerScore = new IterationListenerScore(dataCollector, dataFile.wordLen, cfg)
+    val listenerScore = new IterationListenerScore(dataCollector, sentenceLength.length, cfg)
     nn.setListeners(listenerScore)
     log.info(s"started the training")
     nn.fit(dsIter)
 
-    val serfile = nnDataFilePath(cfg.id, dataFile.wordLen)
+    val serfile = nnDataFilePath(cfg.id, sentenceLength.length)
     ModelSerializer.writeModel(nn, serfile.toFile, true)
     log.info(s"Wrote net to: '$serfile'")
 
-    log.info(s"Finished training data file: '${dataFile.path.getFileName}'")
+    log.info(s"Finished training data file: '${dataFile.getFileName}'")
   }
 
   private def nnConfiguration(numInput: Int, iterations: Int, learningRate: Double): MultiLayerConfiguration = {

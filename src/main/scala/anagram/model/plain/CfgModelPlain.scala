@@ -57,6 +57,8 @@ class CfgModelPlain extends CfgModel {
   override lazy val cfgTraining: CfgTrainingFactory = {
     lazy val cfg = new CfgTraining {
 
+      override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
+
       override def id: String = _dataId
 
       override def batchSize: Int = 10000
@@ -64,13 +66,6 @@ class CfgModelPlain extends CfgModel {
       override def learningRate: Double = 1.0E-5
 
       override def iterationListenerUpdateCount: Int = 10
-
-      override def iterations: Int => Int = {
-        case 2 => 2
-        case 3 => 2
-        case 4 => 2
-        case 5 => 3
-      }
 
     }
     new CfgTrainingFactory {
@@ -81,6 +76,8 @@ class CfgModelPlain extends CfgModel {
 
   override lazy val cfgRaterAi: CfgRaterAiFactory = {
     lazy val cfg = new CfgRaterAi {
+
+      override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def id: String = _dataId
 

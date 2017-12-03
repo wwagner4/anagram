@@ -46,6 +46,8 @@ class CfgModelGrmRed extends CfgModel {
   override lazy val cfgTraining: CfgTrainingFactory = {
     lazy val cfg = new CfgTraining {
 
+      override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
+
       override def id: String = _dataId
 
       override def batchSize = 1000
@@ -53,14 +55,6 @@ class CfgModelGrmRed extends CfgModel {
       override def learningRate: Double = 0.00001
 
       override def iterationListenerUpdateCount: Int = 200
-
-      override def iterations: Int => Int = (sentLen: Int) => {
-        if (sentLen == 2) 600
-        else if (sentLen == 3) 400
-        else if (sentLen == 4) 300
-        else if (sentLen == 5) 200
-        else throw new IllegalStateException("Unknown sentence length " + sentLen)
-      }
 
     }
     new CfgTrainingFactory {
@@ -82,6 +76,8 @@ class CfgModelGrmRed extends CfgModel {
 
   override lazy val cfgRaterAi: CfgRaterAiFactory = {
     lazy val cfg = new CfgRaterAi {
+
+      override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def id: String = _dataId
 

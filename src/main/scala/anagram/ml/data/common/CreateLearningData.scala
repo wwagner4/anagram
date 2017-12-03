@@ -5,6 +5,7 @@ import java.nio.file.Path
 import java.util.Locale
 
 import anagram.common.IoUtil.{dirWork, save}
+import anagram.ml.MlUtil
 import anagram.model.CfgCreateData
 import org.slf4j.LoggerFactory
 
@@ -16,6 +17,11 @@ object CreateLearningData {
   val bookSplitter: BookSplitter = new BookSplitterTxt
 
   def createData(config: CfgCreateData): Unit = {
+
+    def saveDataToWorkDir(id: String, sentenceLength: Int, f: BufferedWriter => Unit): Path = {
+      val filename = MlUtil.dataFileName(id, sentenceLength)
+      save(dirWork, filename, f)
+    }
 
     val uris = config.bookCollection.books.map(bc => bc.filename).toStream
     for (len <- config.sentenceLength) {
@@ -65,17 +71,5 @@ object CreateLearningData {
     sb.append("%30s: %s%n".format("ID", id))
     sb.toString()
   }
-
-  private def saveDataToWorkDir(id: String, sentencelength: Int, f: BufferedWriter => Unit): Path = {
-    saveTxtToWorkDir(s"${id}_data_$sentencelength", f)
-  }
-
-  private def saveTxtToWorkDir(id: String, f: BufferedWriter => Unit): Path = {
-    val filename = s"anagram_$id.txt"
-    save(dirWork, filename, f)
-  }
-
-
-
 
 }

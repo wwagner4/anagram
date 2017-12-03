@@ -20,6 +20,13 @@ case class SentenceLength_5(trainingIterations: Int) extends SentenceLength {
   override def length: Int = 5
 }
 
+
+trait Cfg {
+
+  def sentenceLengths: Iterable[SentenceLength]
+
+}
+
 trait CfgModel {
 
   def cfgCreateData: CfgCreateDataFactory

@@ -6,7 +6,7 @@ trait CfgTrainingFactory {
 
 }
 
-trait CfgTraining {
+trait CfgTraining extends Cfg {
 
   def id: String
 
@@ -16,5 +16,4 @@ trait CfgTraining {
 
   def iterationListenerUpdateCount: Int
 
-  def iterations: Int => Int
 }
