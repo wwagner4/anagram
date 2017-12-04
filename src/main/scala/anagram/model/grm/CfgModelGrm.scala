@@ -8,7 +8,13 @@ class CfgModelGrm extends CfgModel {
 
   private val _dataId = "grm001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(2000, 0),
+    SentenceLength_2(
+      trainingIterations = 2000,
+      trainingBatchSize = 0,
+      trainingLearningRate = 0.0,
+      trainingIterationListenerUpdateCount = 0,
+      ratingAdjustOutput = 0,
+    ),
 //    SentenceLength_3(1, 0),
 //    SentenceLength_4(1, 0),
 //    SentenceLength_5(1, 0),
@@ -52,12 +58,6 @@ class CfgModelGrm extends CfgModel {
       override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def id: String = _dataId
-
-      override def batchSize: Int = 2000
-
-      override def learningRate: Double = 1E-6
-
-      override def iterationListenerUpdateCount: Int = 100
 
     }
 

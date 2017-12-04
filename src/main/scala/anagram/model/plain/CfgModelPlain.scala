@@ -7,21 +7,38 @@ import anagram.words.{WordMapper, WordMapperPrediction}
 class CfgModelPlain extends CfgModel {
 
   private val _dataId = "plain001"
+
+  private val _batchSize = 10000
+  private val _learningRate = 1.0E-5
+  private val _iterationListenerUpdateCount = 10
+
   private val _sentenceLengths = Seq(
     SentenceLength_2(
       trainingIterations = 2,
+      trainingBatchSize = _batchSize,
+      trainingLearningRate = _learningRate,
+      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
       ratingAdjustOutput = 1.8,
     ),
     SentenceLength_3(
       trainingIterations = 2,
+      trainingBatchSize = _batchSize,
+      trainingLearningRate = _learningRate,
+      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
       ratingAdjustOutput = 0.75,
     ),
     SentenceLength_4(
       trainingIterations = 2,
+      trainingBatchSize = _batchSize,
+      trainingLearningRate = _learningRate,
+      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
       ratingAdjustOutput = 0.64,
     ),
     SentenceLength_5(
       trainingIterations = 3,
+      trainingBatchSize = _batchSize,
+      trainingLearningRate = _learningRate,
+      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
       ratingAdjustOutput = 0.0,
     ),
   )
@@ -62,12 +79,6 @@ class CfgModelPlain extends CfgModel {
       override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def id: String = _dataId
-
-      override def batchSize: Int = 10000
-
-      override def learningRate: Double = 1.0E-5
-
-      override def iterationListenerUpdateCount: Int = 10
 
     }
     new CfgTrainingFactory {

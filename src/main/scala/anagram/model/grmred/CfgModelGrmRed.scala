@@ -8,10 +8,34 @@ class CfgModelGrmRed extends CfgModel {
 
   private val _dataId = "grmRed001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(1, 0),
-    SentenceLength_3(1, 0),
-    SentenceLength_4(1, 0),
-    SentenceLength_5(1, 0),
+    SentenceLength_2(
+      trainingIterations = 1,
+      trainingBatchSize = 0,
+      trainingLearningRate = 0.0,
+      trainingIterationListenerUpdateCount = 0,
+      ratingAdjustOutput = 0
+    ),
+    SentenceLength_3(
+      trainingIterations = 1,
+      trainingBatchSize = 0,
+      trainingLearningRate = 0.0,
+      trainingIterationListenerUpdateCount = 0,
+      ratingAdjustOutput = 0
+    ),
+    SentenceLength_4(
+      trainingIterations = 1,
+      trainingBatchSize = 0,
+      trainingLearningRate = 0.0,
+      trainingIterationListenerUpdateCount = 0,
+      ratingAdjustOutput = 0
+    ),
+    SentenceLength_5(
+      trainingIterations = 1,
+      trainingBatchSize = 0,
+      trainingLearningRate = 0.0,
+      trainingIterationListenerUpdateCount = 0,
+      ratingAdjustOutput = 0
+    ),
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
@@ -49,12 +73,6 @@ class CfgModelGrmRed extends CfgModel {
       override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
       override def id: String = _dataId
-
-      override def batchSize = 1000
-
-      override def learningRate: Double = 0.00001
-
-      override def iterationListenerUpdateCount: Int = 200
 
     }
     new CfgTrainingFactory {

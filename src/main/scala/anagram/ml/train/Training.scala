@@ -53,16 +53,16 @@ object Training {
 
     val recordReader = new CSVRecordReader(0, ';')
     recordReader.initialize(new FileSplit(dataFile.toFile))
-    val dsIter = new RecordReaderDataSetIterator(recordReader, cfg.batchSize, sentenceLength.length, sentenceLength.length, true)
+    val dsIter = new RecordReaderDataSetIterator(recordReader, sentenceLength.trainingBatchSize, sentenceLength.length, sentenceLength.length, true)
     log.info(s"read dataset iterator")
     val nnConf = nnConfiguration(
       sentenceLength.length,
       sentenceLength.trainingIterations,
-      cfg.learningRate
+      sentenceLength.trainingLearningRate
     )
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    val listenerScore = new IterationListenerScore(dataCollector, sentenceLength.length, cfg)
+    val listenerScore = new IterationListenerScore(dataCollector, sentenceLength, cfg)
     nn.setListeners(listenerScore)
     log.info(s"started the training")
     nn.fit(dsIter)

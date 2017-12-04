@@ -6,12 +6,4 @@ trait CfgTrainingFactory {
 
 }
 
-trait CfgTraining extends Cfg {
-
-  def batchSize: Int
-
-  def learningRate: Double
-
-  def iterationListenerUpdateCount: Int
-
-}
+trait CfgTraining extends Cfg

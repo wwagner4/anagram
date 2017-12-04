@@ -1,12 +1,12 @@
 package anagram.ml.train
 
 import anagram.ml.DataCollector
-import anagram.model.CfgTraining
+import anagram.model.{CfgTraining, SentenceLength}
 import org.deeplearning4j.nn.api.Model
 import org.deeplearning4j.optimize.api.IterationListener
 import org.slf4j.LoggerFactory
 
-class IterationListenerScore(dataCollector: DataCollector, sentenceLength: Int, cfg: CfgTraining) extends IterationListener {
+class IterationListenerScore(dataCollector: DataCollector, sentenceLength: SentenceLength, cfg: CfgTraining) extends IterationListener {
 
   private val log = LoggerFactory.getLogger("IterationListenerScore")
 
@@ -17,9 +17,9 @@ class IterationListenerScore(dataCollector: DataCollector, sentenceLength: Int, 
 
   override def iterationDone(model: Model, i: Int): Unit = {
     invoked()
-    if (_iterCount % cfg.iterationListenerUpdateCount == 0) {
+    if (_iterCount % sentenceLength.trainingIterationListenerUpdateCount == 0) {
       val s = model.score()
-      dataCollector.collectScore(sentenceLength, _iterCount, s)
+      dataCollector.collectScore(sentenceLength.length, _iterCount, s)
       log.info(f"finished ${_iterCount} iterations. score: $s%.5f")
     }
     _iterCount += 1
