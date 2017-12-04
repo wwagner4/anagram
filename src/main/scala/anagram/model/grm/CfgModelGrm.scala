@@ -10,9 +10,9 @@ class CfgModelGrm extends CfgModel {
   private val _sentenceLengths = Seq(
     SentenceLength_2(
       trainingIterations = 2000,
-      trainingBatchSize = 0,
-      trainingLearningRate = 0.0,
-      trainingIterationListenerUpdateCount = 0,
+      trainingBatchSize = 2000,
+      trainingLearningRate = 1E-6,
+      trainingIterationListenerUpdateCount = 100,
       ratingAdjustOutput = 0,
     ),
 //    SentenceLength_3(1, 0),
