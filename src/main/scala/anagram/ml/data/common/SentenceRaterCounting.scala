@@ -9,9 +9,9 @@ class SentenceRaterCounting extends SentenceRater {
         val y: Seq[(SentenceType, Int)] = sents.map(_.sentenceType).groupBy(identity).mapValues(_.size).toSeq
         val rating: Double = y.foldLeft(0.0) {
           case (r, (stype, cnt)) => stype match {
-            case SentenceType_COMPLETE => r + cnt * 10
-            case SentenceType_BEGINNING => r + cnt * 5
-            case SentenceType_OTHER => r + cnt * 1
+            case SentenceType_COMPLETE => r + cnt * 0.1
+            case SentenceType_BEGINNING => r + cnt * 0.05
+            case SentenceType_OTHER => r + cnt * 0.001
             case SentenceType_RANDOM => throw new IllegalStateException("SentenceType_RANDOM makes no sense for Counting")
           }
         }
