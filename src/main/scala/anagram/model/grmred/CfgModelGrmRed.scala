@@ -9,6 +9,7 @@ class CfgModelGrmRed extends CfgModel {
   private val _dataId = "grmRed001"
   private val _sentenceLengths = Seq(
     SentenceLength_2(
+      createDataOutputFactor = 1.0,
       trainingIterations = 1,
       trainingBatchSize = 0,
       trainingLearningRate = 0.0,
@@ -16,6 +17,7 @@ class CfgModelGrmRed extends CfgModel {
       ratingAdjustOutput = 0
     ),
     SentenceLength_3(
+      createDataOutputFactor = 1.0,
       trainingIterations = 1,
       trainingBatchSize = 0,
       trainingLearningRate = 0.0,
@@ -23,6 +25,7 @@ class CfgModelGrmRed extends CfgModel {
       ratingAdjustOutput = 0
     ),
     SentenceLength_4(
+      createDataOutputFactor = 1.0,
       trainingIterations = 1,
       trainingBatchSize = 0,
       trainingLearningRate = 0.0,
@@ -30,6 +33,7 @@ class CfgModelGrmRed extends CfgModel {
       ratingAdjustOutput = 0
     ),
     SentenceLength_5(
+      createDataOutputFactor = 1.0,
       trainingIterations = 1,
       trainingBatchSize = 0,
       trainingLearningRate = 0.0,
@@ -42,9 +46,13 @@ class CfgModelGrmRed extends CfgModel {
   private lazy val _mapper = WordMapperFactoryGrammerReduced.create
 
   private val screator = new SentenceCreatorSliding()
-  private val srater = new SentenceRaterCounting
+
+  private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
+
+  private val srater = SentenceRaterCounting(_lfs)
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
+
     lazy val cfg = new CfgCreateData {
 
       override def id: String = _dataId

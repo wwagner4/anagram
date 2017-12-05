@@ -8,23 +8,36 @@ class CfgModelGrm extends CfgModel {
 
   private val _dataId = "grm001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(
+//    SentenceLength_2(
+//      createDataOutputFactor = 0.001,
+//      trainingIterations = 2000,
+//      trainingBatchSize = 2000,
+//      trainingLearningRate = 1E-6,
+//      trainingIterationListenerUpdateCount = 100,
+//      ratingAdjustOutput = 0,
+//    ),
+    SentenceLength_3(
+      createDataOutputFactor = 0.003,
       trainingIterations = 2000,
       trainingBatchSize = 2000,
       trainingLearningRate = 1E-6,
-      trainingIterationListenerUpdateCount = 100,
+      trainingIterationListenerUpdateCount = 300,
       ratingAdjustOutput = 0,
     ),
 //    SentenceLength_3(1, 0),
 //    SentenceLength_4(1, 0),
 //    SentenceLength_5(1, 0),
   )
+
   private lazy val _bookCollection = BookCollections.collectionEn2
 
   private lazy val _mapper = WordMapperFactoryGrammar.create
 
   private val screator = new SentenceCreatorSliding()
-  private val srater = new SentenceRaterCounting
+
+  private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
+
+  private val srater = SentenceRaterCounting(_lfs)
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
 

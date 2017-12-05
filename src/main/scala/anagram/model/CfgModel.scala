@@ -4,6 +4,8 @@ sealed trait SentenceLength {
 
   def length: Int
 
+  def createDataOutputFactor: Double
+
   def trainingIterations: Int
 
   def trainingBatchSize: Int
@@ -17,6 +19,7 @@ sealed trait SentenceLength {
 }
 
 case class SentenceLength_2(
+                             createDataOutputFactor: Double,
                              trainingIterations: Int,
                              trainingBatchSize: Int,
                              trainingLearningRate: Double,
@@ -27,6 +30,7 @@ case class SentenceLength_2(
 }
 
 case class SentenceLength_3(
+                             createDataOutputFactor: Double,
                              trainingIterations: Int,
                              trainingBatchSize: Int,
                              trainingLearningRate: Double,
@@ -36,16 +40,19 @@ case class SentenceLength_3(
   override def length: Int = 3
 }
 
-case class SentenceLength_4(trainingIterations: Int,
-                            trainingBatchSize: Int,
-                            trainingLearningRate: Double,
-                            trainingIterationListenerUpdateCount: Int,
-                            ratingAdjustOutput: Double,
+case class SentenceLength_4(
+                             createDataOutputFactor: Double,
+                             trainingIterations: Int,
+                             trainingBatchSize: Int,
+                             trainingLearningRate: Double,
+                             trainingIterationListenerUpdateCount: Int,
+                             ratingAdjustOutput: Double,
                            ) extends SentenceLength {
   override def length: Int = 4
 }
 
 case class SentenceLength_5(
+                             createDataOutputFactor: Double,
                              trainingIterations: Int,
                              trainingBatchSize: Int,
                              trainingLearningRate: Double,
