@@ -18,10 +18,10 @@ class CfgModelGrm extends CfgModel {
 //    ),
     SentenceLength_3(
       createDataOutputFactor = 0.003,
-      trainingIterations = 2000,
-      trainingBatchSize = 2000,
+      trainingIterations = 1000,
+      trainingBatchSize = 50000,
       trainingLearningRate = 1E-6,
-      trainingIterationListenerUpdateCount = 300,
+      trainingIterationListenerUpdateCount = 20,
       ratingAdjustOutput = 0,
     ),
 //    SentenceLength_3(1, 0),
