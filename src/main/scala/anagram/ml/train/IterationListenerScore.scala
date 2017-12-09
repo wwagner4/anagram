@@ -19,7 +19,7 @@ class IterationListenerScore(dataCollector: DataCollector, sentenceLength: Sente
     invoked()
     if (_iterCount % sentenceLength.trainingIterationListenerUpdateCount == 0) {
       val s = model.score()
-      dataCollector.collectScore(sentenceLength.length, _iterCount, s)
+      dataCollector.collectScore(sentenceLength, _iterCount, s)
       log.info(f"finished ${_iterCount} iterations. score: $s%.5f")
     }
     _iterCount += 1

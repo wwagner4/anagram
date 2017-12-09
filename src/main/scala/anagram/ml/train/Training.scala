@@ -41,10 +41,10 @@ object Training {
     }
   }
 
-  def train(cfg: CfgTraining, sentenceLength: SentenceLength, dataCollector: DataCollector): Unit = {
+  def train(cfg: CfgTraining, sl: SentenceLength, dataCollector: DataCollector): Unit = {
     log.info(s"Started training for run: '${cfg.id}'")
-    val dataFile = IoUtil.dirWork.resolve(MlUtil.dataFileName(cfg.id, sentenceLength.length))
-    trainDataFile(dataFile, cfg, sentenceLength, dataCollector)
+    val dataFile = IoUtil.dirWork.resolve(MlUtil.dataFileName(cfg.id, sl.length, sl.additionalId))
+    trainDataFile(dataFile, cfg, sl, dataCollector)
     log.info(s"Finished training for run: '${cfg.id}'")
   }
 

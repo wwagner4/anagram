@@ -1,12 +1,14 @@
 package anagram.ml
 
+import anagram.model.SentenceLength
+
 class DataCollectorStdout extends DataCollector {
 
-  case class Score(sentenceLength: Int, iterations: Int, score: Double)
+  case class Score(sentenceLength: SentenceLength, iterations: Int, score: Double)
 
   var scores = List.empty[Score]
 
-  override def collectScore(sentenceLength: Int, iterations: Int, score: Double): Unit = {
+  override def collectScore(sentenceLength: SentenceLength, iterations: Int, score: Double): Unit = {
     scores = Score(sentenceLength, iterations, score) :: scores
   }
 
@@ -14,15 +16,24 @@ class DataCollectorStdout extends DataCollector {
     println("""// To be used in anagram.ml.data.analyze.DiaScore""")
     val datas = scores.reverse
       .groupBy(_.sentenceLength)
-      .toSeq.sortBy(_._1)
-    val dataStr = for ((l, scs) <- datas) yield {
+      .toSeq
+      .sortBy(_._1.additionalId)
+      .sortBy(_._1.length)
+    val dataStr = for ((sl, scs) <- datas) yield {
+      val id = sl.length + sl.additionalId.getOrElse("")
+      val desc = sl.length + sl.additionalId.map(aid => s", $aid").getOrElse("")
+
       val values = scs
         .map(valuesLine)
         .mkString("\n")
       s"""
-         |  val data$l = Seq(
-         |  $values
-         |  ).map(toXY)
+         |  val dataRow$id =    Viz.DataRow(
+         |    name = Some("$desc"),
+         |    style = Viz.Style_LINES,
+         |    data = Seq(
+         |      $values
+         |    ).map(toXY)
+         |  )
          |
       """.stripMargin
     }

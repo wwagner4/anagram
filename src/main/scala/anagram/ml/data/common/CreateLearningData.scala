@@ -6,7 +6,7 @@ import java.util.Locale
 
 import anagram.common.IoUtil.{dirWork, save}
 import anagram.ml.MlUtil
-import anagram.model.CfgCreateData
+import anagram.model.{CfgCreateData, SentenceLength}
 import org.slf4j.LoggerFactory
 
 
@@ -18,8 +18,8 @@ object CreateLearningData {
 
   def createData(config: CfgCreateData): Unit = {
 
-    def saveDataToWorkDir(id: String, sentenceLength: Int, f: BufferedWriter => Unit): Path = {
-      val filename = MlUtil.dataFileName(id, sentenceLength)
+    def saveDataToWorkDir(id: String, sl: SentenceLength, f: BufferedWriter => Unit): Path = {
+      val filename = MlUtil.dataFileName(id, sl.length, sl.additionalId)
       save(dirWork, filename, f)
     }
 
@@ -31,8 +31,8 @@ object CreateLearningData {
       log.info(s"Created ${sent.size} sentences of length $len")
       val ldPath = saveDataToWorkDir(
         filePrefix(config.id, config.mapWordsToNumbers),
-        len.length,
-        writeSentences(len.length, sent, config)(_),
+        len,
+        writeSentences(len.length, sent, config)(_)
       )
       log.info("Created learning data in " + ldPath)
     }

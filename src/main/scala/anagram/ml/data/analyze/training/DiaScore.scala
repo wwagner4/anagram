@@ -164,11 +164,28 @@ object DiaScore extends App {
 
   def toXY(v: (Int, Double)): Viz.XY = Viz.XY(v._1, v._2)
 
+  val dataRow1 =    Viz.DataRow(
+    name = Some("2"),
+    style = Viz.Style_LINES,
+    data = Seq(
+      (0, 0.82991357421875),
+      (4000, 0.6982452392578125),
+      (8000, 0.8383195190429688),
+      (12000, 0.698051513671875),
+    ).map(toXY)
+  )
+  
+  
   val dataRows = Seq(
     Viz.DataRow(
       name = Some("2"),
       style = Viz.Style_LINES,
-      data = data2,
+      data = Seq(
+        (0, 0.82991357421875),
+        (4000, 0.6982452392578125),
+        (8000, 0.8383195190429688),
+        (12000, 0.698051513671875),
+      ).map(toXY)
     ),
     Viz.DataRow(
       name = Some("3"),
