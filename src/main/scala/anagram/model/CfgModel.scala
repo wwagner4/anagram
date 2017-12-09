@@ -1,12 +1,10 @@
 package anagram.model
 
-sealed trait SentenceLength {
+trait SentenceLength {
 
   def length: Int
 
-  def additionalId: Option[String]
-
-  def createDataOutputFactor: Double
+  def createDataOutputFactor: Double = 1.0
 
   def trainingIterations: Int
 
@@ -18,60 +16,11 @@ sealed trait SentenceLength {
 
   def ratingAdjustOutput: Double
 
-}
+  def id = s"$length"
 
-case class SentenceLength_2(
-                             additionalId: Option[String] = None,
-                             createDataOutputFactor: Double = 1.0,
-                             trainingIterations: Int,
-                             trainingBatchSize: Int,
-                             trainingLearningRate: Double,
-                             trainingIterationListenerUpdateCount: Int,
-                             ratingAdjustOutput: Double,
-                           ) extends SentenceLength {
-  override def length: Int = 2
+  def desc = s"len:$length"
 
 }
-
-case class SentenceLength_3(
-                             additionalId: Option[String] = None,
-                             createDataOutputFactor: Double = 1.0,
-                             trainingIterations: Int,
-                             trainingBatchSize: Int,
-                             trainingLearningRate: Double,
-                             trainingIterationListenerUpdateCount: Int,
-                             ratingAdjustOutput: Double,
-                           ) extends SentenceLength {
-  override def length: Int = 3
-
-}
-
-case class SentenceLength_4(
-                             additionalId: Option[String] = None,
-                             createDataOutputFactor: Double = 1.0,
-                             trainingIterations: Int,
-                             trainingBatchSize: Int,
-                             trainingLearningRate: Double,
-                             trainingIterationListenerUpdateCount: Int,
-                             ratingAdjustOutput: Double,
-                           ) extends SentenceLength {
-  override def length: Int = 4
-
-}
-
-case class SentenceLength_5(
-                             additionalId: Option[String] = None,
-                             createDataOutputFactor: Double = 1.0,
-                             trainingIterations: Int,
-                             trainingBatchSize: Int,
-                             trainingLearningRate: Double,
-                             trainingIterationListenerUpdateCount: Int,
-                             ratingAdjustOutput: Double,
-                           ) extends SentenceLength {
-  override def length: Int = 5
-
-}
-
 
 trait Cfg {
 

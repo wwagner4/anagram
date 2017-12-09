@@ -17,11 +17,11 @@ class DataCollectorStdout extends DataCollector {
     val datas = scores.reverse
       .groupBy(_.sentenceLength)
       .toSeq
-      .sortBy(_._1.additionalId)
+      .sortBy(_._1.id)
       .sortBy(_._1.length)
     val dataStr = for ((sl, scs) <- datas) yield {
-      val id = sl.length + sl.additionalId.getOrElse("")
-      val desc = sl.length + sl.additionalId.map(aid => s", $aid").getOrElse("")
+      val id = sl.id
+      val desc = sl.desc
 
       val values = scs
         .map(valuesLine)

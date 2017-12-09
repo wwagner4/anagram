@@ -49,7 +49,7 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
   private val nnModel: Map[Int, Model] = cfg.sentenceLengths
     .map(sl => (sl.length, Model(
       sl,
-      deserializeNn(IoUtil.dirWork.resolve(MlUtil.nnFileName(cfg.id, sl.length)))
+      deserializeNn(IoUtil.dirWork.resolve(MlUtil.nnFileName(cfg.id, sl.id)))
     )))
     .toMap
 

@@ -19,8 +19,6 @@ import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import org.slf4j.LoggerFactory
 
-import scala.util.Random
-
 
 case class CfgTrainingImpl(
                             sentenceLengths: Iterable[SentenceLength],
@@ -43,7 +41,7 @@ object Training {
 
   def train(cfg: CfgTraining, sl: SentenceLength, dataCollector: DataCollector): Unit = {
     log.info(s"Started training for run: '${cfg.id}'")
-    val dataFile = IoUtil.dirWork.resolve(MlUtil.dataFileName(cfg.id, sl.length, sl.additionalId))
+    val dataFile = IoUtil.dirWork.resolve(MlUtil.dataFileName(cfg.id, sl.id))
     trainDataFile(dataFile, cfg, sl, dataCollector)
     log.info(s"Finished training for run: '${cfg.id}'")
   }
@@ -84,7 +82,7 @@ object Training {
     val act = Activation.SIGMOID
 
     new NeuralNetConfiguration.Builder()
-      .seed(Random.nextLong())
+      .seed(2L)
       .iterations(iterations)
       .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
       .learningRate(learningRate)

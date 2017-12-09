@@ -19,7 +19,7 @@ object CreateLearningData {
   def createData(config: CfgCreateData): Unit = {
 
     def saveDataToWorkDir(id: String, sl: SentenceLength, f: BufferedWriter => Unit): Path = {
-      val filename = MlUtil.dataFileName(id, sl.length, sl.additionalId)
+      val filename = MlUtil.dataFileName(id, sl.id)
       save(dirWork, filename, f)
     }
 

@@ -8,71 +8,27 @@ class CfgModelGrm extends CfgModel {
 
   private val _dataId = "grm001"
   private val _sentenceLengths = Seq(
-//    SentenceLength_2(
-//      createDataOutputFactor = 0.001,
-//      trainingIterations = 2000,
-//      trainingBatchSize = 2000,
-//      trainingLearningRate = 1E-6,
-//      trainingIterationListenerUpdateCount = 100,
-//      ratingAdjustOutput = 0,
-//    ),
-    SentenceLength_3(
-      additionalId = Some("a"),
-      createDataOutputFactor = 0.003,
-      trainingIterations = 300,
-      trainingBatchSize = 20000,
-      trainingLearningRate = 5E-5,
-      trainingIterationListenerUpdateCount = 20,
-      ratingAdjustOutput = 0,
-    ),
-    SentenceLength_3(
-      additionalId = Some("b"),
-      createDataOutputFactor = 0.003,
-      trainingIterations = 300,
-      trainingBatchSize = 20000,
-      trainingLearningRate = 2.5E-5,
-      trainingIterationListenerUpdateCount = 20,
-      ratingAdjustOutput = 0,
-    ),
-    SentenceLength_3(
-      additionalId = Some("c"),
-      createDataOutputFactor = 0.003,
-      trainingIterations = 300,
-      trainingBatchSize = 20000,
-      trainingLearningRate = 1E-5,
-      trainingIterationListenerUpdateCount = 20,
-      ratingAdjustOutput = 0,
-    ),
-    SentenceLength_3(
-      additionalId = Some("d"),
-      createDataOutputFactor = 0.003,
-      trainingIterations = 300,
-      trainingBatchSize = 20000,
-      trainingLearningRate = 7.5E-6,
-      trainingIterationListenerUpdateCount = 20,
-      ratingAdjustOutput = 0,
-    ),
-    SentenceLength_3(
-      additionalId = Some("e"),
-      createDataOutputFactor = 0.003,
-      trainingIterations = 300,
-      trainingBatchSize = 20000,
-      trainingLearningRate = 5E-6,
-      trainingIterationListenerUpdateCount = 20,
-      ratingAdjustOutput = 0,
-    ),
-    SentenceLength_3(
-      additionalId = Some("f"),
-      createDataOutputFactor = 0.003,
-      trainingIterations = 300,
-      trainingBatchSize = 20000,
-      trainingLearningRate = 2.5E-6,
-      trainingIterationListenerUpdateCount = 20,
-      ratingAdjustOutput = 0,
-    ),
-//    SentenceLength_3(1, 0),
-//    SentenceLength_4(1, 0),
-//    SentenceLength_5(1, 0),
+    new SentenceLength {
+      val length = 2
+      override val createDataOutputFactor = 0.00032
+      val trainingIterations = 1000
+      val trainingBatchSize = 2000
+      val trainingLearningRate = 1E-6
+      val trainingIterationListenerUpdateCount = 10
+      val ratingAdjustOutput = 0
+    },
+    new SentenceLength {
+      val length = 3
+      override val createDataOutputFactor = 0.003
+      val trainingIterations = 200
+      val trainingBatchSize = 20000
+      val trainingLearningRate = 50E-6
+      val trainingIterationListenerUpdateCount = 4
+      val ratingAdjustOutput = 0
+    },
+    //    SentenceLength_3(1, 0),
+    //    SentenceLength_4(1, 0),
+    //    SentenceLength_5(1, 0),
   )
 
   private lazy val _bookCollection = BookCollections.collectionEn2
@@ -89,6 +45,7 @@ class CfgModelGrm extends CfgModel {
 
 
     lazy val cfg = new CfgCreateData {
+
       override def id: String = _dataId
 
       override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths

@@ -8,35 +8,40 @@ class CfgModelGrmRed extends CfgModel {
 
   private val _dataId = "grmRed001"
   private val _sentenceLengths = Seq(
-    SentenceLength_2(
-      trainingIterations = 1,
-      trainingBatchSize = 0,
-      trainingLearningRate = 0.0,
-      trainingIterationListenerUpdateCount = 0,
-      ratingAdjustOutput = 0
-    ),
-    SentenceLength_3(
-      trainingIterations = 1,
-      trainingBatchSize = 0,
-      trainingLearningRate = 0.0,
-      trainingIterationListenerUpdateCount = 0,
-      ratingAdjustOutput = 0
-    ),
-    SentenceLength_4(
-      trainingIterations = 1,
-      trainingBatchSize = 0,
-      trainingLearningRate = 0.0,
-      trainingIterationListenerUpdateCount = 0,
-      ratingAdjustOutput = 0
-    ),
-    SentenceLength_5(
-      trainingIterations = 1,
-      trainingBatchSize = 0,
-      trainingLearningRate = 0.0,
-      trainingIterationListenerUpdateCount = 0,
-      ratingAdjustOutput = 0
-    ),
+    new SentenceLength {
+      val length = 2
+      val trainingIterations = 1
+      val trainingBatchSize = 0
+      val trainingLearningRate = 0.0
+      val trainingIterationListenerUpdateCount = 0
+      val ratingAdjustOutput = 0
+    },
+    new SentenceLength {
+      val length = 3
+      val trainingIterations = 1
+      val trainingBatchSize = 0
+      val trainingLearningRate = 0.0
+      val trainingIterationListenerUpdateCount = 0
+      val ratingAdjustOutput = 0
+    },
+    new SentenceLength {
+      val length = 4
+      val trainingIterations = 1
+      val trainingBatchSize = 0
+      val trainingLearningRate = 0.0
+      val trainingIterationListenerUpdateCount = 0
+      val ratingAdjustOutput = 0
+    },
+    new SentenceLength {
+      val length = 5
+      val trainingIterations = 1
+      val trainingBatchSize = 0
+      val trainingLearningRate = 0.0
+      val trainingIterationListenerUpdateCount = 0
+      val ratingAdjustOutput = 0
+    },
   )
+
   private lazy val _bookCollection = BookCollections.collectionEn2
 
   private lazy val _mapper = WordMapperFactoryGrammerReduced.create

@@ -14,34 +14,38 @@ class CfgModelPlainRandom extends CfgModel {
   private val _iterationListenerUpdateCount = 10
 
   private val _sentenceLengths = Seq(
-    SentenceLength_2(
-      trainingIterations = 2,
-      trainingBatchSize = _batchSize,
-      trainingLearningRate = _learningRate,
-      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
-      ratingAdjustOutput = 0.72,
-    ),
-    SentenceLength_3(
-      trainingIterations = 2,
-      trainingBatchSize = _batchSize,
-      trainingLearningRate = _learningRate,
-      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
-      ratingAdjustOutput = 0.52,
-    ),
-    SentenceLength_4(
-      trainingIterations = 2,
-      trainingBatchSize = _batchSize,
-      trainingLearningRate = _learningRate,
-      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
-      ratingAdjustOutput = 0.0,
-    ),
-    SentenceLength_5(
-      trainingIterations =  2,
-      trainingBatchSize = _batchSize,
-      trainingLearningRate = _learningRate,
-      trainingIterationListenerUpdateCount = _iterationListenerUpdateCount,
-      ratingAdjustOutput = 0.11,
-    ),
+    new SentenceLength {
+      val length = 2
+      val trainingBatchSize: Int = _batchSize
+      val trainingLearningRate: Double = _learningRate
+      val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
+      val trainingIterations = 2
+      val ratingAdjustOutput = 0.72
+    },
+    new SentenceLength {
+      val length = 3
+      val trainingBatchSize: Int = _batchSize
+      val trainingLearningRate: Double = _learningRate
+      val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
+      val trainingIterations = 2
+      val ratingAdjustOutput = 0.52
+    },
+    new SentenceLength {
+      val length = 4
+      val trainingBatchSize: Int = _batchSize
+      val trainingLearningRate: Double = _learningRate
+      val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
+      val trainingIterations = 2
+      val ratingAdjustOutput = 0.0
+    },
+    new SentenceLength {
+      val length = 5
+      val trainingIterations = 2
+      val ratingAdjustOutput = 0.11
+      val trainingBatchSize: Int = _batchSize
+      val trainingLearningRate: Double = _learningRate
+      val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
+    },
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
