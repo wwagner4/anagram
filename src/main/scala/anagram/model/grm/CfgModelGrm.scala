@@ -26,9 +26,15 @@ class CfgModelGrm extends CfgModel {
       val trainingIterationListenerUpdateCount = 4
       val ratingAdjustOutput = 0
     },
-    //    SentenceLength_3(1, 0),
-    //    SentenceLength_4(1, 0),
-    //    SentenceLength_5(1, 0),
+    new SentenceLength {
+      val length = 4
+      override val createDataOutputFactor = 0.022
+      val trainingIterations = 200
+      val trainingBatchSize = 100000
+      val trainingLearningRate = 10E-6
+      val trainingIterationListenerUpdateCount = 298
+      val ratingAdjustOutput = 0
+    },
   )
 
   private lazy val _bookCollection = BookCollections.collectionEn2
