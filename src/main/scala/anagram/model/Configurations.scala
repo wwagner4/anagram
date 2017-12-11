@@ -11,7 +11,7 @@ object Configurations {
     plain,
     plainRandom,
     grammar,
-    grammarReduced,
+    //grammarReduced,
   )
 
   def grammarReduced: CfgModel = new CfgModelGrmRed

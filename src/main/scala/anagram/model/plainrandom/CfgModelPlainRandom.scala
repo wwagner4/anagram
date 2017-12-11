@@ -20,7 +20,7 @@ class CfgModelPlainRandom extends CfgModel {
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.72
+      val ratingAdjustOutput = 0.94
     },
     new SentenceLength {
       val length = 3
@@ -28,7 +28,7 @@ class CfgModelPlainRandom extends CfgModel {
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.52
+      val ratingAdjustOutput = 0.34
     },
     new SentenceLength {
       val length = 4
@@ -41,7 +41,7 @@ class CfgModelPlainRandom extends CfgModel {
     new SentenceLength {
       val length = 5
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.11
+      val ratingAdjustOutput = 0.006
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount

@@ -15,7 +15,7 @@ class CfgModelPlain extends CfgModel {
   private val _sentenceLengths = Seq(
     new  SentenceLength {
       val trainingIterations = 2
-      val ratingAdjustOutput = 1.8
+      val ratingAdjustOutput = 1.17
       val length = 2
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
@@ -23,7 +23,7 @@ class CfgModelPlain extends CfgModel {
     },
     new  SentenceLength {
       val trainingIterations = 2
-      val ratingAdjustOutput = 1.8
+      val ratingAdjustOutput = 0.42
       val length = 3
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
@@ -31,7 +31,7 @@ class CfgModelPlain extends CfgModel {
     },
     new  SentenceLength {
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.64
+      val ratingAdjustOutput = 0.109
       val length = 4
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate

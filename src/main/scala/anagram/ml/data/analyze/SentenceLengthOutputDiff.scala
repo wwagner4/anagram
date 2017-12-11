@@ -29,7 +29,7 @@ object SentenceLengthRatingDiff extends App {
 
   def maxRatingsFromRandomSentences(): Unit = {
 
-    val raterf = Configurations.grammar.cfgRaterAi
+    val raterf = Configurations.plainRandom.cfgRaterAi
 
     val wordLists = Seq(
       Wordlists.plainFreq2k,
