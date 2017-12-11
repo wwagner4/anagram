@@ -28,11 +28,20 @@ class CfgModelGrm extends CfgModel {
     },
     new SentenceLength {
       val length = 4
-      override val createDataOutputFactor = 0.022
-      val trainingIterations = 200
+      override val createDataOutputFactor = 0.02
+      val trainingIterations = 100
       val trainingBatchSize = 100000
+      val trainingLearningRate = 50E-6
+      val trainingIterationListenerUpdateCount = 10
+      val ratingAdjustOutput = 0
+    },
+    new SentenceLength {
+      val length = 5
+      override val createDataOutputFactor = 0.1
+      val trainingIterations = 100
+      val trainingBatchSize = 200000
       val trainingLearningRate = 10E-6
-      val trainingIterationListenerUpdateCount = 298
+      val trainingIterationListenerUpdateCount = 5
       val ratingAdjustOutput = 0
     },
   )
