@@ -10,34 +10,38 @@ class CfgModelGrmRed extends CfgModel {
   private val _sentenceLengths = Seq(
     new SentenceLength {
       val length = 2
-      val trainingIterations = 1
-      val trainingBatchSize = 0
-      val trainingLearningRate = 0.0
-      val trainingIterationListenerUpdateCount = 0
-      val ratingAdjustOutput = 0
+      override val createDataOutputFactor = 0.00032
+      val trainingIterations = 1000
+      val trainingBatchSize = 2000
+      val trainingLearningRate = 1E-6
+      val trainingIterationListenerUpdateCount = 10
+      val ratingAdjustOutput = 1.39
     },
     new SentenceLength {
       val length = 3
-      val trainingIterations = 1
-      val trainingBatchSize = 0
-      val trainingLearningRate = 0.0
-      val trainingIterationListenerUpdateCount = 0
-      val ratingAdjustOutput = 0
+      override val createDataOutputFactor = 0.003
+      val trainingIterations = 200
+      val trainingBatchSize = 20000
+      val trainingLearningRate = 50E-6
+      val trainingIterationListenerUpdateCount = 4
+      val ratingAdjustOutput = 1.33
     },
     new SentenceLength {
       val length = 4
-      val trainingIterations = 1
-      val trainingBatchSize = 0
-      val trainingLearningRate = 0.0
-      val trainingIterationListenerUpdateCount = 0
-      val ratingAdjustOutput = 0
+      override val createDataOutputFactor = 0.02
+      val trainingIterations = 100
+      val trainingBatchSize = 100000
+      val trainingLearningRate = 50E-6
+      val trainingIterationListenerUpdateCount = 10
+      val ratingAdjustOutput = 0.89
     },
     new SentenceLength {
       val length = 5
-      val trainingIterations = 1
-      val trainingBatchSize = 0
-      val trainingLearningRate = 0.0
-      val trainingIterationListenerUpdateCount = 0
+      override val createDataOutputFactor = 0.1
+      val trainingIterations = 100
+      val trainingBatchSize = 200000
+      val trainingLearningRate = 10E-6
+      val trainingIterationListenerUpdateCount = 5
       val ratingAdjustOutput = 0
     },
   )
