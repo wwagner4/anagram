@@ -1,5 +1,6 @@
 package anagram.ml.data.analyze
 
+import anagram.common.IoUtil
 import anagram.words.{Word, Wordlists}
 import entelijan.viz.{Viz, VizCreatorGnuplot}
 
@@ -16,8 +17,6 @@ object AnalyzeFrequencyWordLen extends App {
   def ffLin(a: Double, k:Double)(len: Int): Double = a + k * len
 
   def ffSig(xOff: Double)(len: Int) = 1 / (1 + math.exp(xOff -len ))
-
-  implicit val crea = VizCreatorGnuplot[Viz.X]()
 
   case class WordValue(word: Word, value: Double)
 
@@ -46,13 +45,20 @@ object AnalyzeFrequencyWordLen extends App {
     dataRows = dataRows,
   )
 
+  implicit val crea = VizCreatorGnuplot[Viz.X]()
   Viz.createDiagram(dia)
 
-  for ((w, i) <- wvl.toSeq.sortBy(-_.value).zipWithIndex) {
-    val word = w.word.word
-    val value = w.value
-    val freq = w.word.frequency.get
-    println(f"$i%10d $value%10.4f $freq%10d $word")
-  }
+  val file = IoUtil.save(IoUtil.dirOut, "wordlist_rated_19000.txt", {bw =>
+    for ((w, i) <- wvl.toSeq.sortBy(-_.value).zipWithIndex) {
+      val word = w.word.word
+      val value = w.value
+      val intvalue = (w.value * 1000).toInt
+      val freq = w.word.frequency.get
+      println(f"$i%10d $value%10.4f $freq%10d $word")
+      if (value >= 1.0) bw.write(f"$word;$intvalue\n")
+    }
+  })
+  println(s"Wrote rated wordlist to $file")
+
 
 }

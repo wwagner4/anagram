@@ -16,6 +16,8 @@ object Wordlists {
 
   def plainFreq30k: WordListFactory = createFactory("Books 30k", "B30k", () => loadWordlistPlainFreq(s"${prefix}_books_frequency_30000.txt"))
 
+  def plainRated19k: WordListFactory = createFactory("Rated 19k", "R19k", () => loadWordlistPlainFreq(s"${prefix}_rated_19000.txt"))
+
   def plain: WordListFactory = createFactory("Plain small", "PLAIN_S", () => loadWordlistPlain(s"${prefix}_small.txt"))
 
   def grammar: WordListFactory = createFactory("Grammar full", "GRM_L", () => loadWordlistGrammar(s"${prefix}_grammar_full.txt"))
