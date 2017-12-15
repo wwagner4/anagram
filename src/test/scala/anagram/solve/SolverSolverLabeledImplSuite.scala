@@ -6,7 +6,7 @@ import org.scalatest.{FunSuite, MustMatchers}
 
 import scala.concurrent.ExecutionContext
 
-class SolverSolverRatedImplSuite extends FunSuite with MustMatchers {
+class SolverSolverLabeledImplSuite extends FunSuite with MustMatchers {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 

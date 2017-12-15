@@ -77,7 +77,7 @@ case class Controller(
 
   private val maxDepth = 5
   private val parallel = 3
-  private val wordListFactory = Wordlists.plainRated19k
+  private val wordListFactory = Wordlists.plainRatedLarge
 
 
   val solverFactoryBase = SolverFactoryPlain(maxDepth = maxDepth, parallel = parallel, wordListFactory)

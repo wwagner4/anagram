@@ -1,6 +1,6 @@
 package anagram.words
 
-trait WordMapperPrediction {
+trait WordMapperRating {
 
   def transform(value: String): Seq[String]
 

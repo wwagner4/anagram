@@ -1,8 +1,6 @@
 package anagram.words
 
-trait WordMapper extends WordMapperPrediction {
-
-  def toWord(num: Int): String
+trait WordMapper extends WordMapperRating {
 
   def size: Int
 

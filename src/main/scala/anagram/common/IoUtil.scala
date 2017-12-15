@@ -49,6 +49,7 @@ object IoUtil {
 
   def loadTxtFromResourceName[T](resName: String, f: Iterator[String] => T, codec: Codec = Codec.default): T = {
     val inputStream = getClass.getClassLoader.getResourceAsStream(resName)
+    if (inputStream == null) throw new IllegalArgumentException(s"Found no resource for '$resName'")
     val iter = scala.io.Source.fromInputStream(inputStream)(codec).getLines()
     f(iter)
   }

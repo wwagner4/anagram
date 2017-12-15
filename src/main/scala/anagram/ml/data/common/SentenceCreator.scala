@@ -1,7 +1,5 @@
 package anagram.ml.data.common
 
-import anagram.words.WordMapper
-
 sealed trait SentenceType
 
 case object SentenceType_COMPLETE extends SentenceType
@@ -16,6 +14,6 @@ case class Sentence (
 
 trait SentenceCreator {
 
-  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence]
+  def create(sentences: Stream[Seq[String]], len: Int): Stream[Sentence]
 
 }

@@ -2,19 +2,19 @@ package anagram.ml.data.common
 
 import anagram.words.WordMapper
 
-class SentenceCreatorSliding extends SentenceCreator {
+class SentenceCreatorSliding(wordMapper: WordMapper) extends SentenceCreator {
 
-  def create(sentences: Stream[Seq[String]], len: Int, wordMapper: WordMapper): Stream[Sentence] = {
+  def create(sentences: Stream[Seq[String]], len: Int): Stream[Sentence] = {
     sentences
-      .filter(_.size >= len)
+      .filter(_.lengthCompare(len) >= 0)
       .map(words => words.flatMap(wordMapper.transform))
       .flatMap(slideSentences(_, len, wordMapper))
   }
 
   def slideSentences(words: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
-    require(words.size >= len)
+    require(words.lengthCompare(len) >= 0)
 
-    if (words.size == len) {
+    if (words.lengthCompare(len) == 0) {
       if (words.forall(wordMapper.containsWord)) {
         Seq(Sentence(SentenceType_COMPLETE, words))
       } else {

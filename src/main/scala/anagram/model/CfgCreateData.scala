@@ -1,6 +1,6 @@
 package anagram.model
 
-import anagram.ml.data.common.{BookCollection, SentenceCreator, SentenceRater}
+import anagram.ml.data.common.{BookCollection, SentenceCreator, SentenceLabeler}
 import anagram.words.WordMapper
 
 trait CfgCreateDataFactory {
@@ -14,7 +14,7 @@ trait CfgCreateData extends Cfg {
 
   def sentenceCreator: SentenceCreator
 
-  def sentenceRater: SentenceRater
+  def sentenceRater: SentenceLabeler
 
   def bookCollection: BookCollection
 

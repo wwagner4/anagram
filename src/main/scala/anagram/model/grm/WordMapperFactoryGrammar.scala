@@ -26,8 +26,6 @@ object WordMapperFactoryGrammar extends WordMapperFactory {
 
       override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
 
-      override def toWord(num: Int): String = grpListIntMap.getOrElse(num, "?")
-
       override def size: Int = grpListIdx.size
 
       override def randomWord: String = {

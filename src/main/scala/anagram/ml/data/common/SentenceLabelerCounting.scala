@@ -1,8 +1,8 @@
 package anagram.ml.data.common
 
-case class SentenceRaterCounting(lengthFactors: Map[Int, Double]) extends SentenceRater {
+case class SentenceLabelerCounting(lengthFactors: Map[Int, Double]) extends SentenceLabeler {
 
-  override def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
+  override def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
     val rmap: Seq[(Seq[String], Iterable[Sentence])] = sentences.groupBy(sent => sent.words).toSeq
     rmap.flatMap { case (w, sents) =>
       val factor = lengthFactors(w.size)
@@ -17,7 +17,7 @@ case class SentenceRaterCounting(lengthFactors: Map[Int, Double]) extends Senten
             case SentenceType_RANDOM => throw new IllegalStateException("SentenceType_RANDOM makes no sense for Counting")
           }
         }
-        Some(Rated(Sentence(SentenceType_OTHER, w), rating))
+        Some(Labeled(Sentence(SentenceType_OTHER, w), rating))
       }
     }
   }

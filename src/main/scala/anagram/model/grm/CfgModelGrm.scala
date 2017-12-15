@@ -2,7 +2,7 @@ package anagram.model.grm
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.words.{WordMapper, WordMapperPrediction}
+import anagram.words.{WordMapper, WordMapperRating}
 
 class CfgModelGrm extends CfgModel {
 
@@ -50,11 +50,11 @@ class CfgModelGrm extends CfgModel {
 
   private lazy val _mapper = WordMapperFactoryGrammar.create
 
-  private val screator = new SentenceCreatorSliding()
+  private val screator = new SentenceCreatorSliding(_mapper)
 
   private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
 
-  private val srater = SentenceRaterCounting(_lfs)
+  private val srater = SentenceLabelerCounting(_lfs)
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
 
@@ -69,7 +69,7 @@ class CfgModelGrm extends CfgModel {
 
       override def sentenceCreator: SentenceCreator = screator
 
-      override def sentenceRater: SentenceRater = srater
+      override def sentenceRater: SentenceLabeler = srater
 
       override def bookCollection: BookCollection = _bookCollection
 
@@ -105,7 +105,7 @@ class CfgModelGrm extends CfgModel {
 
       override def id: String = _dataId
 
-      override def mapper: WordMapperPrediction = _mapper
+      override def mapper: WordMapperRating = _mapper
 
       override def adjustOutput: Boolean = true
 

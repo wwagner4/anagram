@@ -7,14 +7,14 @@ import anagram.words.WordMapper
   * position in real sentences (BEGINNING or OTHER) and weather
   * they exist as real sentences (COMPLETE) or not.
   */
-class SentenceRaterStraight(val wm: WordMapper) extends SentenceRater {
+class SentenceLabelerStraight(val wm: WordMapper) extends SentenceLabeler {
 
   val ran = new util.Random()
 
-  def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
+  def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
     sentences.flatMap { sentence =>
       if (!sentence.words.forall(w => wm.containsWord(w))) None
-      else Some(Rated(sentence, rating(sentence)))
+      else Some(Labeled(sentence, rating(sentence)))
     }
   }
 

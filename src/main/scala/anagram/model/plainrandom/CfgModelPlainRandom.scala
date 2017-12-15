@@ -3,7 +3,7 @@ package anagram.model.plainrandom
 import anagram.ml.data.common._
 import anagram.model._
 import anagram.model.plain.WordMapperFactoryPlain
-import anagram.words.{WordMapper, WordMapperPrediction}
+import anagram.words.{WordMapper, WordMapperRating}
 
 class CfgModelPlainRandom extends CfgModel {
 
@@ -51,8 +51,8 @@ class CfgModelPlainRandom extends CfgModel {
 
   private lazy val _mapper = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt()
-  val screator = new SentenceCreatorSliding()
-  lazy val srater = new SentenceRaterStraightWithRandom(_mapper)
+  val screator = new SentenceCreatorSliding(_mapper)
+  lazy val srater = new SentenceLabelerStraightWithRandom(_mapper)
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
 
@@ -66,7 +66,7 @@ class CfgModelPlainRandom extends CfgModel {
 
       override def sentenceCreator: SentenceCreator = screator
 
-      override def sentenceRater: SentenceRater = srater
+      override def sentenceRater: SentenceLabeler = srater
 
       override def bookCollection: BookCollection = _bookCollection
 
@@ -99,7 +99,7 @@ class CfgModelPlainRandom extends CfgModel {
 
       override def id: String = _dataId
 
-      override def mapper: WordMapperPrediction = _mapper
+      override def mapper: WordMapperRating = _mapper
 
       override def adjustOutput: Boolean = true
 

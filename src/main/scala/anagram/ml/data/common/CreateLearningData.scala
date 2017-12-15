@@ -17,17 +17,11 @@ object CreateLearningData {
   val bookSplitter: BookSplitter = new BookSplitterTxt
 
   def createData(config: CfgCreateData): Unit = {
-
-    def saveDataToWorkDir(id: String, sl: SentenceLength, f: BufferedWriter => Unit): Path = {
-      val filename = MlUtil.dataFileName(id, sl.id)
-      save(dirWork, filename, f)
-    }
-
     val uris = config.bookCollection.books.map(bc => bc.filename).toStream
     for (len <- config.sentenceLengths) {
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
-      val sent: Seq[Sentence] = config.sentenceCreator.create(split, len.length, config.mapper)
+      val sent: Seq[Sentence] = config.sentenceCreator.create(split, len.length)
       log.info(s"Created ${sent.size} sentences of length $len")
       val ldPath = saveDataToWorkDir(
         filePrefix(config.id, config.mapWordsToNumbers),
@@ -44,23 +38,28 @@ object CreateLearningData {
     else s"${id}_unmapped"
   }
 
+  def saveDataToWorkDir(id: String, sl: SentenceLength, f: BufferedWriter => Unit): Path = {
+    val filename = MlUtil.dataFileName(id, sl.id)
+    save(dirWork, filename, f)
+  }
+
   def writeSentences(sentLength: Int, sentences: Seq[Sentence], config: CfgCreateData)(wr: BufferedWriter): Unit = {
-    for (rated <- config.sentenceRater.rateSentence(sentences)) {
+    for (rated <- config.sentenceRater.labelSentence(sentences)) {
       val sentAdjusted = Sentence(
         rated.sentence.sentenceType,
-        rated.sentence.words.map(word => if (config.mapWordsToNumbers) f(config.mapper.toNum(word)) else word)
+        rated.sentence.words.map(str => if (config.mapWordsToNumbers) formatNumber(config.mapper.toNum(str)) else str)
       )
-      writeSentence(Rated(sentAdjusted, rated.rating))(wr)
+      writeSentence(Labeled(sentAdjusted, rated.label))(wr)
     }
   }
 
-  def writeSentence(rated: Rated)(wr: BufferedWriter): Unit = {
-    val line = rated.sentence.words ++ Seq(f(rated.rating))
+  def writeSentence(rated: Labeled)(wr: BufferedWriter): Unit = {
+    val line = rated.sentence.words ++ Seq(formatNumber(rated.label))
     wr.write(line.mkString(";"))
     wr.write("\n")
   }
 
-  def f(value: Number): String = "%f".formatLocal(Locale.ENGLISH, value.doubleValue())
+  def formatNumber(num: Number): String = "%f".formatLocal(Locale.ENGLISH, num.doubleValue())
 
   def asString(id: String, bookCollection: BookCollection): String = {
     val sb = new StringBuilder

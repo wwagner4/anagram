@@ -24,7 +24,7 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
       "vi",
       "propn",
       "pron",
-      "prep",
+      "prep"
     )
 
     def reduceGroups(grp: String): String = {
@@ -59,8 +59,6 @@ object WordMapperFactoryGrammerReduced extends WordMapperFactory {
     new WordMapper {
 
       override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
-
-      override def toWord(num: Int): String = grpListIntMap.getOrElse(num, "?")
 
       override def size: Int = grpListIdx.size
 

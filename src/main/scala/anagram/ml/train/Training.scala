@@ -51,7 +51,8 @@ object Training {
 
     val recordReader = new CSVRecordReader(0, ';')
     recordReader.initialize(new FileSplit(dataFile.toFile))
-    val dsIter = new RecordReaderDataSetIterator(recordReader, sentenceLength.trainingBatchSize, sentenceLength.length, sentenceLength.length, true)
+    val labelIndex = sentenceLength.length
+    val dsIter = new RecordReaderDataSetIterator(recordReader, sentenceLength.trainingBatchSize, labelIndex, labelIndex, true)
     log.info(s"read dataset iterator")
     val nnConf = nnConfiguration(
       sentenceLength.length,

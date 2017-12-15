@@ -1,7 +1,7 @@
 package anagram.model.create
 
 import anagram.ml.DataCollector
-import anagram.ml.data.common.{BookCollection, CreateLearningData, SentenceCreator, SentenceRater}
+import anagram.ml.data.common.{BookCollection, CreateLearningData, SentenceCreator, SentenceLabeler}
 import anagram.ml.train.Training
 import anagram.model._
 import anagram.words.WordMapper
@@ -42,7 +42,7 @@ case class CfgCreateDataImpl(
                               id: String,
                               mapper: WordMapper,
                               sentenceCreator: SentenceCreator,
-                              sentenceRater: SentenceRater,
+                              sentenceRater: SentenceLabeler,
                               bookCollection: BookCollection,
                               sentenceLengths: Iterable[SentenceLength],
                               mapWordsToNumbers: Boolean,

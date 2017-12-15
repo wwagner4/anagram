@@ -3,7 +3,7 @@ package anagram.ml.data.common
 import anagram.ml.data.analyze.SentenceLengthRatingDiff
 import org.scalatest.{FunSuite, MustMatchers}
 
-class SentenceRaterSuite extends FunSuite with MustMatchers {
+class SentenceLabelerSuite extends FunSuite with MustMatchers {
 
   val lines = Seq(
     ("119 - 0.33877 - 'tact loin sowed'", 0.33877, 3),

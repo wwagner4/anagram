@@ -40,8 +40,8 @@
 
 - OK Solver should not return Ana but Iterable[String]
 
-- OK Connect the mapper from learning with the one used in prediction
--- OK There could be two mappers WordMapper WordMapperPrediction.
+- OK Connect the mapper from learning with the one used in Rating
+-- OK There could be two mappers WordMapper WordMapperRating.
 
 - OK Use simple wordlist
 -- OK Wordlist loadable

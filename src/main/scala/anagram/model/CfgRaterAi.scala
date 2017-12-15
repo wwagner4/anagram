@@ -1,6 +1,6 @@
 package anagram.model
 
-import anagram.words.WordMapperPrediction
+import anagram.words.WordMapperRating
 
 trait CfgRaterAiFactory {
 
@@ -14,7 +14,7 @@ trait CfgRaterAiFactory {
 
 trait CfgRaterAi extends Cfg {
 
-  def mapper: WordMapperPrediction
+  def mapper: WordMapperRating
 
   def adjustOutput: Boolean
 }
@@ -22,7 +22,7 @@ trait CfgRaterAi extends Cfg {
 case class CfgRaterAiImpl(
                            sentenceLengths: Iterable[SentenceLength],
                            id: String,
-                           mapper: WordMapperPrediction,
+                           mapper: WordMapperRating,
                            adjustOutput: Boolean,
                          ) extends CfgRaterAi {
   def create(cfg: CfgRaterAi): CfgRaterAiImpl = {

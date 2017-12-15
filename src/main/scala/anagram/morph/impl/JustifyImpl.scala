@@ -85,7 +85,7 @@ class JustifyImpl extends Justify {
 
   def wordOffsets(sentences: Seq[Seq[Word]], maxLen: Int, minSpace: Int): Seq[Seq[WordOffset]] = {
     sentences.map { sent =>
-      if (sent.size == 1) {
+      if (sent.lengthCompare(1) == 0) {
         Seq(WordOffset(sent(0).word, 0))
       } else {
         val min = sentenceMinLength(sent, minSpace)

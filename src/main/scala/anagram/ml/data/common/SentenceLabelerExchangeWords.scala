@@ -10,11 +10,11 @@ import anagram.words.WordMapper
   * by random words. These created sentences are rated lower than 100
   * depending on the amount of words exchanged
   */
-class SentenceRaterExchangeWords(val wm: WordMapper) extends SentenceRater {
+class SentenceLabelerExchangeWords(val wm: WordMapper) extends SentenceLabeler {
 
   val ran = new  util.Random()
 
-  def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
+  def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
 
     sentences.flatMap { sentence =>
       val l = sentence.words.length
@@ -22,7 +22,7 @@ class SentenceRaterExchangeWords(val wm: WordMapper) extends SentenceRater {
       ratings.flatMap(rate => Seq.fill(5) {
         val numEx =  numExchange(sentence.words.size, rate)
         val sentEx = exchange(sentence, numEx)
-        Rated(sentEx, rate)
+        Labeled(sentEx, rate)
       })
     }
   }

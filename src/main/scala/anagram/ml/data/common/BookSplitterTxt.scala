@@ -34,7 +34,7 @@ class BookSplitterTxt extends BookSplitter {
       .map(_.mkString.split("\\s")
         .toList
         .filter(!_.isEmpty))
-      .filter(_.size > 1)
+      .filter(_.lengthCompare(1) > 0)
   }
 
   private def splitSentences(stream: Stream[List[Char]], char: Char): Stream[List[Char]] = stream match {

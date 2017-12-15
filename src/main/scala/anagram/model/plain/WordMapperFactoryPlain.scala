@@ -25,8 +25,6 @@ object WordMapperFactoryPlain {
 
       override def toNum(word: String): Int = siMap.getOrElse(word, off) - off
 
-      override def toWord(num: Int): String = isMap.getOrElse(num + off, "?")
-
       override lazy val size: Int = siMap.size
 
       override def randomWord: String = isMap(ran.nextInt(size))

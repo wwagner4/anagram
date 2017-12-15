@@ -1,6 +1,6 @@
 package anagram.ml.data
 
-import anagram.ml.data.common.SentenceRaterExchangeWords
+import anagram.ml.data.common.SentenceLabelerExchangeWords
 import org.scalatest.{FunSuite, MustMatchers}
 
 class CreateLearningDataSuite extends FunSuite with MustMatchers {
@@ -58,7 +58,7 @@ class CreateLearningDataSuite extends FunSuite with MustMatchers {
     (8, 0, 8),
   )
 
-  val rater = new SentenceRaterExchangeWords(null)
+  val rater = new SentenceLabelerExchangeWords(null)
 
   for ((len, rating, should) <- numExchangeData) {
     test(s"num exchange $len $rating") {

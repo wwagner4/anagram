@@ -7,7 +7,7 @@ object SentenceCreatorTryout extends App {
   val resNames = BookSplitterTxt.booksBig.toStream
   val wm = WordMapperFactoryPlain.create
   val splitter = new BookSplitterTxt
-  val creator = new SentenceCreatorSliding()
+  val creator = new SentenceCreatorSliding(wm)
 
   showSentences()
   //completeWords
@@ -16,7 +16,7 @@ object SentenceCreatorTryout extends App {
     val split = resNames.flatMap(splitter.splitSentences)
 
     List(2, 3, 4, 5, 6, 7).foreach { size =>
-      val stat: Map[SentenceType, Stream[Sentence]] = creator.create(split, size, wm)
+      val stat: Map[SentenceType, Stream[Sentence]] = creator.create(split, size)
         .groupBy(s => s.sentenceType)
 
       stat.foreach{ case (k, v) =>
@@ -28,7 +28,7 @@ object SentenceCreatorTryout extends App {
 
   def showSentences(): Unit = {
     val split = resNames.flatMap(splitter.splitSentences)
-    val sent = creator.create(split, 2, wm)
+    val sent = creator.create(split, 2)
     sent.foreach { sent =>
       val ws = sent.words.mkString(" ")
       println("%5s - %s".format(short(sent.sentenceType), ws))

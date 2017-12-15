@@ -6,7 +6,7 @@ import anagram.words.WordMapper
   * Rates all sentences like SentenceRaterStraight but adds one
   * random zero rated sentence for every 'normal' sentence.
   */
-class SentenceRaterStraightWithRandom(val wm: WordMapper) extends SentenceRater {
+class SentenceLabelerStraightWithRandom(val wm: WordMapper) extends SentenceLabeler {
 
   val ran = new util.Random()
 
@@ -16,15 +16,15 @@ class SentenceRaterStraightWithRandom(val wm: WordMapper) extends SentenceRater 
       (1 to length).map(_ => wm.randomWord),
     )
 
-  def rateSentence(sentences: Iterable[Sentence]): Iterable[Rated] = {
+  def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
     sentences.flatMap { sentence =>
       if (!sentence.words.forall(w => wm.containsWord(w))) {
-        Seq.empty[Rated]
+        Seq.empty[Labeled]
       } else {
         val ranSent = randomSentence(sentence.words.size)
         Seq(
-          Rated(sentence, rating(sentence)),
-          Rated(ranSent, rating(ranSent)),
+          Labeled(sentence, rating(sentence)),
+          Labeled(ranSent, rating(ranSent)),
         )
       }
     }
