@@ -14,7 +14,7 @@ class SentenceLabelerStraight(val wm: WordMapper) extends SentenceLabeler {
   def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
     sentences.flatMap { sentence =>
       if (!sentence.words.forall(w => wm.containsWord(w))) None
-      else Some(Labeled(sentence, rating(sentence)))
+      else Some(Labeled(sentence, features(sentence), rating(sentence)))
     }
   }
 
@@ -26,5 +26,10 @@ class SentenceLabelerStraight(val wm: WordMapper) extends SentenceLabeler {
       case SentenceType_RANDOM => 10.0
     }
   }
+
+  def features(sent: Sentence): Seq[Double] = {
+    sent.words.map(w => wm.toNum(w).toDouble)
+  }
+
 
 }
