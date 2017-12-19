@@ -14,9 +14,8 @@ trait CfgCreateData extends Cfg {
 
   def sentenceCreator: SentenceCreator
 
-  def sentenceRater: SentenceLabeler
+  def sentenceLabeler: SentenceLabeler
 
   def bookCollection: BookCollection
 
-  def mapWordsToNumbers: Boolean
 }
