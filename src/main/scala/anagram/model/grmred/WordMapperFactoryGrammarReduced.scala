@@ -57,6 +57,10 @@ object WordMapperFactoryGrammarReduced extends WordMapperFactory {
 
     new WordMapper {
 
+      override def map(sentence: Seq[String]): Seq[Double] = {
+        sentence.flatMap(w => transform(w)).map(toNum(_).toDouble)
+      }
+
       override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
 
       override def size: Int = grpListIdx.size

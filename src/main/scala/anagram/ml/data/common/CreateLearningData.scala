@@ -19,23 +19,22 @@ object CreateLearningData {
   def createData(config: CfgCreateData): Unit = {
     val uris = config.bookCollection.books.map(bc => bc.filename).toStream
     for (len <- config.sentenceLengths) {
+      val cid = s"${config.id} - ${len.desc}"
+      log.info(s"Creating Data for $cid")
       val split: Stream[Seq[String]] = uris.flatMap(bookSplitter.splitSentences)
       log.info(s"Found ${split.size} sentences in ${config.bookCollection.desc}")
       val sent: Seq[Sentence] = config.sentenceCreator.create(split, len.length)
-      log.info(s"Created ${sent.size} sentences of length $len")
+      log.info(s"Created ${sent.size} sentences of length ${len.length}")
+      val labeled = config.sentenceLabeler.labelSentence(sent)
+      log.info(s"Labeled ${sent.size} sentences of length ${len.length}")
       val ldPath = saveDataToWorkDir(
-        filePrefix(config.id, config.mapWordsToNumbers),
+        config.id,
         len,
-        writeSentences(len.length, sent, config)(_)
+        writeSentences(labeled, config)(_)
       )
-      log.info("Created learning data in " + ldPath)
+      log.info(s"Created learning data for $cid in $ldPath")
     }
     log.info("Created learning data for book collection:\n" + asString(config.id, config.bookCollection))
-  }
-
-  def filePrefix(id: String, mapWordsToNumber: Boolean): String = {
-    if (mapWordsToNumber) id
-    else s"${id}_unmapped"
   }
 
   def saveDataToWorkDir(id: String, sl: SentenceLength, f: BufferedWriter => Unit): Path = {
@@ -43,20 +42,12 @@ object CreateLearningData {
     save(dirWork, filename, f)
   }
 
-  def writeSentences(sentLength: Int, sentences: Seq[Sentence], config: CfgCreateData)(wr: BufferedWriter): Unit = {
-    for (rated <- config.sentenceRater.labelSentence(sentences)) {
-      val sentAdjusted = Sentence(
-        rated.sentence.sentenceType,
-        rated.sentence.words.map(str => if (config.mapWordsToNumbers) formatNumber(config.mapper.toNum(str)) else str)
-      )
-      writeSentence(Labeled(sentAdjusted, rated.label))(wr)
+  def writeSentences(labeled: Seq[Labeled], config: CfgCreateData)(wr: BufferedWriter): Unit = {
+    for (l <- labeled) {
+      val line = l.features ++ Seq(formatNumber(l.label))
+      wr.write(line.mkString(";"))
+      wr.write("\n")
     }
-  }
-
-  def writeSentence(rated: Labeled)(wr: BufferedWriter): Unit = {
-    val line = rated.sentence.words ++ Seq(formatNumber(rated.label))
-    wr.write(line.mkString(";"))
-    wr.write("\n")
   }
 
   def formatNumber(num: Number): String = "%f".formatLocal(Locale.ENGLISH, num.doubleValue())

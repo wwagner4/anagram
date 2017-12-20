@@ -4,8 +4,8 @@ import anagram.words.WordMapper
 
 case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper) extends SentenceLabeler {
 
-  override def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
-    val s1 = sentences.map{s =>
+  override def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
+    val s1 = sentences.map { s =>
       val w1 = s.words.flatMap(wm.transform(_))
       s.copy(words = w1)
     }
@@ -18,14 +18,18 @@ case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapp
         val rating: Double = y.foldLeft(0.0) {
           case (r, (stype, cnt)) => stype match {
             case SentenceType_COMPLETE => r + cnt * 1 * factor
-            case SentenceType_BEGINNING => r + cnt * 5  * factor
-            case SentenceType_OTHER => r + cnt * 10  * factor
+            case SentenceType_BEGINNING => r + cnt * 5 * factor
+            case SentenceType_OTHER => r + cnt * 10 * factor
             case SentenceType_RANDOM => throw new IllegalStateException("SentenceType_RANDOM makes no sense for Counting")
           }
         }
-        Some(Labeled(Sentence(SentenceType_OTHER, w), rating))
+        Some(Labeled(Sentence(SentenceType_OTHER, w), features(w), rating))
       }
     }
   }
+
+  def features(sentence: Seq[String]): Seq[Double] = sentence
+    .flatMap(wm.transform(_))
+    .map(wm.toNum(_).toDouble)
 
 }

@@ -21,6 +21,10 @@ object WordMapperFactoryPlain {
 
     new WordMapper {
 
+      override def map(sentence: Seq[String]): Seq[Double] = {
+        sentence.flatMap(w => transform(w)).map(toNum(_).toDouble)
+      }
+
       override def containsWord(str: String): Boolean = siMap.contains(str)
 
       override def toNum(word: String): Int = siMap.getOrElse(word, off) - off

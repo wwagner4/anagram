@@ -11,12 +11,16 @@ class SentenceLabelerStraight(val wm: WordMapper) extends SentenceLabeler {
 
   val ran = new util.Random()
 
-  def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
+  def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
     sentences.flatMap { sentence =>
       if (!sentence.words.forall(w => wm.containsWord(w))) None
-      else Some(Labeled(sentence, rating(sentence)))
+      else Some(Labeled(sentence, features(sentence.words), rating(sentence)))
     }
   }
+
+  def features(sentence: Seq[String]): Seq[Double] = sentence
+    .flatMap(wm.transform(_))
+    .map(wm.toNum(_).toDouble)
 
   def rating(sentence: Sentence): Double = {
     sentence.sentenceType match {

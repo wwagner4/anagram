@@ -151,14 +151,14 @@ object RandomSentences {
 
   private val ran = new Random()
 
-  def createSentence(wl: Seq[Word], wlSize: Int, len: Int): Iterable[String] = {
+  def createSentence(wl: Seq[Word], wlSize: Int, len: Int): Seq[String] = {
     (1 to len).map { _ =>
       val idx = ran.nextInt(wlSize)
       wl(idx).word
     }
   }
 
-  def create(n: Int, len: Int, wl: Seq[Word]): Seq[Iterable[String]] = {
+  def create(n: Int, len: Int, wl: Seq[Word]): Seq[Seq[String]] = {
     val wlSize = wl.size
     (1 to n) map { _ =>
       createSentence(wl, wlSize, len)
