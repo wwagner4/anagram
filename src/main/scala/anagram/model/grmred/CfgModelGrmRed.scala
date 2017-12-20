@@ -54,7 +54,7 @@ class CfgModelGrmRed extends CfgModel {
 
   private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
 
-  private val srater = SentenceLabelerCounting(_lfs)
+  private val srater = SentenceLabelerCounting(_lfs, _mapper)
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
 

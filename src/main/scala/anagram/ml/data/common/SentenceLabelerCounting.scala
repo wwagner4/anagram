@@ -1,9 +1,15 @@
 package anagram.ml.data.common
 
-case class SentenceLabelerCounting(lengthFactors: Map[Int, Double]) extends SentenceLabeler {
+import anagram.words.WordMapper
+
+case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper) extends SentenceLabeler {
 
   override def labelSentence(sentences: Iterable[Sentence]): Iterable[Labeled] = {
-    val rmap: Seq[(Seq[String], Iterable[Sentence])] = sentences.groupBy(sent => sent.words).toSeq
+    val s1 = sentences.map{s =>
+      val w1 = s.words.flatMap(wm.transform(_))
+      s.copy(words = w1)
+    }
+    val rmap: Seq[(Seq[String], Iterable[Sentence])] = s1.groupBy(sent => sent.words).toSeq
     rmap.flatMap { case (w, sents) =>
       val factor = lengthFactors(w.size)
       if (w.contains("?")) None
