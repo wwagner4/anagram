@@ -5,7 +5,7 @@ import anagram.words.{Word, WordMapper, WordMapperFactory, Wordlists}
 
 import scala.util.Random
 
-object WordMapperFactoryGrammerReduced extends WordMapperFactory {
+object WordMapperFactoryGrammarReduced extends WordMapperFactory {
 
   def create: WordMapper = {
     val ran = Random

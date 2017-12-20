@@ -48,7 +48,7 @@ class CfgModelGrmRed extends CfgModel {
 
   private lazy val _bookCollection = BookCollections.collectionEn2
 
-  private lazy val _mapper = WordMapperFactoryGrammerReduced.create
+  private lazy val _mapper = WordMapperFactoryGrammarReduced.create
 
   private val screator = new SentenceCreatorSliding(_mapper)
 
