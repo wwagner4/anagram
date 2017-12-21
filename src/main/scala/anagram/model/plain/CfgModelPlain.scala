@@ -2,7 +2,7 @@ package anagram.model.plain
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.words.{WordMapper, WordMapperRating}
+import anagram.words.{WordMapper, WordMapperRating, Wordlists}
 
 class CfgModelPlain extends CfgModel {
 
@@ -48,7 +48,9 @@ class CfgModelPlain extends CfgModel {
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
-  private lazy val _mapper = WordMapperFactoryPlain.create
+  private lazy val _wl = Wordlists.plainRatedLarge.wordList()
+
+  private lazy val _mapper = new WordMapperFactoryPlain(_wl).create
   val splitter = new BookSplitterTxt()
   val screator = new SentenceCreatorSliding(_mapper)
   lazy val srater = new SentenceLabelerStraight(_mapper)

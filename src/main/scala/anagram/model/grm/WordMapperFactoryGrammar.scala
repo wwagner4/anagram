@@ -2,12 +2,9 @@ package anagram.model.grm
 
 import anagram.words.{Word, WordMapper, WordMapperFactory}
 
-import scala.util.Random
-
 class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory {
 
   def create: WordMapper = {
-    val ran = Random
 
     lazy val grp = new GrouperGrm(wl)
 
@@ -16,7 +13,6 @@ class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory {
     val unknown = "?"
 
     val words: Seq[Word] = wl.toSeq
-    val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
 
     val grpList = words.map(groupedWord => groupedWord.grp.get).distinct.sorted :+ unknown
     val grpListIdx = grpList.zipWithIndex
@@ -31,11 +27,6 @@ class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory {
       override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
 
       override def size: Int = grpListIdx.size
-
-      override def randomWord: String = {
-        val idx = ran.nextInt(grpListIdx.size)
-        grpList(idx)
-      }
 
       override def containsWord(str: String): Boolean = wset.contains(str)
 

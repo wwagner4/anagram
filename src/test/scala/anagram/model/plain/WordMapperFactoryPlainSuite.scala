@@ -1,8 +1,12 @@
 package anagram.model.plain
 
+import anagram.words.Wordlists
 import org.scalatest.{FunSuite, MustMatchers}
 
 class WordMapperFactoryPlainSuite extends FunSuite with MustMatchers {
+
+  private val wl = Wordlists.plain.wordList()
+  private val wm = new WordMapperFactoryPlain(wl)
 
   val maxVowelData = Seq(
     ("assel", 'a'),
@@ -19,7 +23,7 @@ class WordMapperFactoryPlainSuite extends FunSuite with MustMatchers {
 
   for((w, c) <- maxVowelData) {
     test(s"maxVowel $w $c") {
-      WordMapperFactoryPlain.maxVowel(w) mustBe c
+      wm.maxVowel(w) mustBe c
     }
 
   }
@@ -33,7 +37,7 @@ class WordMapperFactoryPlainSuite extends FunSuite with MustMatchers {
 
   for ((w, c, cnt) <- countCharData) {
     test(s"countChar $w $c") {
-      WordMapperFactoryPlain.countChar(w, c) mustBe cnt
+      wm.countChar(w, c) mustBe cnt
     }
   }
 }

@@ -1,14 +1,14 @@
 package anagram.solve
 
-import anagram.model.plain.WordMapperFactoryPlain
-import anagram.words.Word
+import anagram.words.{Word, Wordlists}
 import org.scalatest.{FunSuite, MustMatchers}
 
 import scala.concurrent.ExecutionContext
 
 class SolverSolverLabeledImplSuite extends FunSuite with MustMatchers {
 
-  implicit val ec: ExecutionContext = ExecutionContext.global
+  private implicit val ec: ExecutionContext = ExecutionContext.global
+  private val wl = Wordlists.plain.wordList()
 
   test("anagramm Oast ogr") {
 
@@ -35,8 +35,7 @@ class SolverSolverLabeledImplSuite extends FunSuite with MustMatchers {
   }
 
   test("anagramm wolfi with wordlist test01") {
-    val wordList = WordMapperFactoryPlain.create.wordList
-    val anas = SolverPlain(4, 2, wordList).solve("wolfi").toStream
+    val anas = SolverPlain(4, 2, wl).solve("wolfi").toStream
     anas.size mustBe 10
 
     val strAnas = anas.map(sent => sent.mkString(" "))
@@ -49,8 +48,7 @@ class SolverSolverLabeledImplSuite extends FunSuite with MustMatchers {
   }
 
   test("anagramm iset with wordlist test01") {
-    val wordList = WordMapperFactoryPlain.create.wordList
-    val anas = SolverPlain(4, 2, wordList).solve("iset").toStream
+    val anas = SolverPlain(4, 2, wl).solve("iset").toStream
 
     val strAnas = anas.map(sent => sent.mkString(" "))
 

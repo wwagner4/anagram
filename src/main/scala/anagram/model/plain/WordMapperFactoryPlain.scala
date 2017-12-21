@@ -1,22 +1,13 @@
 package anagram.model.plain
 
-import anagram.words.{Word, WordMapper, Wordlists}
+import anagram.words.{Word, WordMapper}
 
-import scala.util.Random
-
-object WordMapperFactoryPlain {
-
-  private val ran = Random
+class WordMapperFactoryPlain(wordList: Iterable[Word]) {
 
   def create: WordMapper = {
 
-    val wordlist: Iterable[Word] = Wordlists.plain.wordList()
-
-    val si: Seq[(String, Int)] = stringInt(wordlist)
+    val si: Seq[(String, Int)] = stringInt(wordList)
     val siMap = si.toMap
-    val is: Seq[(Int, String)] = si.map { case (a, b) => (b, a) }
-
-    val isMap = is.toMap
     val off: Int = siMap.size / 2
 
     new WordMapper {
@@ -31,9 +22,7 @@ object WordMapperFactoryPlain {
 
       override lazy val size: Int = siMap.size
 
-      override def randomWord: String = isMap(ran.nextInt(size))
-
-      override def wordList: Iterable[Word] = wordlist
+      override def wordList: Iterable[Word] = wordList
     }
   }
 

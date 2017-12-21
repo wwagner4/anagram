@@ -1,19 +1,19 @@
 package anagram.ml.data.common
 
-import anagram.words.WordMapper
+import anagram.words.{WordMapper, WordRandom}
 
 /**
   * Rates all sentences like SentenceRaterStraight but adds one
   * random zero rated sentence for every 'normal' sentence.
   */
-class SentenceLabelerStraightWithRandom(val wm: WordMapper) extends SentenceLabeler {
+class SentenceLabelerStraightWithRandom(val wm: WordMapper, wr: WordRandom) extends SentenceLabeler {
 
   val ran = new util.Random()
 
   def randomSentence(length: Int): Sentence =
     Sentence(
       SentenceType_RANDOM,
-      (1 to length).map(_ => wm.randomWord),
+      (1 to length).map(_ => wr.random),
     )
 
   def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
