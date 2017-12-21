@@ -2,7 +2,7 @@ package anagram.model.grm
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.words.{WordMapper, WordMapperRating}
+import anagram.words.{WordMapper, WordMapperRating, Wordlists}
 
 class CfgModelGrm extends CfgModel {
 
@@ -48,13 +48,17 @@ class CfgModelGrm extends CfgModel {
 
   private lazy val _bookCollection = BookCollections.collectionEn2
 
-  private lazy val _mapper = WordMapperFactoryGrammar.create
+  private lazy val _wl = Wordlists.grammar.wordList()
+
+  private lazy val _mapper = new WordMapperFactoryGrammar(_wl).create
+
+  private lazy val _grp = new GrouperGrm(_wl)
 
   private val screator = new SentenceCreatorSliding(_mapper)
 
   private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
 
-  private val srater = SentenceLabelerCounting(_lfs, _mapper)
+  private val srater = SentenceLabelerCounting(_lfs, _mapper, _grp)
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
 

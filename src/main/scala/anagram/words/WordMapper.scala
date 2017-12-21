@@ -10,8 +10,6 @@ trait WordMapper extends WordMapperRating {
 
   def wordList: Iterable[Word]
 
-  def transform(value: String): Seq[String]
-
   def toNum(word: String): Int
 
 }

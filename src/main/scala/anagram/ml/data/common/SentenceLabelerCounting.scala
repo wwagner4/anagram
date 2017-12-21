@@ -1,12 +1,12 @@
 package anagram.ml.data.common
 
-import anagram.words.WordMapper
+import anagram.words.{Grouper, WordMapper}
 
-case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper) extends SentenceLabeler {
+case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper, grp:Grouper ) extends SentenceLabeler {
 
   override def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
     val s1 = sentences.map { s =>
-      val w1 = s.words.flatMap(wm.transform(_))
+      val w1 = s.words.flatMap(grp.group)
       s.copy(words = w1)
     }
     val rmap: Seq[(Seq[String], Iterable[Sentence])] = s1.groupBy(sent => sent.words).toSeq
@@ -29,7 +29,7 @@ case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapp
   }
 
   def features(sentence: Seq[String]): Seq[Double] = sentence
-    .flatMap(wm.transform(_))
+    .flatMap(grp.group)
     .map(wm.toNum(_).toDouble)
 
 }

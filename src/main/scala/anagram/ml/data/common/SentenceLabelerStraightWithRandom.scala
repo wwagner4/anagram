@@ -31,7 +31,6 @@ class SentenceLabelerStraightWithRandom(val wm: WordMapper) extends SentenceLabe
   }
 
   def features(sentence: Seq[String]): Seq[Double] = sentence
-    .flatMap(wm.transform(_))
     .map(wm.toNum(_).toDouble)
 
   def rating(sentence: Sentence): Double = {

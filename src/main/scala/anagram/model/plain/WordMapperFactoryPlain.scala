@@ -22,7 +22,7 @@ object WordMapperFactoryPlain {
     new WordMapper {
 
       override def map(sentence: Seq[String]): Seq[Double] = {
-        sentence.flatMap(w => transform(w)).map(toNum(_).toDouble)
+        sentence.map(toNum(_).toDouble)
       }
 
       override def containsWord(str: String): Boolean = siMap.contains(str)
@@ -32,8 +32,6 @@ object WordMapperFactoryPlain {
       override lazy val size: Int = siMap.size
 
       override def randomWord: String = isMap(ran.nextInt(size))
-
-      override def transform(value: String): Seq[String] = Seq(value)
 
       override def wordList: Iterable[Word] = wordlist
     }
