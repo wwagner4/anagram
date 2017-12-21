@@ -18,20 +18,19 @@ class SentenceLabelerStraightWithRandom(val wm: WordMapper[_], wr: WordRandom) e
 
   def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
     sentences.flatMap { sentence =>
+      val mr = wm.map(sentence.words)
       if (!sentence.words.forall(w => wm.containsWord(w))) {
         Seq.empty[Labeled]
       } else {
         val ranSent = randomSentence(sentence.words.size)
+        val ranMr = wm.map(ranSent.words)
         Seq(
-          Labeled(features(sentence.words), rating(sentence)),
-          Labeled(features(ranSent.words), rating(ranSent))
+          Labeled(mr.features, rating(sentence)),
+          Labeled(ranMr.features, rating(ranSent))
         )
       }
     }
   }
-
-  def features(sentence: Seq[String]): Seq[Double] = sentence
-    .map(wm.toNum(_).toDouble)
 
   def rating(sentence: Sentence): Double = {
     sentence.sentenceType match {

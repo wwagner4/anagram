@@ -29,7 +29,7 @@ class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory[Seq
         )
       }
 
-      override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
+      private def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
 
       override def size: Int = grpListIdx.size
 

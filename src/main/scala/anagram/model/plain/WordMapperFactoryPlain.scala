@@ -23,7 +23,7 @@ class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[S
 
       override def containsWord(str: String): Boolean = siMap.contains(str)
 
-      override def toNum(word: String): Int = siMap.getOrElse(word, off) - off
+      private def toNum(word: String): Int = siMap.getOrElse(word, off) - off
 
       override lazy val size: Int = siMap.size
 

@@ -8,7 +8,5 @@ trait WordMapper[T] extends WordMapperRating[T] {
 
   def wordList: Iterable[Word]
 
-  def toNum(word: String): Int
-
 }
 
