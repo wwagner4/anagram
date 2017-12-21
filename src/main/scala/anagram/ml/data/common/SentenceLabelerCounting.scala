@@ -32,9 +32,9 @@ case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapp
       .mapValues(_.size).toSeq
     countedTypes.foldLeft(0.0) {
       case (r, (stype, cnt)) => stype match {
-        case SentenceType_COMPLETE => r + cnt * 1 * lenFact
+        case SentenceType_COMPLETE => r + cnt * 10 * lenFact
         case SentenceType_BEGINNING => r + cnt * 5 * lenFact
-        case SentenceType_OTHER => r + cnt * 10 * lenFact
+        case SentenceType_OTHER => r + cnt * 1 * lenFact
         case SentenceType_RANDOM => throw new IllegalStateException("SentenceType_RANDOM makes no sense for Counting")
       }
     }

@@ -13,29 +13,22 @@ class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[S
     new WordMapper[Seq[String]] {
 
       override def map(sentence: Seq[String]): MappingResult[Seq[String]] = {
-        val f = sentence.map(toNum(_).toDouble)
+        val f = sentence.map(siMap.getOrElse(_, off) - off).map(_.toDouble)
         val i = sentence
         MappingResult(
           intermediate = i,
-          features = f,
+          features = f
         )
       }
 
       override def containsWord(str: String): Boolean = siMap.contains(str)
 
-      private def toNum(word: String): Int = siMap.getOrElse(word, off) - off
-
-      override lazy val size: Int = siMap.size
-
-      override def wordList: Iterable[Word] = wl
     }
   }
 
   def stringInt(wordlist: Iterable[Word]): Seq[(String, Int)] = {
     val grps = wordlist.map(w => w.word).toSeq.groupBy(w => maxVowel(w)).toSeq
-    val si: Seq[Seq[String]] = for ((_, sent) <- grps) yield {
-      sent.sorted
-    }
+    val si: Seq[Seq[String]] = for ((_, sent) <- grps) yield sent.sorted
     si.flatten.zipWithIndex
   }
 

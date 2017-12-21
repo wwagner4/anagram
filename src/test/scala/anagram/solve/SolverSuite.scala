@@ -39,18 +39,18 @@ class SolverSuite extends FunSuite with MustMatchers {
       ("PLAINR_plainRand001", 22.65767, List("hit", "disc")),
       ("PLAINR_plainRand001", 21.4158, List("in", "in", "beg", "dr", "dr")),
       ("PLAINR_plainRand001", 21.4158, List("in", "in", "beg", "rr", "dd")),
-      ("GRM_grm001", 2.6653, List("flag", "gown")),
-      ("GRM_grm001", 2.608, List("gown", "flag")),
-      ("GRM_grm001", 2.6127, List("is", "ditch")),
-      ("GRM_grm001", 2.5975, List("hit", "disc")),
-      ("GRM_grm001", 2.4577, List("in", "in", "beg", "dr", "dr")),
-      ("GRM_grm001", 2.4577, List("in", "in", "beg", "rr", "dd")),
-      ("GRMRED_grmRed001", 14.963, List("flag", "gown")),
-      ("GRMRED_grmRed001", 14.975, List("gown", "flag")),
-      ("GRMRED_grmRed001", 15.014, List("is", "ditch")),
-      ("GRMRED_grmRed001", 14.882, List("hit", "disc")),
-      ("GRMRED_grmRed001", 14.962, List("in", "in", "beg", "dr", "dr")),
-      ("GRMRED_grmRed001", 14.962, List("in", "in", "beg", "rr", "dd"))
+      ("GRM_grm001", 1.57, List("flag", "gown")),
+      ("GRM_grm001", 1.54, List("gown", "flag")),
+      ("GRM_grm001", 1.51, List("is", "ditch")),
+      ("GRM_grm001", 1.51, List("hit", "disc")),
+      ("GRM_grm001", 0.33, List("in", "in", "beg", "dr", "dr")),
+      ("GRM_grm001", 0.33, List("in", "in", "beg", "rr", "dd")),
+      ("GRMRED_grmRed001", 1.90, List("flag", "gown")),
+      ("GRMRED_grmRed001", 1.90, List("gown", "flag")),
+      ("GRMRED_grmRed001", 1.90, List("is", "ditch")),
+      ("GRMRED_grmRed001", 1.89, List("hit", "disc")),
+      ("GRMRED_grmRed001", 8.54, List("in", "in", "beg", "dr", "dr")),
+      ("GRMRED_grmRed001", 8.54, List("in", "in", "beg", "rr", "dd"))
     )
 
     var i = 0

@@ -13,11 +13,8 @@ class SentenceLabelerStraight(val wm: WordMapper[Seq[String]]) extends SentenceL
 
   def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
     sentences.flatMap { sentence =>
-      if (!sentence.words.forall(w => wm.containsWord(w))) None
-      else {
-        val mr = wm.map(sentence.words)
-        Some(Labeled(mr.features, rating(sentence)))
-      }
+      val mr = wm.map(sentence.words)
+      Some(Labeled(mr.features, rating(sentence)))
     }
   }
 

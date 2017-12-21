@@ -57,20 +57,14 @@ class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFact
 
       override def map(sentence: Seq[String]): MappingResult[Seq[String]] = {
         val inter = sentence.flatMap(w => grp.group(w))
-        val feat = inter.map(toNum(_).toDouble)
+        val feat = inter.map(grpListWordMap.getOrElse(_, 0).toDouble)
         MappingResult(
           intermediate = inter,
-          features = feat,
+          features = feat
         )
       }
 
-      private def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
-
-      override def size: Int = grpListIdx.size
-
       override def containsWord(str: String): Boolean = wset.contains(str)
-
-      override def wordList: Iterable[Word] = wl
 
     }
 
