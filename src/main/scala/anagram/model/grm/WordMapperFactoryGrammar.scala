@@ -1,10 +1,10 @@
 package anagram.model.grm
 
-import anagram.words.{Word, WordMapper, WordMapperFactory}
+import anagram.words.{MappingResult, Word, WordMapper, WordMapperFactory}
 
-class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory {
+class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
 
-  def create: WordMapper = {
+  def create: WordMapper[Seq[String]] = {
 
     lazy val grp = new GrouperGrm(wl)
 
@@ -18,10 +18,15 @@ class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory {
     val grpListIdx = grpList.zipWithIndex
     val grpListWordMap: Map[String, Int] = grpListIdx.toMap
 
-    new WordMapper {
+    new WordMapper[Seq[String]] {
 
-      override def map(sentence: Seq[String]): Seq[Double] = {
-        sentence.flatMap(w => grp.group(w)).map(toNum(_).toDouble)
+      override def map(sentence: Seq[String]): MappingResult[Seq[String]] = {
+        val inter = sentence.flatMap(w => grp.group(w))
+        val features = inter.map(toNum(_).toDouble)
+        MappingResult(
+          intermediate = inter,
+          features = features,
+        )
       }
 
       override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)

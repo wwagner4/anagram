@@ -2,9 +2,9 @@ package anagram.model.grmred
 
 import anagram.words._
 
-class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFactory {
+class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
 
-  def create: WordMapper = {
+  def create: WordMapper[Seq[String]] = {
 
     lazy val wl = Wordlists.grammar.wordList()
 
@@ -53,10 +53,15 @@ class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFact
     val grpListIdx = grpList.zipWithIndex
     val grpListWordMap: Map[String, Int] = grpListIdx.toMap
 
-    new WordMapper {
+    new WordMapper[Seq[String]] {
 
-      override def map(sentence: Seq[String]): Seq[Double] = {
-        sentence.flatMap(w => grp.group(w)).map(toNum(_).toDouble)
+      override def map(sentence: Seq[String]): MappingResult[Seq[String]] = {
+        val inter = sentence.flatMap(w => grp.group(w))
+        val feat = inter.map(toNum(_).toDouble)
+        MappingResult(
+          intermediate = inter,
+          features = feat,
+        )
       }
 
       override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)

@@ -16,7 +16,7 @@ object CreateLearningData {
 
   val bookSplitter: BookSplitter = new BookSplitterTxt
 
-  def createData(config: CfgCreateData): Unit = {
+  def createData(config: CfgCreateData[_]): Unit = {
     val uris = config.bookCollection.books.map(bc => bc.filename).toStream
     for (len <- config.sentenceLengths) {
       val cid = s"${config.id} - ${len.desc}"
@@ -42,7 +42,7 @@ object CreateLearningData {
     save(dirWork, filename, f)
   }
 
-  def writeSentences(labeled: Seq[Labeled], config: CfgCreateData)(wr: BufferedWriter): Unit = {
+  def writeSentences(labeled: Seq[Labeled], config: CfgCreateData[_])(wr: BufferedWriter): Unit = {
     for (l <- labeled) {
       val line = l.features ++ Seq(formatNumber(l.label))
       wr.write(line.mkString(";"))

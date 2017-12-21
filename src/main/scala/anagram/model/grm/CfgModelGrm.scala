@@ -4,7 +4,7 @@ import anagram.ml.data.common._
 import anagram.model._
 import anagram.words.{WordMapper, WordMapperRating, Wordlists}
 
-class CfgModelGrm extends CfgModel {
+class CfgModelGrm extends CfgModel[Seq[String]] {
 
   private val _dataId = "grm001"
   private val _sentenceLengths = Seq(
@@ -52,24 +52,22 @@ class CfgModelGrm extends CfgModel {
 
   private lazy val _mapper = new WordMapperFactoryGrammar(_wl).create
 
-  private lazy val _grp = new GrouperGrm(_wl)
-
   private val screator = new SentenceCreatorSliding(_mapper)
 
   private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
 
-  private val srater = SentenceLabelerCounting(_lfs, _mapper, _grp)
+  private val srater = SentenceLabelerCounting(_lfs, _mapper)
 
-  override lazy val cfgCreateData: CfgCreateDataFactory = {
+  override lazy val cfgCreateData: CfgCreateDataFactory[Seq[String]] = {
 
 
-    lazy val cfg = new CfgCreateData {
+    lazy val cfg = new CfgCreateData[Seq[String]] {
 
       override def id: String = _dataId
 
       override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
-      override def mapper: WordMapper = _mapper
+      override def mapper: WordMapper[Seq[String]] = _mapper
 
       override def sentenceCreator: SentenceCreator = screator
 
@@ -79,9 +77,9 @@ class CfgModelGrm extends CfgModel {
 
     }
 
-    new CfgCreateDataFactory {
+    new CfgCreateDataFactory[Seq[String]] {
 
-      override def cfgCreateData: () => CfgCreateData = () => cfg
+      override def cfgCreateData: () => CfgCreateData[Seq[String]] = () => cfg
     }
   }
 
@@ -108,7 +106,7 @@ class CfgModelGrm extends CfgModel {
 
       override def id: String = _dataId
 
-      override def mapper: WordMapperRating = _mapper
+      override def mapper: WordMapperRating[Seq[String]] = _mapper
 
       override def adjustOutput: Boolean = true
 

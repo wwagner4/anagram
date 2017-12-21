@@ -1,6 +1,6 @@
 package anagram.words
 
-trait WordMapper extends WordMapperRating {
+trait WordMapper[T] extends WordMapperRating[T] {
 
   def size: Int
 

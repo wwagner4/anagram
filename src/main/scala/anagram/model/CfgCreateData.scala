@@ -3,14 +3,15 @@ package anagram.model
 import anagram.ml.data.common.{BookCollection, SentenceCreator, SentenceLabeler}
 import anagram.words.WordMapper
 
-trait CfgCreateDataFactory {
+trait CfgCreateDataFactory[T] {
 
-  def cfgCreateData: () => CfgCreateData
+  def cfgCreateData: () => CfgCreateData[T]
+
 }
 
-trait CfgCreateData extends Cfg {
+trait CfgCreateData[T] extends Cfg {
 
-  def mapper: WordMapper
+  def mapper: WordMapper[T]
 
   def sentenceCreator: SentenceCreator
 

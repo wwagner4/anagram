@@ -1,35 +1,43 @@
 package anagram.ml.data.common
 
-import anagram.words.{Grouper, WordMapper}
+import anagram.words.{MappingResult, WordMapper}
 
-case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper, grp:Grouper ) extends SentenceLabeler {
+case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper[Seq[String]]) extends SentenceLabeler {
+
+  case class MR(
+                 sentence: Sentence,
+                 result: MappingResult[Seq[String]],
+               )
 
   override def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
-    val s1 = sentences.map { s =>
-      val w1 = s.words.flatMap(grp.group)
-      s.copy(words = w1)
+    val mappingResults = sentences.map { s =>
+      val mr = wm.map(s.words)
+      MR(s, mr)
     }
-    val rmap: Seq[(Seq[String], Iterable[Sentence])] = s1.groupBy(sent => sent.words).toSeq
-    rmap.flatMap { case (w, sents) =>
-      val factor = lengthFactors(w.size)
-      if (w.contains("?")) None
+    val groupedMappingResults = mappingResults.groupBy(mr => mr.result).toSeq
+    groupedMappingResults.flatMap { case (grp: MappingResult[Seq[String]], grpMembers: Seq[_]) =>
+      val lfac: Double = lengthFactors(grp.intermediate.size)
+      if (grp.intermediate.contains("?")) None
       else {
-        val y: Seq[(SentenceType, Int)] = sents.map(_.sentenceType).groupBy(identity).mapValues(_.size).toSeq
-        val rating: Double = y.foldLeft(0.0) {
-          case (r, (stype, cnt)) => stype match {
-            case SentenceType_COMPLETE => r + cnt * 1 * factor
-            case SentenceType_BEGINNING => r + cnt * 5 * factor
-            case SentenceType_OTHER => r + cnt * 10 * factor
-            case SentenceType_RANDOM => throw new IllegalStateException("SentenceType_RANDOM makes no sense for Counting")
-          }
-        }
-        Some(Labeled(Sentence(SentenceType_OTHER, w), features(w), rating))
+        val r: Double = rating(grpMembers, lfac)
+        Some(Labeled(grp.features, r))
       }
     }
   }
 
-  def features(sentence: Seq[String]): Seq[Double] = sentence
-    .flatMap(grp.group)
-    .map(wm.toNum(_).toDouble)
+  def rating(mappingResultsGroup: Seq[MR], lenFact: Double): Double = {
+    val countedTypes: Seq[(SentenceType, Int)] = mappingResultsGroup
+      .map(_.sentence.sentenceType)
+      .groupBy(identity)
+      .mapValues(_.size).toSeq
+    countedTypes.foldLeft(0.0) {
+      case (r, (stype, cnt)) => stype match {
+        case SentenceType_COMPLETE => r + cnt * 1 * lenFact
+        case SentenceType_BEGINNING => r + cnt * 5 * lenFact
+        case SentenceType_OTHER => r + cnt * 10 * lenFact
+        case SentenceType_RANDOM => throw new IllegalStateException("SentenceType_RANDOM makes no sense for Counting")
+      }
+    }
+  }
 
 }

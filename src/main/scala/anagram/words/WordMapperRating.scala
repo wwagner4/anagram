@@ -1,7 +1,12 @@
 package anagram.words
 
-trait WordMapperRating {
+case class MappingResult[T](
+                             intermediate: T,
+                             features: Seq[Double],
+                           )
 
-  def map(sentence: Seq[String]): Seq[Double]
+trait WordMapperRating[T] {
+
+  def map(sentence: Seq[String]): MappingResult[T]
 
 }

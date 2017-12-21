@@ -1,19 +1,24 @@
 package anagram.model.plain
 
-import anagram.words.{Word, WordMapper}
+import anagram.words.{MappingResult, Word, WordMapper, WordMapperFactory}
 
-class WordMapperFactoryPlain(wordList: Iterable[Word]) {
+class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
 
-  def create: WordMapper = {
+  def create: WordMapper[Seq[String]] = {
 
-    val si: Seq[(String, Int)] = stringInt(wordList)
+    val si: Seq[(String, Int)] = stringInt(wl)
     val siMap = si.toMap
     val off: Int = siMap.size / 2
 
-    new WordMapper {
+    new WordMapper[Seq[String]] {
 
-      override def map(sentence: Seq[String]): Seq[Double] = {
-        sentence.map(toNum(_).toDouble)
+      override def map(sentence: Seq[String]): MappingResult[Seq[String]] = {
+        val f = sentence.map(toNum(_).toDouble)
+        val i = sentence
+        MappingResult(
+          intermediate = i,
+          features = f,
+        )
       }
 
       override def containsWord(str: String): Boolean = siMap.contains(str)
@@ -22,7 +27,7 @@ class WordMapperFactoryPlain(wordList: Iterable[Word]) {
 
       override lazy val size: Int = siMap.size
 
-      override def wordList: Iterable[Word] = wordList
+      override def wordList: Iterable[Word] = wl
     }
   }
 

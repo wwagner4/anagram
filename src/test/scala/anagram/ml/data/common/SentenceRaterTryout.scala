@@ -19,8 +19,7 @@ object SentenceRaterTryout extends App {
   val rated = sentenceRater.labelSentence(sentences)
 
   for ((r, i) <- rated.sortBy(-_.label).zipWithIndex) {
-    val sentString = r.sentence.words.mkString(" ")
-    println("%5d - %10.2f - %s" format(i, r.label, sentString))
+    println("%5d - %10.2f - ???" format(i, r.label))
   }
 
 }

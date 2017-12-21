@@ -1,6 +1,6 @@
 package anagram.ml.data.common
 
-case class Labeled(sentence: Sentence, features: Seq[Double], label: Double)
+case class Labeled(features: Seq[Double], label: Double)
 
 trait SentenceLabeler {
 

@@ -2,15 +2,15 @@ package anagram.ml.data.common
 
 import anagram.words.WordMapper
 
-class SentenceCreatorSliding(wordMapper: WordMapper) extends SentenceCreator {
+class SentenceCreatorSliding(wordMapper: WordMapper[_]) extends SentenceCreator {
 
   def create(sentences: Stream[Seq[String]], len: Int): Stream[Sentence] = {
     sentences
       .filter(_.lengthCompare(len) >= 0)
-      .flatMap(slideSentences(_, len, wordMapper))
+      .flatMap(slideSentences(_, len))
   }
 
-  def slideSentences(words: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
+  def slideSentences(words: Seq[String], len: Int): Seq[Sentence] = {
     require(words.lengthCompare(len) >= 0)
 
     if (words.lengthCompare(len) == 0) {

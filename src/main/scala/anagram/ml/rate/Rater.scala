@@ -68,7 +68,7 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
     cnt += 1
 
     def rateNN = {
-      val input: Array[Double] = cfg.mapper.map(sent).toArray
+      val input: Array[Double] = cfg.mapper.map(sent).features.toArray
       val out = nn.output(Nd4j.create(input))
       out.getDouble(0)
     }

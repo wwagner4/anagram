@@ -14,7 +14,7 @@ trait CfgRaterAiFactory {
 
 trait CfgRaterAi extends Cfg {
 
-  def mapper: WordMapperRating
+  def mapper: WordMapperRating[_]
 
   def adjustOutput: Boolean
 }
@@ -22,7 +22,7 @@ trait CfgRaterAi extends Cfg {
 case class CfgRaterAiImpl(
                            sentenceLengths: Iterable[SentenceLength],
                            id: String,
-                           mapper: WordMapperRating,
+                           mapper: WordMapperRating[_],
                            adjustOutput: Boolean,
                          ) extends CfgRaterAi {
   def create(cfg: CfgRaterAi): CfgRaterAiImpl = {

@@ -9,26 +9,25 @@ import anagram.words.WordMapper
 class AbstractCreator {
 
   protected def all(dataCollector: DataCollector, training: Boolean = true): Unit = {
-    Configurations.all.foreach((toCfg: CfgModel) => one(toCfg, dataCollector, training))
+    Configurations.all.foreach(toCfg => one(toCfg, dataCollector, training))
   }
 
-  protected def one(toCfg: CfgModel, dataCollector: DataCollector, training: Boolean = true): Unit = {
+  protected def one(toCfg: CfgModel[_], dataCollector: DataCollector, training: Boolean = true): Unit = {
     CreateLearningData.createData(toCfg.cfgCreateData.cfgCreateData())
     if (training) {
       Training.train(toCfg.cfgTraining.cfgTraining(), dataCollector)
     }
   }
 
-  def unmapped(base: CfgCreateData): Unit = {
+  def unmapped[T](base: CfgCreateData[T]): Unit = {
 
-    val adapted: CfgCreateDataImpl = CfgCreateDataImpl(
+    val adapted: CfgCreateDataImpl[T] = CfgCreateDataImpl[T](
       base.id,
       base.mapper,
       base.sentenceCreator,
       base.sentenceLabeler,
       base.bookCollection,
       base.sentenceLengths,
-      mapWordsToNumbers = false,
     )
 
     CreateLearningData.createData(adapted)
@@ -38,12 +37,11 @@ class AbstractCreator {
 
 }
 
-case class CfgCreateDataImpl(
+case class CfgCreateDataImpl[T](
                               id: String,
-                              mapper: WordMapper,
+                              mapper: WordMapper[T],
                               sentenceCreator: SentenceCreator,
                               sentenceLabeler: SentenceLabeler,
                               bookCollection: BookCollection,
                               sentenceLengths: Iterable[SentenceLength],
-                              mapWordsToNumbers: Boolean,
-                            ) extends CfgCreateData
+                            ) extends CfgCreateData[T]
