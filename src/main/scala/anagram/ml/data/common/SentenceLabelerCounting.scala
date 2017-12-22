@@ -2,6 +2,7 @@ package anagram.ml.data.common
 
 import anagram.words.{MappingResult, WordMapper}
 
+// TODO Filter for words in the list
 case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper[Seq[String]]) extends SentenceLabeler {
 
   case class MR(

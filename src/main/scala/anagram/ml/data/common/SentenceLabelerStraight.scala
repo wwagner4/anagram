@@ -7,6 +7,7 @@ import anagram.words.WordMapper
   * position in real sentences (BEGINNING or OTHER) and weather
   * they exist as real sentences (COMPLETE) or not.
   */
+// TODO Filter for words in the list
 class SentenceLabelerStraight(val wm: WordMapper[Seq[String]]) extends SentenceLabeler {
 
   val ran = new util.Random()

@@ -52,7 +52,7 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
 
   private lazy val _mapper = new WordMapperFactoryGrammarReduced(_wl).create
 
-  private val screator = new SentenceCreatorSliding(_mapper)
+  private val screator = new SentenceCreatorSliding
 
   private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
 

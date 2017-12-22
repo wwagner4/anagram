@@ -7,7 +7,7 @@ object SentenceRaterTryout extends App {
 
   private val wl = Wordlists.plain.wordList()
   val mapper = new WordMapperFactoryPlain(wl).create
-  val screa: SentenceCreator = new SentenceCreatorSliding(mapper)
+  val screa: SentenceCreator = new SentenceCreatorSliding
   val splitter = new BookSplitterTxt
   val sentenceRater: SentenceLabeler = new SentenceLabelerStraight(mapper)
 

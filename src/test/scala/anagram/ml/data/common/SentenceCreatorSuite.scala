@@ -4,21 +4,33 @@ import anagram.model.plain.WordMapperFactoryPlain
 import anagram.words.Wordlists
 import org.scalatest.{FunSuite, MustMatchers}
 
+// TODO Testcases where palin and conditional sliding makes a difference
 class SentenceCreatorSuite extends FunSuite with MustMatchers {
 
   private val wl = Wordlists.plain.wordList()
   private val wm = new WordMapperFactoryPlain(wl).create
-  private val scSliding = new SentenceCreatorSliding(wm)
+  private val scSliding = new SentenceCreatorSliding
+  private val scCondSliding = new SentenceCreatorConditionalSliding
 
   val equalLenData = Seq(
     (Seq("at", "be", "come"), 3),
     (Seq("at"), 1),
     (Seq("come", "hallo"), 2),
+    (Seq("come", "hallo", "notawordatall"), 3),
   )
 
   for ((sent, len) <- equalLenData) {
     test(s"create sentences from equal length $sent") {
       val re = scSliding.slideSentences(sent, len)
+      re.size mustBe 1
+      re(0).words.size mustBe len
+      re(0).words mustBe sent
+    }
+  }
+
+  for ((sent, len) <- equalLenData) {
+    test(s"create sentences conditional from equal length $sent") {
+      val re = scCondSliding.slideSentences(sent, len)
       re.size mustBe 1
       re(0).words.size mustBe len
       re(0).words mustBe sent
@@ -41,8 +53,26 @@ class SentenceCreatorSuite extends FunSuite with MustMatchers {
     }
   }
 
+  for ((sent, len) <- plusOneLenData) {
+    test(s"create sentences cond from plus one length $sent") {
+      val re = scCondSliding.slideSentences(sent, len)
+      re.size  mustBe 2
+      for (i <- 0 to 1) {
+        re(i).words.size mustBe len
+      }
+    }
+  }
+
   test(s"create sentences a b c d 2") {
     val re = scSliding.slideSentences(Seq("at", "be", "come", "do"), 2)
+    re.size mustBe 3
+    re(0).words mustBe Seq("at", "be")
+    re(1).words mustBe Seq("be", "come")
+    re(2).words mustBe Seq("come", "do")
+  }
+
+  test(s"create sentences cond a b c d 2") {
+    val re = scCondSliding.slideSentences(Seq("at", "be", "come", "do"), 2)
     re.size mustBe 3
     re(0).words mustBe Seq("at", "be")
     re(1).words mustBe Seq("be", "come")

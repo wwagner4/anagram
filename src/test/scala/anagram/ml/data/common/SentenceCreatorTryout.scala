@@ -9,7 +9,7 @@ object SentenceCreatorTryout extends App {
   private val wl = Wordlists.plain.wordList()
   val wm = new WordMapperFactoryPlain(wl).create
   val splitter = new BookSplitterTxt
-  val creator = new SentenceCreatorSliding(wm)
+  val creator = new SentenceCreatorSliding
 
   showSentences()
   //completeWords

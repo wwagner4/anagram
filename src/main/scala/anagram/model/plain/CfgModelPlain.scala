@@ -52,7 +52,7 @@ class CfgModelPlain extends CfgModel[Seq[String]] {
 
   private lazy val _mapper = new WordMapperFactoryPlain(_wl).create
   val splitter = new BookSplitterTxt()
-  val screator = new SentenceCreatorSliding(_mapper)
+  val screator = new SentenceCreatorSliding
   lazy val srater = new SentenceLabelerStraight(_mapper)
 
   override lazy val cfgCreateData: CfgCreateDataFactory[Seq[String]] = {

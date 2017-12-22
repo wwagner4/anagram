@@ -6,6 +6,7 @@ import anagram.words.{WordMapper, WordRandom}
   * Rates all sentences like SentenceRaterStraight but adds one
   * random zero rated sentence for every 'normal' sentence.
   */
+// TODO Filter for words in the list
 class SentenceLabelerStraightWithRandom(val wm: WordMapper[_], wr: WordRandom) extends SentenceLabeler {
 
   val ran = new util.Random()

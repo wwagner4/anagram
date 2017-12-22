@@ -52,7 +52,7 @@ class CfgModelPlainRandom extends CfgModel[Seq[String]] {
   private val _wl = Wordlists.plainRatedLarge.wordList()
   private lazy val _mapper = new WordMapperFactoryPlain(_wl).create
   val splitter = new BookSplitterTxt()
-  val screator = new SentenceCreatorSliding(_mapper)
+  val screator = new SentenceCreatorSliding
   val ran = new WordRandomPlain(_wl)
   lazy val srater = new SentenceLabelerStraightWithRandom(_mapper, ran)
 
