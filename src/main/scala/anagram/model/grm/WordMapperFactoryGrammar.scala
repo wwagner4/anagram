@@ -1,6 +1,6 @@
 package anagram.model.grm
 
-import anagram.words.{MappingResult, Word, WordMapper, WordMapperFactory}
+import anagram.words._
 
 class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
 
@@ -9,6 +9,8 @@ class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory[Seq
     lazy val grp = new GrouperGrm(wl)
 
     lazy val wset = wl.map(_.word).toSet
+
+    lazy val wmap = WordMapperHelper.toWordMap(wl)
 
     val unknown = "?"
 
@@ -30,6 +32,8 @@ class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory[Seq
       }
 
       override def containsWord(str: String): Boolean = wset.contains(str)
+
+      override def toWord(str: String): Option[Word] = wmap.get(str)
 
     }
 

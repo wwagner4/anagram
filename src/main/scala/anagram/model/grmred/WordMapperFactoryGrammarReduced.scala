@@ -10,6 +10,8 @@ class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFact
 
     lazy val wset = wl.map(_.word).toSet
 
+    lazy val wmap = WordMapperHelper.toWordMap(wl)
+
     lazy val grp: Grouper = new GrouperGrmRed(wl)
 
     val unknown = "?"
@@ -65,6 +67,8 @@ class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFact
       }
 
       override def containsWord(str: String): Boolean = wset.contains(str)
+
+      override def toWord(str: String): Option[Word] = wmap.get(str)
 
     }
 

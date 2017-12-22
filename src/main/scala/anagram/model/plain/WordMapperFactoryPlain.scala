@@ -1,6 +1,6 @@
 package anagram.model.plain
 
-import anagram.words.{MappingResult, Word, WordMapper, WordMapperFactory}
+import anagram.words._
 
 class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
 
@@ -9,6 +9,8 @@ class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[S
     val si: Seq[(String, Int)] = stringInt(wl)
     val siMap = si.toMap
     val off: Int = siMap.size / 2
+
+    val wmap = WordMapperHelper.toWordMap(wl)
 
     new WordMapper[Seq[String]] {
 
@@ -22,6 +24,8 @@ class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[S
       }
 
       override def containsWord(str: String): Boolean = siMap.contains(str)
+
+      override def toWord(str: String): Option[Word] = wmap.get(str)
 
     }
   }
