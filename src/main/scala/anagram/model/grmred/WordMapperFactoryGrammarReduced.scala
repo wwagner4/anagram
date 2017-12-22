@@ -66,8 +66,6 @@ class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFact
         )
       }
 
-      override def containsWord(str: String): Boolean = wset.contains(str)
-
       override def toWord(str: String): Option[Word] = wmap.get(str)
 
     }

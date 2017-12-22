@@ -19,22 +19,6 @@ class AbstractCreator {
     }
   }
 
-  def unmapped[T](base: CfgCreateData[T]): Unit = {
-
-    val adapted: CfgCreateDataImpl[T] = CfgCreateDataImpl[T](
-      base.id,
-      base.mapper,
-      base.sentenceCreator,
-      base.sentenceLabeler,
-      base.bookCollection,
-      base.sentenceLengths,
-    )
-
-    CreateLearningData.createData(adapted)
-
-  }
-
-
 }
 
 case class CfgCreateDataImpl[T](

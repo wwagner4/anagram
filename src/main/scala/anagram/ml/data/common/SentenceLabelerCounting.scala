@@ -2,7 +2,6 @@ package anagram.ml.data.common
 
 import anagram.words.{MappingResult, WordMapper}
 
-// TODO Filter for words in the list
 case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapper[Seq[String]]) extends SentenceLabeler {
 
   case class MR(
@@ -11,9 +10,10 @@ case class SentenceLabelerCounting(lengthFactors: Map[Int, Double], wm: WordMapp
                )
 
   override def labelSentence(sentences: Seq[Sentence]): Seq[Labeled] = {
-    val mappingResults = sentences.map { s =>
-      val mr = wm.map(s.words)
-      MR(s, mr)
+    val mappingResults = sentences.flatMap { s =>
+      if(s.words.forall(str => wm.toWord(str).isDefined)) {
+        Some(MR(s, wm.map(s.words)))
+      } else None
     }
     val groupedMappingResults = mappingResults.groupBy(mr => mr.result).toSeq
     groupedMappingResults.flatMap { case (grp: MappingResult[Seq[String]], grpMembers: Seq[_]) =>

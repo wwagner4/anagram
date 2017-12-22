@@ -23,8 +23,6 @@ class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[S
         )
       }
 
-      override def containsWord(str: String): Boolean = siMap.contains(str)
-
       override def toWord(str: String): Option[Word] = wmap.get(str)
 
     }

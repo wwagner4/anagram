@@ -31,8 +31,6 @@ class WordMapperFactoryGrammar(wl: Iterable[Word]) extends WordMapperFactory[Seq
         )
       }
 
-      override def containsWord(str: String): Boolean = wset.contains(str)
-
       override def toWord(str: String): Option[Word] = wmap.get(str)
 
     }
