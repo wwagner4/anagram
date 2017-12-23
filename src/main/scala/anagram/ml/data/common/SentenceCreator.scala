@@ -14,6 +14,10 @@ case class Sentence (
 
 trait SentenceCreator {
 
+  /**
+    * Creates typed sentences of a specific length from a sequence
+    * of 'real' sentences
+    */
   def create(sentences: Stream[Seq[String]], len: Int): Stream[Sentence]
 
 }
