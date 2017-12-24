@@ -6,4 +6,8 @@ trait CfgTrainingFactory {
 
 }
 
-trait CfgTraining extends Cfg
+trait CfgTraining extends Cfg {
+
+  def numberOfFeaturesForWord: Int = 1
+
+}

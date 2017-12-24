@@ -1,10 +1,9 @@
 package anagram.model.create
 
 import anagram.ml.DataCollector
-import anagram.ml.data.common.{BookCollection, CreateLearningData, SentenceCreator, SentenceLabeler}
+import anagram.ml.data.common.CreateLearningData
 import anagram.ml.train.Training
 import anagram.model._
-import anagram.words.WordMapper
 
 class AbstractCreator {
 
@@ -21,11 +20,3 @@ class AbstractCreator {
 
 }
 
-case class CfgCreateDataImpl[T](
-                              id: String,
-                              mapper: WordMapper[T],
-                              sentenceCreator: SentenceCreator,
-                              sentenceLabeler: SentenceLabeler,
-                              bookCollection: BookCollection,
-                              sentenceLengths: Iterable[SentenceLength],
-                            ) extends CfgCreateData[T]

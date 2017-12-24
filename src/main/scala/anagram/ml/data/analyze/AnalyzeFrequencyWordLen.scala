@@ -55,9 +55,9 @@ object AnalyzeFrequencyWordLen extends App {
   }
 
   var wrDataRows = List.empty[Viz.XY]
-  val file = IoUtil.save(IoUtil.dirOut, "wordlist_rated_large.txt", { bw =>
+  val file = IoUtil.save(IoUtil.dirOut, "wordlist_rated_large_fine.txt", { bw =>
     val filtered = wvl.toSeq.sortBy(-_.value).zipWithIndex.filter(_._2 <= 27706)
-    val a = adjustValue(filtered.size, 10)(_, _)
+    val a = adjustValue(filtered.size, 1000)(_, _)
     for ((w, i) <- filtered) {
       val word = w.word.word
       val value = w.value
