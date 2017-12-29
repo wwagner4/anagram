@@ -14,17 +14,9 @@ class CfgModelPlain extends CfgModel[Seq[String]] {
 
   private val _sentenceLengths = Seq(
     new  SentenceLength {
-      val length = 2
-      val trainingIterations = 2
-      val ratingAdjustOutput = 0.91
-      val trainingBatchSize: Int = _batchSize
-      val trainingLearningRate: Double = _learningRate
-      val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
-    },
-    new  SentenceLength {
       val length = 3
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.19
+      val ratingAdjustOutput = 0.3
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
@@ -32,7 +24,7 @@ class CfgModelPlain extends CfgModel[Seq[String]] {
     new  SentenceLength {
       val length = 4
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.01
+      val ratingAdjustOutput = 0.0
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
@@ -40,7 +32,7 @@ class CfgModelPlain extends CfgModel[Seq[String]] {
     new  SentenceLength {
       val length = 5
       val trainingIterations = 3
-      val ratingAdjustOutput = 0.0
+      val ratingAdjustOutput = 0.21
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount

@@ -4,7 +4,7 @@ import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.rate.{Rater, RaterAi}
-import anagram.model.{CfgRaterAi, Configurations, SentenceLength}
+import anagram.model.{CfgRaterAi, CfgRaterAiFactory, Configurations, SentenceLength}
 import anagram.words.{Word, WordListFactory, WordMapperRating, Wordlists}
 
 import scala.util.Random
@@ -30,7 +30,7 @@ object SentenceLengthRatingDiff extends App {
   def maxRatingsFromRandomSentences(): Unit = {
 
     // ------------ CONFIGURATION -------------------
-    val raterf = Configurations.plainRated.cfgRaterAi
+    val configurations = Configurations.all
     val wordLists = Seq(
       Wordlists.plainRatedLargeFine
     )
@@ -40,17 +40,28 @@ object SentenceLengthRatingDiff extends App {
     val n = 4000
     val doAdjust = false
 
-    val cfgr: CfgRaterAi = copy(raterf.cfgRaterAi(), doAdjust)
-    val rater = new RaterAi(cfgr)
+    for (cfg <- configurations) {
 
-    def result: Result = {
-      val outRatings: Seq[OutRating] = wordLists
-        .flatMap(wlf => (2 to 5)
+      val cfgRaterFactory: CfgRaterAiFactory = cfg.cfgRaterAi
+      val cfgRater: CfgRaterAi = cfg.cfgRaterAi.cfgRaterAi()
+
+      val cfgr: CfgRaterAi = copy(cfgRater, doAdjust)
+      val rater = new RaterAi(cfgr)
+
+      def outRatings: Seq[OutRating] = wordLists
+        .flatMap(wlf => cfgr.sentenceLengths.map(_.length)
           .flatMap(l => outRatingsRandom(l, wlf, rater)))
       val _mr = maxRatings(outRatings)
-      val _da = if (doAdjust) "adjust" else "NO adjust"
-      val _desc = s"--- ${raterf.description} --- ALL --- ${_da}"
-      Result(_desc, _mr)
+      val _desc = s"--- ${cfgRaterFactory.shortDescription} - ${cfgRaterFactory.description} ---"
+      val r = Result(_desc, _mr)
+      println()
+      println(r.desc)
+      println()
+      output(r.maxRatings)
+      println()
+      output1(r.maxRatings)
+      println()
+      println()
     }
 
     def outRatingsRandom(len: Int, wlf: WordListFactory, rater: Rater): Seq[OutRating] = {
@@ -62,13 +73,6 @@ object SentenceLengthRatingDiff extends App {
       }
     }
 
-    val r = result
-    println()
-    println(r.desc)
-    println()
-    output(r.maxRatings)
-    println()
-    output1(r.maxRatings)
 
   }
 

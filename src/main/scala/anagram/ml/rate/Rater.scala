@@ -35,6 +35,8 @@ class RaterNone extends Rater {
 
 class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Rater {
 
+  val maxRatingValue = 1000000
+
   case class Model(
                     sentenceLength: SentenceLength,
                     multiLayerNetwork: MultiLayerNetwork,
@@ -54,10 +56,18 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
     .toMap
 
   def rate(sent: Seq[String]): Double = {
-    val _size = sent.size
+    val _size: Int = sent.size
     nnModel.get(_size) match {
-      case Some(m) => rate(m.multiLayerNetwork, m.sentenceLength, sent)
-      case None => if (_size <= 1.0) 100 else -100
+      case Some(m) =>
+        rate(m.multiLayerNetwork, m.sentenceLength, sent)
+      case None =>
+        // Rate values hardcoded without machinelearning
+        // for small sentence lengths
+        if (_size == 1) maxRatingValue + 4
+        else if (_size == 2) maxRatingValue + 3
+        else if (_size == 3) maxRatingValue + 2
+        else if (_size == 4) maxRatingValue + 1
+        else -maxRatingValue
     }
   }
 

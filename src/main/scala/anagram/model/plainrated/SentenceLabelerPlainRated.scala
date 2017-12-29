@@ -22,14 +22,14 @@ class SentenceLabelerPlainRated(wm: WordMapper[Seq[Double]]) extends SentenceLab
   }
 
   def sent(sentenceType: SentenceType, sentLen: Int): Double = sentenceType match {
-    case SentenceType_COMPLETE => 10 * sentLen
-    case SentenceType_BEGINNING => 5 * sentLen
-    case SentenceType_OTHER => 1 * sentLen
+    case SentenceType_COMPLETE => 10.0 / sentLen
+    case SentenceType_BEGINNING => 5.0 / sentLen
+    case SentenceType_OTHER => 1.0 / sentLen
     case SentenceType_RANDOM => throw new IllegalStateException("RANDOM makes here no senese")
   }
 
   def label(s: Sentence, mr: MappingResult[Seq[Double]]): Double = {
-    val _sum = mr.intermediate.map(_ / 500.0).sum
+    val _sum = mr.intermediate.map(_ / 10.0).sum
     val _sent = sent(s.sentenceType, s.words.size)
     _sum + _sent
   }
