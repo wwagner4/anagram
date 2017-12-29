@@ -11,10 +11,10 @@ class SentenceLabelerPlainRatedSuite extends FunSuite with MustMatchers {
   private val sl: SentenceLabeler = new SentenceLabelerPlainRated(wm)
 
   val dats = Seq(
-    dat(3.3, SentenceType_OTHER, Seq("the", "better", "house")),
-    dat(30.3, SentenceType_COMPLETE, Seq("the", "better", "house")),
-    dat(15.3, SentenceType_BEGINNING, Seq("the", "better", "house")),
-    dat(15.26, SentenceType_BEGINNING, Seq("the", "better", "trimming")),
+    dat(3.33, SentenceType_OTHER, Seq("the", "better", "house")),
+    dat(6.33, SentenceType_COMPLETE, Seq("the", "better", "house")),
+    dat(4.666, SentenceType_BEGINNING, Seq("the", "better", "house")),
+    dat(4.266, SentenceType_BEGINNING, Seq("the", "better", "trimming")),
   )
 
   for((l, s) <- dats) {
