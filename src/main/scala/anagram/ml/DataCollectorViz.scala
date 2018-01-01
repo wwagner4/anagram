@@ -4,79 +4,81 @@ import anagram.model.SentenceLength
 import entelijan.viz.Viz.Dia
 import entelijan.viz.{DefaultDirectories, Viz, VizCreator, VizCreatorGnuplot}
 
+case class DataCollectorScore(modelId: String, sentenceLength: SentenceLength, iterations: Int, score: Double)
+
+case class DataCollectorScoreSentenceLength(sentenceLength: SentenceLength, scores: List[DataCollectorScore])
+
+case class DataCollectorScoreModel(name: String, scores: List[DataCollectorScoreSentenceLength])
+
 case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollector {
 
-  case class Score(modelId: String, sentenceLength: SentenceLength, iterations: Int, score: Double)
+  val dir = DefaultDirectories("ana")
 
-  case class Model(name: String, scores: List[Score])
+  implicit val creator: VizCreator[Viz.XY] = VizCreatorGnuplot[Viz.XY](scriptDir = dir.scriptDir, imageDir = dir.imageDir)
 
-  var _scores = List.empty[Score]
+  var _scores = List.empty[DataCollectorScore]
 
   override def collectScore(modelId: String, sentenceLength: SentenceLength, iterations: Int, score: Double): Unit = {
-    _scores = Score(modelId, sentenceLength, iterations, score) :: _scores
-
+    _scores = DataCollectorScore(modelId, sentenceLength, iterations, score) :: _scores
   }
-
-  val dir = DefaultDirectories("ana")
-  implicit val creator: VizCreator[Viz.XY] = VizCreatorGnuplot[Viz.XY](scriptDir = dir.scriptDir, imageDir = dir.imageDir)
 
   def output(): Unit = {
 
-    def toDiagram(m: Model): Viz.Diagram[Viz.XY] =
-      Viz.Diagram[Viz.XY](
-        m.name,
-        m.name,
-        dataRows = toDataRows(m.scores)
-      )
+    def models(scores: List[DataCollectorScore]): List[DataCollectorScoreModel] = {
 
-    def toDataRows(scores: List[Score]): Seq[Viz.DataRow[Viz.XY]] = {
-
-      val datas: Seq[(SentenceLength, List[Score])] = scores
-        .reverse
-        .groupBy(_.sentenceLength)
-        .toSeq
-        .sortBy(_._1.id)
-        .sortBy(_._1.length)
-
-      for ((sl, scores_) <- datas) yield {
-        Viz.DataRow[Viz.XY](
-          name = Some(sl.desc),
-          style = Viz.Style_LINES,
-          data = toData(scores_)
-        )
-      }
-    }
-
-    def toData(scores: List[Score]): Seq[Viz.XY] =
-      scores.map { score =>
-        Viz.XY(score.iterations, score.score)
+      def sentenceLengths(scores: List[DataCollectorScore]): List[DataCollectorScoreSentenceLength] = {
+        scores
+          .reverse
+          .groupBy(_.sentenceLength)
+          .toSeq
+          .sortBy(_._1.id)
+          .sortBy(_._1.length)
+          .map { case (sl, scs) => DataCollectorScoreSentenceLength(sl, scs) }
+          .toList
       }
 
-
-    def toDia(models: List[Model]): Dia[Viz.XY] =
-      if (models.size == 1) {
-        val dia = toDiagram(models(0))
-        dia.copy(id = diaId, title = diaTitle)
-      } else if (models.size > 1) {
-        Viz.MultiDiagram[Viz.XY](
-          diaId,
-          2,
-          title = Some(diaTitle),
-          diagrams = models.reverse.map(m => toDiagram(m))
-        )
-      } else {
-        throw new IllegalStateException("At least one model expected")
-      }
-
-    def models(scores: List[Score]): List[Model] = {
-      val mg: Map[String, List[Score]] = scores.groupBy(s => s.modelId)
+      val mg: Map[String, List[DataCollectorScore]] = scores.groupBy(s => s.modelId)
       for ((mid, scores) <- mg.toList) yield {
-        Model(mid, scores)
+        DataCollectorScoreModel(mid, sentenceLengths(scores))
       }
     }
 
     Viz.createDiagram(toDia(models(_scores)))
 
   }
+
+  protected def toDiagram(scoreModel: DataCollectorScoreModel): Viz.Diagram[Viz.XY] =
+    Viz.Diagram[Viz.XY](
+      scoreModel.name,
+      scoreModel.name,
+      dataRows = toDataRows(scoreModel.scores)
+    )
+
+  protected def toDataRows(sentenceLengthList: List[DataCollectorScoreSentenceLength]): Seq[Viz.DataRow[Viz.XY]] =
+    for (sl <- sentenceLengthList) yield {
+      Viz.DataRow[Viz.XY](
+        name = Some(sl.sentenceLength.desc),
+        style = Viz.Style_LINES,
+        data = toData(sl.scores)
+      )
+    }
+
+  protected def toData(scores: List[DataCollectorScore]): Seq[Viz.XY] =
+    scores.map(score => Viz.XY(score.iterations, score.score))
+
+  protected def toDia(models: List[DataCollectorScoreModel]): Dia[Viz.XY] =
+    if (models.lengthCompare(1) == 0) {
+      val dia = toDiagram(models(0))
+      dia.copy(id = diaId, title = diaTitle)
+    } else if (models.lengthCompare(1) > 0) {
+      Viz.MultiDiagram[Viz.XY](
+        diaId,
+        2,
+        title = Some(diaTitle),
+        diagrams = models.reverse.map(m => toDiagram(m))
+      )
+    } else {
+      throw new IllegalStateException("At least one model expected")
+    }
 
 }
