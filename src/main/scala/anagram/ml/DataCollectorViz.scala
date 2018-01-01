@@ -6,25 +6,15 @@ import entelijan.viz.{DefaultDirectories, Viz, VizCreator, VizCreatorGnuplot}
 
 case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollector {
 
+  case class Score(modelId: String, sentenceLength: SentenceLength, iterations: Int, score: Double)
+
   case class Model(name: String, scores: List[Score])
 
-  case class Score(sentenceLength: SentenceLength, iterations: Int, score: Double)
+  var _scores = List.empty[Score]
 
-  var models = List.empty[Model]
+  override def collectScore(modelId: String, sentenceLength: SentenceLength, iterations: Int, score: Double): Unit = {
+    _scores = Score(modelId, sentenceLength, iterations, score) :: _scores
 
-  override def collectScore(sentenceLength: SentenceLength, iterations: Int, score: Double): Unit = {
-    models match {
-      case Nil => throw new IllegalStateException("No model defined before collecting store :(")
-      case m :: rest =>
-        val scores_ = Score(sentenceLength, iterations, score) :: m.scores
-        val m1 = m.copy(scores = scores_)
-        models = m1 :: rest
-    }
-  }
-
-  def nextModel(name: String): Unit = {
-    val m = Model(name, List.empty[Score])
-    models = m :: models
   }
 
   val dir = DefaultDirectories("ana")
@@ -63,7 +53,7 @@ case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollect
       }
 
 
-    val toDia: Dia[Viz.XY] =
+    def toDia(models: List[Model]): Dia[Viz.XY] =
       if (models.size == 1) {
         val dia = toDiagram(models(0))
         dia.copy(id = diaId, title = diaTitle)
@@ -78,7 +68,14 @@ case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollect
         throw new IllegalStateException("At least one model expected")
       }
 
-    Viz.createDiagram(toDia)
+    def models(scores: List[Score]): List[Model] = {
+      val mg: Map[String, List[Score]] = scores.groupBy(s => s.modelId)
+      for ((mid, scores) <- mg.toList) yield {
+        Model(mid, scores)
+      }
+    }
+
+    Viz.createDiagram(toDia(models(_scores)))
 
   }
 

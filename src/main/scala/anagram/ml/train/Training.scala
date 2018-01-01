@@ -34,7 +34,6 @@ object Training {
   private val log = LoggerFactory.getLogger("Training")
 
   def train(cfg: CfgTraining, dataCollector: DataCollector): Unit = {
-    dataCollector.nextModel(cfg.id)
     for (s <- cfg.sentenceLengths) {
       train(cfg, s, dataCollector)
     }
@@ -62,7 +61,7 @@ object Training {
     )
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    val listenerScore = new IterationListenerScore(dataCollector, sentenceLength, cfg)
+    val listenerScore = new IterationListenerScore(cfg.id, dataCollector, sentenceLength, cfg)
     nn.setListeners(listenerScore)
     log.info(s"started the training")
     nn.fit(dsIter)

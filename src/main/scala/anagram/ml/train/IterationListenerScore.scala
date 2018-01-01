@@ -6,7 +6,7 @@ import org.deeplearning4j.nn.api.Model
 import org.deeplearning4j.optimize.api.IterationListener
 import org.slf4j.LoggerFactory
 
-class IterationListenerScore(dataCollector: DataCollector, sentenceLength: SentenceLength, cfg: CfgTraining) extends IterationListener {
+class IterationListenerScore(modelId: String, dataCollector: DataCollector, sentenceLength: SentenceLength, cfg: CfgTraining) extends IterationListener {
 
   private val log = LoggerFactory.getLogger("IterationListenerScore")
 
@@ -19,7 +19,7 @@ class IterationListenerScore(dataCollector: DataCollector, sentenceLength: Sente
     invoked()
     if (_iterCount % sentenceLength.trainingIterationListenerUpdateCount == 0) {
       val s = model.score()
-      dataCollector.collectScore(sentenceLength, _iterCount, s)
+      dataCollector.collectScore(modelId, sentenceLength, _iterCount, s)
       log.info(f"finished ${_iterCount} iterations. score: $s%.5f")
     }
     _iterCount += 1
