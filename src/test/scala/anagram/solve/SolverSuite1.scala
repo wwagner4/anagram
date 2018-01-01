@@ -44,7 +44,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
   val expectedPlainRand = Seq(
     ("ingrid bernd", Seq(
       RE(20.858, List("in", "bred", "grind")),
-      RE(21.4158, List("in", "grind", "bred")))),
+      RE(21.264, List("in", "grind", "bred")))),
   )
 
   for ((srcText, expSeq) <- expectedPlainRand) {
