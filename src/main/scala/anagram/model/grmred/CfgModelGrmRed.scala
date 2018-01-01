@@ -11,7 +11,7 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
     new SentenceLength {
       val length = 3
       override val createDataOutputFactor = 0.003
-      val trainingIterations = 200
+      val trainingIterations = 100
       val trainingBatchSize = 20000
       val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 4
