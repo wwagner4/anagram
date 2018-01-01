@@ -25,7 +25,7 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
       val trainingBatchSize = 100000
       val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 10
-      val ratingAdjustOutput = 0.33
+      val ratingAdjustOutput = 0.39
     },
     new SentenceLength {
       val length = 5
@@ -34,7 +34,7 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
       val trainingBatchSize = 200000
       val trainingLearningRate = 10E-6
       val trainingIterationListenerUpdateCount = 5
-      val ratingAdjustOutput = 0.54
+      val ratingAdjustOutput = 0.60
     },
   )
 
