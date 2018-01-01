@@ -30,11 +30,10 @@ case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollect
         scores
           .reverse
           .groupBy(_.sentenceLength)
-          .toSeq
+          .toList
           .sortBy(_._1.id)
           .sortBy(_._1.length)
           .map { case (sl, scs) => DataCollectorScoreSentenceLength(sl, scs) }
-          .toList
       }
 
       val mg: Map[String, List[DataCollectorScore]] = scores.groupBy(s => s.modelId)
