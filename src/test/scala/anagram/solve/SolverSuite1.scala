@@ -32,7 +32,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
     val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi())
     val anagrams: Seq[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText).toSeq
     for (i <- 0 to 1) {
-      ignore(s"$rdesc $srcText $i $desc") {
+      test(s"$rdesc $srcText $i $desc") {
         val re = expSeq(i)
         val ana = anagrams(i)
         ana.sentence mustBe re.words
@@ -43,7 +43,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
 
   val expectedPlainRand = Seq(
     ("ingrid bernd", Seq(
-      RE(21.4158, List("in", "bred", "grind")),
+      RE(20.858, List("in", "bred", "grind")),
       RE(21.4158, List("in", "grind", "bred")))),
   )
 
@@ -55,7 +55,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
     val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi())
     val anagrams: Seq[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText).toSeq
     for (i <- 0 to 1) {
-      ignore(s"$rdesc $srcText $i $desc") {
+      test(s"$rdesc $srcText $i $desc") {
         val re = expSeq(i)
         val ana = anagrams(i)
         ana.sentence mustBe re.words
@@ -66,8 +66,8 @@ class SolverSuite1 extends FunSuite with MustMatchers {
 
   val expectedGrm = Seq(
     ("ingrid bernd", Seq(
-      RE(0.29, List("in", "bred", "grind")),
-      RE(0.29, List("in", "grind", "bred")))),
+      RE(0.489, List("in", "bred", "grind")),
+      RE(0.482, List("in", "grind", "bred")))),
   )
 
   for ((srcText, expSeq) <- expectedGrm) {
@@ -78,7 +78,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
     val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi())
     val anagrams: Seq[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText).toSeq
     for (i <- 0 to 1) {
-      ignore(s"$rdesc $srcText $i $desc") {
+      test(s"$rdesc $srcText $i $desc") {
         val re = expSeq(i)
         val ana = anagrams(i)
         ana.sentence mustBe re.words
@@ -89,8 +89,8 @@ class SolverSuite1 extends FunSuite with MustMatchers {
 
   val expectedGrmRed = Seq(
     ("ingrid bernd", Seq(
-      RE(1.71, List("in", "bred", "grind")),
-      RE(1.71, List("in", "grind", "bred")))),
+      RE(1.580, List("in", "bred", "grind")),
+      RE(1.586, List("in", "grind", "bred")))),
   )
 
   for ((srcText, expSeq) <- expectedGrmRed) {
@@ -101,7 +101,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
     val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi())
     val anagrams: Seq[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText).toSeq
     for (i <- 0 to 1) {
-      ignore(s"$rdesc $srcText $i $desc") {
+      test(s"$rdesc $srcText $i $desc") {
         val re = expSeq(i)
         val ana = anagrams(i)
         ana.sentence mustBe re.words
@@ -112,8 +112,8 @@ class SolverSuite1 extends FunSuite with MustMatchers {
 
   val expectedPlainRated = Seq(
     ("ingrid bernd", Seq(
-      RE(1.71, List("in", "bred", "grind")),
-      RE(1.71, List("in", "grind", "bred")))),
+      RE(467.337, List("in", "bred", "grind")),
+      RE(467.356, List("in", "grind", "bred")))),
   )
 
   for ((srcText, expSeq) <- expectedPlainRated) {
@@ -124,7 +124,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
     val rater = new RaterAi(cfg.cfgRaterAi.cfgRaterAi())
     val anagrams: Seq[Ana] = SolverRatedImpl(baseSolver, rater).solve(srcText).toSeq
     for (i <- 0 to 1) {
-      ignore(s"$rdesc $srcText $i $desc") {
+      test(s"$rdesc $srcText $i $desc") {
         val re = expSeq(i)
         val ana = anagrams(i)
         ana.sentence mustBe re.words
