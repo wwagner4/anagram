@@ -34,6 +34,7 @@ object Training {
   private val log = LoggerFactory.getLogger("Training")
 
   def train(cfg: CfgTraining, dataCollector: DataCollector): Unit = {
+    dataCollector.nextModel(cfg.id)
     for (s <- cfg.sentenceLengths) {
       train(cfg, s, dataCollector)
     }
