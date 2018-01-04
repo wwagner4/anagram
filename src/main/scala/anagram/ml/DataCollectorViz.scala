@@ -1,8 +1,9 @@
 package anagram.ml
 
+import anagram.common.IoUtil
 import anagram.model.SentenceLength
 import entelijan.viz.Viz.Dia
-import entelijan.viz.{DefaultDirectories, Viz, VizCreator, VizCreatorGnuplot}
+import entelijan.viz.{Viz, VizCreator, VizCreatorGnuplot}
 
 case class DataCollectorScore(modelId: String, sentenceLength: SentenceLength, iterations: Int, score: Double)
 
@@ -12,9 +13,10 @@ case class DataCollectorScoreModel(name: String, scores: List[DataCollectorScore
 
 case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollector {
 
-  val dir = DefaultDirectories("ana")
-
-  implicit val creator: VizCreator[Viz.XY] = VizCreatorGnuplot[Viz.XY](scriptDir = dir.scriptDir, imageDir = dir.imageDir)
+  implicit val creator: VizCreator[Viz.XY] = VizCreatorGnuplot[Viz.XY](
+    scriptDir = IoUtil.dirVizScripts.toFile,
+    imageDir = IoUtil.dirVizImages.toFile
+  )
 
   var _scores = List.empty[DataCollectorScore]
 
@@ -50,6 +52,7 @@ case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollect
     Viz.Diagram[Viz.XY](
       scoreModel.name,
       scoreModel.name,
+      legendPlacement = Viz.LegendPlacement_RIGHT,
       dataRows = toDataRows(scoreModel.scores)
     )
 
@@ -73,6 +76,8 @@ case class DataCollectorViz(diaId: String, diaTitle: String) extends DataCollect
       Viz.MultiDiagram[Viz.XY](
         diaId,
         2,
+        imgWidth = 900,
+        imgHeight = 1500,
         title = Some(diaTitle),
         diagrams = models.reverse.map(m => toDiagram(m))
       )

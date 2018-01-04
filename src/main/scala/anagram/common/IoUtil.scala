@@ -9,7 +9,7 @@ import scala.io.Codec
 
 object IoUtil {
 
-  private lazy val _dirAna = Paths.get(System.getProperty("user.home"), "ana")
+  private lazy val _dirAna = Paths.get(System.getProperty("user.home"), "work", "work-anagram")
 
   def dirAna: Path = {
     getCreateDir(_dirAna)
@@ -17,6 +17,18 @@ object IoUtil {
 
   def dirWork: Path = {
     getCreateDir(_dirAna.resolve("work"))
+  }
+
+  def dirViz: Path = {
+    getCreateDir(_dirAna.resolve("viz"))
+  }
+
+  def dirVizImages: Path = {
+    getCreateDir(dirViz.resolve("images"))
+  }
+
+  def dirVizScripts: Path = {
+    getCreateDir(dirViz.resolve("scripts"))
   }
 
   def dirOut: Path = {
