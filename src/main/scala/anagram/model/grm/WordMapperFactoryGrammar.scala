@@ -1,44 +1,29 @@
 package anagram.model.grm
 
-import anagram.model.plain.WordMapperFactoryPlain
-import anagram.words.{Word, WordMapper, WordMapperFactory, Wordlists}
+import anagram.words._
 
-import scala.util.Random
+class WordMapperFactoryGrammar(wl: Iterable[Word], grouperFactory: GrouperFactory) extends WordMapperFactory[Seq[String]] {
 
-object WordMapperFactoryGrammar extends WordMapperFactory {
+  def create: WordMapper[Seq[String]] = {
 
-  def create: WordMapper = {
-    val ran = Random
+    lazy val grp = grouperFactory.grouper(wl)
 
-    lazy val wl = WordMapperFactoryPlain.create.wordList
+    lazy val wmap = WordMapperHelper.toWordMap(wl)
 
-    val unknown = "?"
+    lazy val groups: Map[String, Int] = wl.map(w => grp.group(w.word)(0)).zipWithIndex.toMap
 
-    val words: Seq[Word] = Wordlists.grammar.wordList().toSeq
-    val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
+    new WordMapper[Seq[String]] {
 
-    val grpList = words.map(groupedWord => groupedWord.grp.get).distinct.sorted :+ unknown
-    val grpListIdx = grpList.zipWithIndex
-    val grpListWordMap: Map[String, Int] = grpListIdx.toMap
-    val grpListIntMap: Map[Int, String] = grpListIdx.map{case (w, i) => (i, w)}.toMap
-
-    new WordMapper {
-
-      override def toNum(word: String): Int = grpListWordMap.getOrElse(word, 0)
-
-      override def size: Int = grpListIdx.size
-
-      override def randomWord: String = {
-        val idx = ran.nextInt(grpListIdx.size)
-        grpList(idx)
+      override def map(sentence: Seq[String]): MappingResult[Seq[String]] = {
+        val inter = sentence.flatMap(w => grp.group(w))
+        val features = inter.map(groups.getOrElse(_, 0).toDouble)
+        MappingResult(
+          intermediate = inter,
+          features = features
+        )
       }
 
-      override def containsWord(str: String): Boolean = grpList.contains(str)
-
-      override def transform(value: String): Seq[String] =
-        Seq(wordMap.get(value).map(_.grp.get).getOrElse(unknown))
-
-      override def wordList: Iterable[Word] = wl
+      override def toWord(str: String): Option[Word] = wmap.get(str)
 
     }
 

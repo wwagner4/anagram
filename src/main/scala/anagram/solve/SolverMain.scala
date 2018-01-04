@@ -78,7 +78,7 @@ object SolverMain extends App {
 
   log.info("Finished")
 
-  def outWriteToFile(anas: Iterator[Ana], srcText: String, cfg: CfgModel): Unit = {
+  def outWriteToFile(anas: Iterator[Ana], srcText: String, cfg: CfgModel[_]): Unit = {
 
     def fileName(idLearning: String, src: String): String = {
       val s1 = src.replaceAll("\\s", "_")

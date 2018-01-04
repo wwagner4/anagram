@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory
 import scala.util.Random
 
 trait Rater {
-  def rate(sent: Iterable[String]): Double
+  def rate(sent: Seq[String]): Double
 }
 
 class RaterRandom extends Rater {
 
-  def rate(sent: Iterable[String]): Double = {
+  def rate(sent: Seq[String]): Double = {
     Random.nextDouble() * 10
   }
 
@@ -27,13 +27,15 @@ class RaterRandom extends Rater {
 
 class RaterNone extends Rater {
 
-  def rate(sent: Iterable[String]): Double = {
+  def rate(sent: Seq[String]): Double = {
     1.0
   }
 
 }
 
 class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Rater {
+
+  val maxRatingValue = 1000000
 
   case class Model(
                     sentenceLength: SentenceLength,
@@ -53,25 +55,30 @@ class RaterAi(cfg: CfgRaterAi, logInterval: Option[Int] = Some(1000)) extends Ra
     )))
     .toMap
 
-  def rate(sent: Iterable[String]): Double = {
-    val _size = sent.size
+  def rate(sent: Seq[String]): Double = {
+    val _size: Int = sent.size
     nnModel.get(_size) match {
-      case Some(m) => rate(m.multiLayerNetwork, m.sentenceLength, sent)
-      case None => if (_size <= 1.0) 100 else -100
+      case Some(m) =>
+        rate(m.multiLayerNetwork, m.sentenceLength, sent)
+      case None =>
+        // Rate values hardcoded without machinelearning
+        // for small sentence lengths
+        if (_size == 1) maxRatingValue + 4
+        else if (_size == 2) maxRatingValue + 3
+        else if (_size == 3) maxRatingValue + 2
+        else if (_size == 4) maxRatingValue + 1
+        else -maxRatingValue
     }
   }
 
-  def rate(nn: MultiLayerNetwork, sentenceLength: SentenceLength, sent: Iterable[String]): Double = {
+  def rate(nn: MultiLayerNetwork, sentenceLength: SentenceLength, sent: Seq[String]): Double = {
     logInterval.foreach { interv =>
       if (cnt % interv == 0 && cnt > 0) log.info(s"Rated $cnt sentences")
     }
     cnt += 1
 
     def rateNN = {
-      val input: Array[Double] = sent
-        .map(cfg.mapper.transform)
-        .flatMap(_.map(cfg.mapper.toNum(_).toDouble))
-        .toArray
+      val input: Array[Double] = cfg.mapper.map(sent).features.toArray
       val out = nn.output(Nd4j.create(input))
       out.getDouble(0)
     }

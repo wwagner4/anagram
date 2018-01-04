@@ -1,29 +1,21 @@
 package anagram.ml.data.common
 
-import anagram.words.WordMapper
-
-class SentenceCreatorSliding(wordMapper: WordMapper) extends SentenceCreator {
+class SentenceCreatorSliding extends SentenceCreator {
 
   def create(sentences: Stream[Seq[String]], len: Int): Stream[Sentence] = {
     sentences
       .filter(_.lengthCompare(len) >= 0)
-      .map(words => words.flatMap(wordMapper.transform))
-      .flatMap(slideSentences(_, len, wordMapper))
+      .flatMap(slideSentences(_, len))
   }
 
-  def slideSentences(words: Seq[String], len: Int, wordMapper: WordMapper): Seq[Sentence] = {
+  def slideSentences(words: Seq[String], len: Int): Seq[Sentence] = {
     require(words.lengthCompare(len) >= 0)
 
     if (words.lengthCompare(len) == 0) {
-      if (words.forall(wordMapper.containsWord)) {
-        Seq(Sentence(SentenceType_COMPLETE, words))
-      } else {
-        Seq.empty[Sentence]
-      }
+      Seq(Sentence(SentenceType_COMPLETE, words))
     } else {
       val ws = words.sliding(len)
         .toList
-        .filter(ws => ws.forall(wordMapper.containsWord))
       for ((w, i) <- ws.zipWithIndex) yield {
         if (i == 0) Sentence(SentenceType_BEGINNING, w)
         else Sentence(SentenceType_OTHER, w)

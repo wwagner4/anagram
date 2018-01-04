@@ -51,17 +51,17 @@ object Training {
 
     val recordReader = new CSVRecordReader(0, ';')
     recordReader.initialize(new FileSplit(dataFile.toFile))
-    val labelIndex = sentenceLength.length
-    val dsIter = new RecordReaderDataSetIterator(recordReader, sentenceLength.trainingBatchSize, labelIndex, labelIndex, true)
+    val nrFeatures = sentenceLength.length * cfg.numberOfFeaturesForWord
+    val dsIter = new RecordReaderDataSetIterator(recordReader, sentenceLength.trainingBatchSize, nrFeatures, nrFeatures, true)
     log.info(s"read dataset iterator")
     val nnConf = nnConfiguration(
-      sentenceLength.length,
+      nrFeatures,
       sentenceLength.trainingIterations,
       sentenceLength.trainingLearningRate
     )
     val nn: MultiLayerNetwork = new MultiLayerNetwork(nnConf)
     nn.init()
-    val listenerScore = new IterationListenerScore(dataCollector, sentenceLength, cfg)
+    val listenerScore = new IterationListenerScore(cfg.id, dataCollector, sentenceLength, cfg)
     nn.setListeners(listenerScore)
     log.info(s"started the training")
     nn.fit(dsIter)

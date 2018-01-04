@@ -1,7 +1,7 @@
 package anagram.words
 
-trait WordMapperFactory {
+trait WordMapperFactory[T] {
 
-  def create: WordMapper
+  def create: WordMapper[T]
 
 }

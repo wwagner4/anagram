@@ -1,13 +1,15 @@
 package anagram.ml.data.common
 
 import anagram.model.plain.WordMapperFactoryPlain
+import anagram.words.Wordlists
 
 object SentenceCreatorTryout extends App {
 
   val resNames = BookSplitterTxt.booksBig.toStream
-  val wm = WordMapperFactoryPlain.create
+  private val wl = Wordlists.plain.wordList()
+  val wm = new WordMapperFactoryPlain(wl).create
   val splitter = new BookSplitterTxt
-  val creator = new SentenceCreatorSliding(wm)
+  val creator = new SentenceCreatorSliding
 
   showSentences()
   //completeWords

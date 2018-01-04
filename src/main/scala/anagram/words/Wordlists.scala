@@ -18,6 +18,8 @@ object Wordlists {
 
   def plainRatedLarge: WordListFactory = createFactory("Rated large", "RL", () => loadWordlistPlainFreq(s"${prefix}_rated_large.txt"))
 
+  def plainRatedLargeFine: WordListFactory = createFactory("Rated large fine", "RLF", () => loadWordlistPlainFreq(s"${prefix}_rated_large_fine.txt"))
+
   def plain: WordListFactory = createFactory("Plain small", "PLAIN_S", () => loadWordlistPlain(s"${prefix}_small.txt"))
 
   def grammar: WordListFactory = createFactory("Grammar full", "GRM_L", () => loadWordlistGrammar(s"${prefix}_grammar_full.txt"))

@@ -1,28 +1,30 @@
 package anagram.model.grm
 
+import anagram.words.Wordlists
 import org.scalatest.{FunSuite, MustMatchers}
 
 class WordMapperFactoryGrammarSuite extends FunSuite with MustMatchers {
 
-  private lazy val m = WordMapperFactoryGrammar.create
+  private lazy val wl = Wordlists.grammar.wordList()
+  private lazy val grp = new GrouperGrm(wl)
 
   test("transform house") {
-    m.transform("house") mustBe Seq("vi")
+    grp.group("house") mustBe Seq("vi")
   }
 
   test("transform table") {
-    m.transform("table") mustBe Seq("vi")
+    grp.group("table") mustBe Seq("vi")
   }
 
   test("transform eat") {
-    m.transform("eat") mustBe Seq("vi")
+    grp.group("eat") mustBe Seq("vi")
   }
 
   test("transform i") {
-    m.transform("i") mustBe Seq("pron")
+    grp.group("i") mustBe Seq("pron")
   }
 
   test("transform yammiyammi") {
-    m.transform("yammiyammi") mustBe Seq("?")
+    grp.group("yammiyammi") mustBe Seq("?")
   }
 }

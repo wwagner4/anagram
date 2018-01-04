@@ -2,10 +2,10 @@ package anagram.model.plainrandom
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.model.plain.WordMapperFactoryPlain
-import anagram.words.{WordMapper, WordMapperRating}
+import anagram.model.plain.{WordMapperFactoryPlain, WordRandomPlain}
+import anagram.words.{WordMapper, WordMapperRating, Wordlists}
 
-class CfgModelPlainRandom extends CfgModel {
+class CfgModelPlainRandom extends CfgModel[Seq[String]] {
 
   private val _dataId = "plainRand001"
 
@@ -15,20 +15,12 @@ class CfgModelPlainRandom extends CfgModel {
 
   private val _sentenceLengths = Seq(
     new SentenceLength {
-      val length = 2
-      val trainingBatchSize: Int = _batchSize
-      val trainingLearningRate: Double = _learningRate
-      val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
-      val trainingIterations = 2
-      val ratingAdjustOutput = 0.94
-    },
-    new SentenceLength {
       val length = 3
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.34
+      val ratingAdjustOutput = 0.511
     },
     new SentenceLength {
       val length = 4
@@ -41,7 +33,7 @@ class CfgModelPlainRandom extends CfgModel {
     new SentenceLength {
       val length = 5
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.006
+      val ratingAdjustOutput = 0.186
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
@@ -49,32 +41,33 @@ class CfgModelPlainRandom extends CfgModel {
   )
   private lazy val _bookCollection = BookCollections.collectionEn2
 
-  private lazy val _mapper = WordMapperFactoryPlain.create
+  private val _wl = Wordlists.plainRatedLarge.wordList()
+  private lazy val _mapper = new WordMapperFactoryPlain(_wl).create
   val splitter = new BookSplitterTxt()
-  val screator = new SentenceCreatorSliding(_mapper)
-  lazy val srater = new SentenceLabelerStraightWithRandom(_mapper)
+  val screator = new SentenceCreatorSliding
+  val ran = new WordRandomPlain(_wl)
+  lazy val srater = new SentenceLabelerStraightWithRandom(_mapper, ran)
 
-  override lazy val cfgCreateData: CfgCreateDataFactory = {
+  override lazy val cfgCreateData: CfgCreateDataFactory[Seq[String]] = {
 
-    lazy val cfg = new CfgCreateData {
+    lazy val cfg = new CfgCreateData[Seq[String]] {
 
       override def id: String = _dataId
 
       override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
-      override def mapper: WordMapper = _mapper
+      override def mapper: WordMapper[Seq[String]] = _mapper
 
       override def sentenceCreator: SentenceCreator = screator
 
-      override def sentenceRater: SentenceLabeler = srater
+      override def sentenceLabeler: SentenceLabeler = srater
 
       override def bookCollection: BookCollection = _bookCollection
 
-      override def mapWordsToNumbers: Boolean = true
-
     }
-    new CfgCreateDataFactory {
-      override def cfgCreateData: () => CfgCreateData = () => cfg
+
+    new CfgCreateDataFactory[Seq[String]] {
+      override def cfgCreateData: () => CfgCreateData[Seq[String]] = () => cfg
     }
   }
 
@@ -99,7 +92,7 @@ class CfgModelPlainRandom extends CfgModel {
 
       override def id: String = _dataId
 
-      override def mapper: WordMapperRating = _mapper
+      override def mapper: WordMapperRating[Seq[String]] = _mapper
 
       override def adjustOutput: Boolean = true
 
@@ -112,6 +105,5 @@ class CfgModelPlainRandom extends CfgModel {
       override def cfgRaterAi: () => CfgRaterAi = () => cfg
     }
   }
-
 
 }

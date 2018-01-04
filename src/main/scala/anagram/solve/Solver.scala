@@ -4,6 +4,6 @@ import anagram.common.Cancelable
 
 trait Solver extends Cancelable {
 
-  def solve(srcText: String): Iterator[Iterable[String]]
+  def solve(srcText: String): Iterator[Seq[String]]
 
 }

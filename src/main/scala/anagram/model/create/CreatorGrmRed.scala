@@ -1,15 +1,14 @@
 package anagram.model.create
 
-import anagram.ml.DataCollectorStdout
+import anagram.ml.DataCollectorNull
 import anagram.model.Configurations
 
 object CreatorGrmRed extends AbstractCreator with App {
 
-  var dc = new DataCollectorStdout
+  val dc = new DataCollectorNull
   one(
     Configurations.grammarReduced,
     dc,
   )
-  dc.output()
 
 }

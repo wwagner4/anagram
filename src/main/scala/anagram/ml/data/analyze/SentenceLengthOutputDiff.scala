@@ -4,8 +4,8 @@ import java.nio.file.Path
 
 import anagram.common.IoUtil
 import anagram.ml.rate.{Rater, RaterAi}
-import anagram.model.{CfgRaterAiImplCreator, Configurations}
-import anagram.words.{Word, WordListFactory, Wordlists}
+import anagram.model.{CfgRaterAi, CfgRaterAiFactory, Configurations, SentenceLength}
+import anagram.words.{Word, WordListFactory, WordMapperRating, Wordlists}
 
 import scala.util.Random
 
@@ -26,49 +26,53 @@ object SentenceLengthRatingDiff extends App {
 
   maxRatingsFromRandomSentences()
 
+
   def maxRatingsFromRandomSentences(): Unit = {
 
-    val raterf = Configurations.grammarReduced.cfgRaterAi
-
+    // ------------ CONFIGURATION -------------------
+    val configurations = Configurations.all
     val wordLists = Seq(
-      Wordlists.plainFreq2k,
-      Wordlists.plainFreq3k,
-      Wordlists.plainFreq5k,
-      Wordlists.plainFreq10k,
-      Wordlists.plainFreq30k
+      Wordlists.plainRatedLargeFine
     )
-    val n = 2000
+    // ------------ CONFIGURATION -------------------
+
+
+    val n = 4000
     val doAdjust = false
 
-    val cfgr = CfgRaterAiImplCreator.create(raterf.cfgRaterAi()).copy(adjustOutput = doAdjust)
-    val rater = new RaterAi(cfgr)
+    for (cfg <- configurations) {
 
-    def result: Result = {
-      val outRatings: Seq[OutRating] = wordLists
-        .flatMap(wlf => (2 to 5)
+      val cfgRaterFactory: CfgRaterAiFactory = cfg.cfgRaterAi
+      val cfgRater: CfgRaterAi = cfg.cfgRaterAi.cfgRaterAi()
+
+      val cfgr: CfgRaterAi = copy(cfgRater, doAdjust)
+      val rater = new RaterAi(cfgr)
+
+      def outRatings: Seq[OutRating] = wordLists
+        .flatMap(wlf => cfgr.sentenceLengths.map(_.length)
           .flatMap(l => outRatingsRandom(l, wlf, rater)))
       val _mr = maxRatings(outRatings)
-      val _da = if (doAdjust) "adjust" else "NO adjust"
-      val _desc = s"--- ${raterf.description} --- ALL --- ${_da}"
-      Result(_desc, _mr)
+      val _desc = s"--- ${cfgRaterFactory.shortDescription} - ${cfgRaterFactory.description} ---"
+      val r = Result(_desc, _mr)
+      println()
+      println(r.desc)
+      println()
+      output(r.maxRatings)
+      println()
+      output1(r.maxRatings)
+      println()
+      println()
     }
 
     def outRatingsRandom(len: Int, wlf: WordListFactory, rater: Rater): Seq[OutRating] = {
       val wl = wlf.wordList().toSeq
       val sents = RandomSentences.create(n, len, wl)
-      sents.map { sent =>
+      sents.flatMap { sent =>
         val r = rater.rate(sent)
-        OutRating(len, r)
+        Some(OutRating(len, r))
       }
     }
 
-    val r = result
-    println()
-    println(r.desc)
-    println()
-    output(r.maxRatings)
-    println()
-    output1(r.maxRatings)
 
   }
 
@@ -144,21 +148,35 @@ object SentenceLengthRatingDiff extends App {
     else OutRating(sent.split("\\s").length, ratingStr.toDouble)
   }
 
+  private def copy(cfg: CfgRaterAi, doAdjust: Boolean) = {
+    if (cfg.adjustOutput == doAdjust) cfg
+    else {
+      new CfgRaterAi {
 
+        override def mapper: WordMapperRating[_] = cfg.mapper
+
+        override def adjustOutput: Boolean = doAdjust
+
+        override def sentenceLengths: Iterable[SentenceLength] = cfg.sentenceLengths
+
+        override def id: String = cfg.id
+      }
+    }
+  }
 }
 
 object RandomSentences {
 
   private val ran = new Random()
 
-  def createSentence(wl: Seq[Word], wlSize: Int, len: Int): Iterable[String] = {
+  def createSentence(wl: Seq[Word], wlSize: Int, len: Int): Seq[String] = {
     (1 to len).map { _ =>
       val idx = ran.nextInt(wlSize)
       wl(idx).word
     }
   }
 
-  def create(n: Int, len: Int, wl: Seq[Word]): Seq[Iterable[String]] = {
+  def create(n: Int, len: Int, wl: Seq[Word]): Seq[Seq[String]] = {
     val wlSize = wl.size
     (1 to n) map { _ =>
       createSentence(wl, wlSize, len)

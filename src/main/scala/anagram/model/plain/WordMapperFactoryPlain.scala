@@ -1,45 +1,36 @@
 package anagram.model.plain
 
-import anagram.words.{Word, WordMapper, Wordlists}
+import anagram.words._
 
-import scala.util.Random
+class WordMapperFactoryPlain(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
 
-object WordMapperFactoryPlain {
+  def create: WordMapper[Seq[String]] = {
 
-  private val ran = Random
-
-  def create: WordMapper = {
-
-    val wordlist: Iterable[Word] = Wordlists.plain.wordList()
-
-    val si: Seq[(String, Int)] = stringInt(wordlist)
+    val si: Seq[(String, Int)] = stringInt(wl)
     val siMap = si.toMap
-    val is: Seq[(Int, String)] = si.map { case (a, b) => (b, a) }
-
-    val isMap = is.toMap
     val off: Int = siMap.size / 2
 
-    new WordMapper {
+    val wmap = WordMapperHelper.toWordMap(wl)
 
-      override def containsWord(str: String): Boolean = siMap.contains(str)
+    new WordMapper[Seq[String]] {
 
-      override def toNum(word: String): Int = siMap.getOrElse(word, off) - off
+      override def map(sentence: Seq[String]): MappingResult[Seq[String]] = {
+        val f = sentence.map(siMap.getOrElse(_, off) - off).map(_.toDouble)
+        val i = sentence
+        MappingResult(
+          intermediate = i,
+          features = f
+        )
+      }
 
-      override lazy val size: Int = siMap.size
+      override def toWord(str: String): Option[Word] = wmap.get(str)
 
-      override def randomWord: String = isMap(ran.nextInt(size))
-
-      override def transform(value: String): Seq[String] = Seq(value)
-
-      override def wordList: Iterable[Word] = wordlist
     }
   }
 
   def stringInt(wordlist: Iterable[Word]): Seq[(String, Int)] = {
     val grps = wordlist.map(w => w.word).toSeq.groupBy(w => maxVowel(w)).toSeq
-    val si: Seq[Seq[String]] = for ((_, sent) <- grps) yield {
-      sent.sorted
-    }
+    val si: Seq[Seq[String]] = for ((_, sent) <- grps) yield sent.sorted
     si.flatten.zipWithIndex
   }
 

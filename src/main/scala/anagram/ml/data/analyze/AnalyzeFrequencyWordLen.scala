@@ -2,12 +2,12 @@ package anagram.ml.data.analyze
 
 import anagram.common.IoUtil
 import anagram.words.{Word, Wordlists}
-import entelijan.viz.{Viz, VizCreatorGnuplot}
+import entelijan.viz.{Viz, VizCreator, VizCreatorGnuplot}
 
 object AnalyzeFrequencyWordLen extends App {
 
-  implicit val creaX = VizCreatorGnuplot[Viz.X]()
-  implicit val creaXY = VizCreatorGnuplot[Viz.XY]()
+  implicit val creaX: VizCreator[Viz.X] = VizCreatorGnuplot[Viz.X]()
+  implicit val creaXY: VizCreator[Viz.XY] = VizCreatorGnuplot[Viz.XY]()
 
   val _id = "fw_3k_Sig4_02a"
   val _title = "frequencies of words 30k sig(4)"
@@ -55,15 +55,15 @@ object AnalyzeFrequencyWordLen extends App {
   }
 
   var wrDataRows = List.empty[Viz.XY]
-  val file = IoUtil.save(IoUtil.dirOut, "wordlist_rated_large.txt", { bw =>
+  val file = IoUtil.save(IoUtil.dirOut, "wordlist_rated_large_fine.txt", { bw =>
     val filtered = wvl.toSeq.sortBy(-_.value).zipWithIndex.filter(_._2 <= 27706)
-    val a = adjustValue(filtered.size, 10)(_, _)
+    val a = adjustValue(filtered.size, 1000)(_, _)
     for ((w, i) <- filtered) {
       val word = w.word.word
       val value = w.value
       val v1 = a(value, i)
       val freq = w.word.rating.get
-      println(f"$i%10d $value%10.3f $v1%10.3f $freq%10.3f - $word")
+      println(f"$i%10d $value%10.3f $v1%10d $freq%10.3f - $word")
       bw.write(f"$word;$v1\n")
 
       if (i % 10 == 0) {

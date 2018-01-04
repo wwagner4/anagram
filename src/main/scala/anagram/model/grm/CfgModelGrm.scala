@@ -2,29 +2,20 @@ package anagram.model.grm
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.words.{WordMapper, WordMapperRating}
+import anagram.words._
 
-class CfgModelGrm extends CfgModel {
+class CfgModelGrm extends CfgModel[Seq[String]] {
 
   private val _dataId = "grm001"
   private val _sentenceLengths = Seq(
     new SentenceLength {
-      val length = 2
-      override val createDataOutputFactor = 0.00032
-      val trainingIterations = 1000
-      val trainingBatchSize = 2000
-      val trainingLearningRate = 1E-6
-      val trainingIterationListenerUpdateCount = 10
-      val ratingAdjustOutput = 1.39
-    },
-    new SentenceLength {
       val length = 3
       override val createDataOutputFactor = 0.003
-      val trainingIterations = 200
+      val trainingIterations = 100
       val trainingBatchSize = 20000
       val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 4
-      val ratingAdjustOutput = 1.33
+      val ratingAdjustOutput = 0.33
     },
     new SentenceLength {
       val length = 4
@@ -33,7 +24,7 @@ class CfgModelGrm extends CfgModel {
       val trainingBatchSize = 100000
       val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 10
-      val ratingAdjustOutput = 0.89
+      val ratingAdjustOutput = 0.20
     },
     new SentenceLength {
       val length = 5
@@ -42,43 +33,50 @@ class CfgModelGrm extends CfgModel {
       val trainingBatchSize = 200000
       val trainingLearningRate = 10E-6
       val trainingIterationListenerUpdateCount = 5
-      val ratingAdjustOutput = 0
+      val ratingAdjustOutput = 0.0
     },
   )
 
   private lazy val _bookCollection = BookCollections.collectionEn2
 
-  private lazy val _mapper = WordMapperFactoryGrammar.create
+  private lazy val _wl = Wordlists.grammar.wordList()
 
-  private val screator = new SentenceCreatorSliding(_mapper)
+  private val grouperFactory = new GrouperFactory {
+
+    override def grouper(wordList: Iterable[Word]): Grouper = new GrouperGrm(wordList)
+
+  }
+
+  private lazy val _mapper = new WordMapperFactoryGrammar(_wl, grouperFactory).create
+
+  private val screator = new SentenceCreatorSliding
 
   private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
 
-  private val srater = SentenceLabelerCounting(_lfs)
+  private val srater = SentenceLabelerCounting(_lfs, _mapper)
 
-  override lazy val cfgCreateData: CfgCreateDataFactory = {
+  override lazy val cfgCreateData: CfgCreateDataFactory[Seq[String]] = {
 
 
-    lazy val cfg = new CfgCreateData {
+    lazy val cfg = new CfgCreateData[Seq[String]] {
 
       override def id: String = _dataId
 
       override def sentenceLengths: Iterable[SentenceLength] = _sentenceLengths
 
-      override def mapper: WordMapper = _mapper
+      override def mapper: WordMapper[Seq[String]] = _mapper
 
       override def sentenceCreator: SentenceCreator = screator
 
-      override def sentenceRater: SentenceLabeler = srater
+      override def sentenceLabeler: SentenceLabeler = srater
 
       override def bookCollection: BookCollection = _bookCollection
 
-      override def mapWordsToNumbers: Boolean = true
     }
 
-    new CfgCreateDataFactory {
+    new CfgCreateDataFactory[Seq[String]] {
 
-      override def cfgCreateData: () => CfgCreateData = () => cfg
+      override def cfgCreateData: () => CfgCreateData[Seq[String]] = () => cfg
     }
   }
 
@@ -105,7 +103,7 @@ class CfgModelGrm extends CfgModel {
 
       override def id: String = _dataId
 
-      override def mapper: WordMapperRating = _mapper
+      override def mapper: WordMapperRating[Seq[String]] = _mapper
 
       override def adjustOutput: Boolean = true
 

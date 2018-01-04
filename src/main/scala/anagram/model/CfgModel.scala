@@ -30,9 +30,9 @@ trait Cfg {
 
 }
 
-trait CfgModel {
+trait CfgModel[T] {
 
-  def cfgCreateData: CfgCreateDataFactory
+  def cfgCreateData: CfgCreateDataFactory[T]
 
   def cfgTraining: CfgTrainingFactory
 

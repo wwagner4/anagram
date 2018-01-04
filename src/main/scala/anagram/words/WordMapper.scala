@@ -1,15 +1,12 @@
 package anagram.words
 
-trait WordMapper extends WordMapperRating {
+trait WordMapper[T] extends WordMapperRating[T] {
 
-  def size: Int
-
-  def randomWord: String
-
-  def containsWord(str: String): Boolean
-
-  def wordList: Iterable[Word]
-
+  /**
+    * Maps a String to a word if it exists in the
+    * word mapper
+    */
+  def toWord(str: String): Option[Word]
 
 }
 
