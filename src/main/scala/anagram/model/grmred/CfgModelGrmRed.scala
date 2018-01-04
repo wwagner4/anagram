@@ -2,7 +2,8 @@ package anagram.model.grmred
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.words.{WordMapper, WordMapperRating, Wordlists}
+import anagram.model.grm.WordMapperFactoryGrammar
+import anagram.words._
 
 class CfgModelGrmRed extends CfgModel[Seq[String]] {
 
@@ -11,7 +12,7 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
     new SentenceLength {
       val length = 3
       override val createDataOutputFactor = 0.003
-      val trainingIterations = 200
+      val trainingIterations = 100
       val trainingBatchSize = 20000
       val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 4
@@ -24,7 +25,7 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
       val trainingBatchSize = 100000
       val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 10
-      val ratingAdjustOutput = 0.33
+      val ratingAdjustOutput = 0.39
     },
     new SentenceLength {
       val length = 5
@@ -33,7 +34,7 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
       val trainingBatchSize = 200000
       val trainingLearningRate = 10E-6
       val trainingIterationListenerUpdateCount = 5
-      val ratingAdjustOutput = 0.54
+      val ratingAdjustOutput = 0.60
     },
   )
 
@@ -41,7 +42,13 @@ class CfgModelGrmRed extends CfgModel[Seq[String]] {
 
   private lazy val _wl = Wordlists.grammar.wordList()
 
-  private lazy val _mapper = new WordMapperFactoryGrammarReduced(_wl).create
+  private val grouperFactory = new GrouperFactory {
+
+    override def grouper(wordList: Iterable[Word]): Grouper = new GrouperGrmRed(wordList)
+
+  }
+
+  private lazy val _mapper = new WordMapperFactoryGrammar(_wl, grouperFactory).create
 
   private val screator = new SentenceCreatorSliding
 

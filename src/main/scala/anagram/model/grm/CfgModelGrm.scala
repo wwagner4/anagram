@@ -2,7 +2,7 @@ package anagram.model.grm
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.words.{WordMapper, WordMapperRating, Wordlists}
+import anagram.words._
 
 class CfgModelGrm extends CfgModel[Seq[String]] {
 
@@ -11,7 +11,7 @@ class CfgModelGrm extends CfgModel[Seq[String]] {
     new SentenceLength {
       val length = 3
       override val createDataOutputFactor = 0.003
-      val trainingIterations = 200
+      val trainingIterations = 100
       val trainingBatchSize = 20000
       val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 4
@@ -41,7 +41,13 @@ class CfgModelGrm extends CfgModel[Seq[String]] {
 
   private lazy val _wl = Wordlists.grammar.wordList()
 
-  private lazy val _mapper = new WordMapperFactoryGrammar(_wl).create
+  private val grouperFactory = new GrouperFactory {
+
+    override def grouper(wordList: Iterable[Word]): Grouper = new GrouperGrm(wordList)
+
+  }
+
+  private lazy val _mapper = new WordMapperFactoryGrammar(_wl, grouperFactory).create
 
   private val screator = new SentenceCreatorSliding
 

@@ -1,8 +1,8 @@
-package anagram.model.grmred
+package anagram.model.grmcat
 
 import anagram.words._
 
-class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
+class WordMapperFactoryGrammarCategorized(wl: Iterable[Word]) extends WordMapperFactory[Seq[String]] {
 
   def create: WordMapper[Seq[String]] = {
 
@@ -12,7 +12,7 @@ class WordMapperFactoryGrammarReduced(wl: Iterable[Word]) extends WordMapperFact
 
     lazy val wmap = WordMapperHelper.toWordMap(wl)
 
-    lazy val grp: Grouper = new GrouperGrmRed(wl)
+    lazy val grp: Grouper = new GrouperGrmCat(wl)
 
     val unknown = "?"
 

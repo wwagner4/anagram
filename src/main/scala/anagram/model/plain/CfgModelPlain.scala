@@ -16,7 +16,7 @@ class CfgModelPlain extends CfgModel[Seq[String]] {
     new  SentenceLength {
       val length = 3
       val trainingIterations = 2
-      val ratingAdjustOutput = 0.3
+      val ratingAdjustOutput = 0.39
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
@@ -32,7 +32,7 @@ class CfgModelPlain extends CfgModel[Seq[String]] {
     new  SentenceLength {
       val length = 5
       val trainingIterations = 3
-      val ratingAdjustOutput = 0.21
+      val ratingAdjustOutput = 0.17
       val trainingBatchSize: Int = _batchSize
       val trainingLearningRate: Double = _learningRate
       val trainingIterationListenerUpdateCount: Int = _iterationListenerUpdateCount
