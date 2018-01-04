@@ -50,13 +50,11 @@ class CfgModelGrm extends CfgModel {
 
   private lazy val _mapper = WordMapperFactoryGrammar.create
 
-  private lazy val _transformer = new WordTransformerGrammer
-
   private val screator = new SentenceCreatorSliding(_mapper)
 
   private val _lfs = _sentenceLengths.map(sl => (sl.length, sl.createDataOutputFactor)).toMap
 
-  private val srater = SentenceLabelerCounting(_lfs, _transformer)
+  private val srater = SentenceLabelerCounting(_lfs)
 
   override lazy val cfgCreateData: CfgCreateDataFactory = {
 
@@ -71,10 +69,11 @@ class CfgModelGrm extends CfgModel {
 
       override def sentenceCreator: SentenceCreator = screator
 
-      override def sentenceLabeler: SentenceLabeler = srater
+      override def sentenceRater: SentenceLabeler = srater
 
       override def bookCollection: BookCollection = _bookCollection
 
+      override def mapWordsToNumbers: Boolean = true
     }
 
     new CfgCreateDataFactory {

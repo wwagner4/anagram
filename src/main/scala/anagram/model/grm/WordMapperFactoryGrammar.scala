@@ -10,8 +10,7 @@ object WordMapperFactoryGrammar extends WordMapperFactory {
   def create: WordMapper = {
     val ran = Random
 
-    lazy val wl: Iterable[Word] = WordMapperFactoryPlain.create.wordList
-    lazy val wset = wl.map(w => w.word).toSet
+    lazy val wl = WordMapperFactoryPlain.create.wordList
 
     val unknown = "?"
 
@@ -21,6 +20,7 @@ object WordMapperFactoryGrammar extends WordMapperFactory {
     val grpList = words.map(groupedWord => groupedWord.grp.get).distinct.sorted :+ unknown
     val grpListIdx = grpList.zipWithIndex
     val grpListWordMap: Map[String, Int] = grpListIdx.toMap
+    val grpListIntMap: Map[Int, String] = grpListIdx.map{case (w, i) => (i, w)}.toMap
 
     new WordMapper {
 
@@ -33,7 +33,7 @@ object WordMapperFactoryGrammar extends WordMapperFactory {
         grpList(idx)
       }
 
-      override def containsWord(str: String): Boolean = wset.contains(str)
+      override def containsWord(str: String): Boolean = grpList.contains(str)
 
       override def transform(value: String): Seq[String] =
         Seq(wordMap.get(value).map(_.grp.get).getOrElse(unknown))

@@ -7,6 +7,7 @@ class SentenceCreatorSliding(wordMapper: WordMapper) extends SentenceCreator {
   def create(sentences: Stream[Seq[String]], len: Int): Stream[Sentence] = {
     sentences
       .filter(_.lengthCompare(len) >= 0)
+      .map(words => words.flatMap(wordMapper.transform))
       .flatMap(slideSentences(_, len, wordMapper))
   }
 

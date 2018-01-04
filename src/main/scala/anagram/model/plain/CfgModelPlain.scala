@@ -64,9 +64,11 @@ class CfgModelPlain extends CfgModel {
 
       override def sentenceCreator: SentenceCreator = screator
 
-      override def sentenceLabeler: SentenceLabeler = srater
+      override def sentenceRater: SentenceLabeler = srater
 
       override def bookCollection: BookCollection = _bookCollection
+
+      override def mapWordsToNumbers: Boolean = true
 
     }
     new CfgCreateDataFactory {

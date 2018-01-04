@@ -23,8 +23,8 @@ class SentenceLabelerStraightWithRandom(val wm: WordMapper) extends SentenceLabe
       } else {
         val ranSent = randomSentence(sentence.words.size)
         Seq(
-          Labeled(sentence, features(sentence), rating(sentence)),
-          Labeled(ranSent, features(ranSent), rating(ranSent))
+          Labeled(sentence, rating(sentence)),
+          Labeled(ranSent, rating(ranSent)),
         )
       }
     }
@@ -37,10 +37,6 @@ class SentenceLabelerStraightWithRandom(val wm: WordMapper) extends SentenceLabe
       case SentenceType_OTHER => 30.0
       case SentenceType_RANDOM => 10.0
     }
-  }
-
-  def features(sent: Sentence): Seq[Double] = {
-    sent.words.map(w => wm.toNum(w).toDouble)
   }
 
 }

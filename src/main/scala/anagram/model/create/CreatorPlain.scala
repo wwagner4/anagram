@@ -5,7 +5,7 @@ import anagram.model.Configurations
 
 object CreatorPlain extends AbstractCreator with App {
 
-  val dc = new DataCollectorStdout
+  var dc = new DataCollectorStdout
   one(
     Configurations.plain,
     dc,
