@@ -12,4 +12,6 @@ class GrouperGrm(wl: Iterable[Word]) extends Grouper {
   override def group(value: String): Seq[String] =
     Seq(wordMap.get(value).map(_.grp.get).getOrElse(unknown))
 
+  override def groups: Seq[String] = throw new IllegalStateException("Cannot be provided for 'GrouperGrm'")
+
 }

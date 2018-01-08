@@ -4,9 +4,9 @@ import anagram.words.{Grouper, Word}
 
 class GrouperGrmRed(wl: Iterable[Word]) extends Grouper {
 
-  val unknown = "?"
+  private val unknown = "?"
 
-  val popularGrps = Set(
+  private val popularGrps = Set(
     "n",
     "a",
     "vt",
@@ -19,7 +19,13 @@ class GrouperGrmRed(wl: Iterable[Word]) extends Grouper {
     "prep"
   )
 
-  def reduceGroups(grp: String): String = {
+  private lazy val _grps: Seq[String] = (popularGrps + unknown).toSeq
+
+  private lazy val words: Seq[Word] = wl.toSeq.map(w => w.copy(grp = Some(reduceGroups(w.grp.get))))
+
+  private lazy val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
+
+  private def reduceGroups(grp: String): String = {
     // treatment for 'do' which is usually not a noun
     if (grp == "n&vt,auxiliary&vi") "vi"
     else {
@@ -36,13 +42,8 @@ class GrouperGrmRed(wl: Iterable[Word]) extends Grouper {
     }
   }
 
-  val words: Seq[Word] = wl.toSeq.map(w => w.copy(grp = Some(reduceGroups(w.grp.get))))
-  val wordMap: Map[String, Word] = words.map(gword => (gword.word, gword)).toMap
-
-
   override def group(value: String): Seq[String] =
     Seq(wordMap.get(value).map(_.grp.get).getOrElse(unknown))
 
-
-
+  override def groups: Seq[String] = _grps
 }

@@ -24,6 +24,8 @@ object Wordlists {
 
   def grammar: WordListFactory = createFactory("Grammar full", "GRM_L", () => loadWordlistGrammar(s"${prefix}_grammar_full.txt"))
 
+  def grammarReducedRated: WordListFactory = createFactory("Grammar reduced rated", "GRM_RR", () => loadWordlistFull(s"${prefix}_grammar_rated.txt"))
+
   private def createFactory(desc: String, sd: String, f: () => Iterable[Word]): WordListFactory = {
 
     new WordListFactory {
@@ -39,6 +41,20 @@ object Wordlists {
     def lineToWord(line: String): Word = {
       val _s = line.split(';')
       Word(_s(1), _s(1).sorted, Some(_s(0)), None)
+    }
+
+    IoUtil.loadTxtFromResourceName(resourceName, (l) => l.toIterable)
+      .map(line => lineToWord(line))
+  }
+
+  private def loadWordlistFull(resourceName: String): scala.Iterable[Word] = {
+    def lineToWord(line: String): Word = {
+      try {
+        val _s = line.split(';')
+        Word(_s(0), _s(1), Some(_s(2)), Some(_s(3).toDouble))
+      } catch {
+        case e: Exception => throw new IllegalStateException(s"ERROR in line '$line'. ${e.getMessage}", e)
+      }
     }
 
     IoUtil.loadTxtFromResourceName(resourceName, (l) => l.toIterable)
