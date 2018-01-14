@@ -1,8 +1,8 @@
-package anagram.model.grmred
+package anagram.model.grmcat
 
 import anagram.words.{Grouper, Word}
 
-class GrouperGrmRed(wl: Iterable[Word]) extends Grouper {
+class GrouperGrmCat(wl: Iterable[Word]) extends Grouper {
 
   val unknown = "?"
 

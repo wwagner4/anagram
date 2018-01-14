@@ -2,39 +2,38 @@ package anagram.model.grmcat
 
 import anagram.ml.data.common._
 import anagram.model._
-import anagram.model.grmred.GrouperGrmRed
-import anagram.words._
+import anagram.words.{WordMapper, WordMapperRating, Wordlists}
 
 class CfgModelGrmCat extends CfgModel[Seq[String]] {
 
-  private val _dataId = "grmCat001"
+  private val _dataId = "grmRed001"
   private val _sentenceLengths = Seq(
     new SentenceLength {
       val length = 3
-      override val createDataOutputFactor = 10.0
+      override val createDataOutputFactor = 0.003
       val trainingIterations = 100
-      val trainingBatchSize = 100000
-      val trainingLearningRate = 10E-6
-      val trainingIterationListenerUpdateCount = 10
+      val trainingBatchSize = 20000
+      val trainingLearningRate = 50E-6
+      val trainingIterationListenerUpdateCount = 4
       val ratingAdjustOutput = 0.0
     },
     new SentenceLength {
       val length = 4
-      override val createDataOutputFactor = 10.0
+      override val createDataOutputFactor = 0.02
       val trainingIterations = 100
       val trainingBatchSize = 100000
-      val trainingLearningRate = 10E-6
+      val trainingLearningRate = 50E-6
       val trainingIterationListenerUpdateCount = 10
-      val ratingAdjustOutput = 0.0
+      val ratingAdjustOutput = 0.33
     },
     new SentenceLength {
       val length = 5
-      override val createDataOutputFactor = 10.0
+      override val createDataOutputFactor = 0.1
       val trainingIterations = 100
-      val trainingBatchSize = 100000
+      val trainingBatchSize = 200000
       val trainingLearningRate = 10E-6
-      val trainingIterationListenerUpdateCount = 10
-      val ratingAdjustOutput = 0.0
+      val trainingIterationListenerUpdateCount = 5
+      val ratingAdjustOutput = 0.54
     },
   )
 
@@ -42,11 +41,7 @@ class CfgModelGrmCat extends CfgModel[Seq[String]] {
 
   private lazy val _wl = Wordlists.grammar.wordList()
 
-  var gf: GrouperFactory = new GrouperFactory {
-    override def grouper(wordList: Iterable[Word]): Grouper = new GrouperGrmRed(wordList)
-  }
-
-  private lazy val _mapper = new WordMapperFactoryGrammarCategorized(_wl, gf).create
+  private lazy val _mapper = new WordMapperFactoryGrammarCategorized(_wl).create
 
   private val screator = new SentenceCreatorSliding
 

@@ -59,7 +59,7 @@ class SolverSuite1 extends FunSuite with MustMatchers {
         val re = expSeq(i)
         val ana = anagrams(i)
         ana.sentence mustBe re.words
-        ana.rate mustBe re.rating +- 1.0
+        ana.rate mustBe re.rating +- 0.1
       }
     }
   }
