@@ -1,8 +1,5 @@
 package anagram.model.create
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 import anagram.ml.DataCollectorViz
 
 object CreatorAll extends AbstractCreator with App {
@@ -13,12 +10,6 @@ object CreatorAll extends AbstractCreator with App {
   all(dc)
   dc.output()
 
-
-  def timestamp: String = {
-    val dt = LocalDateTime.now()
-    val f = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-    f.format(dt)
-  }
 
 }
 
